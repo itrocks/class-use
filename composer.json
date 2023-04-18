@@ -1,0 +1,14 @@
+{
+	"authors": [{ "name": "Baptiste Pillot", "email": "baptiste@pillot.fr" }],
+	"autoload": {
+		"psr-4": { "ITRocks\\Depend\\": "" },
+		"exclude-from-classmap": ["/Tests/"]
+	},
+	"description": "Scans your project and vendor file dependencies and provides an API to use them",
+	"homepage":    "https://it.rocks/depend",
+	"license":     "LGPL-3.0-or-later",
+	"minimum-stability": "dev",
+	"name":    "itrocks/depend",
+	"require": { "php": ">=8.2" },
+	"type":    "library"
+}
