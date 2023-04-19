@@ -53,23 +53,33 @@ trait Cache_Directory
 		if (!is_dir("$home/cache")) {
 			mkdir("$home/cache");
 		}
-		if (
-			$this->reset
-			&& !str_contains('"', $home)
-			&& is_dir("$home/cache/dependencies")
-		) {
-			exec('rm -rf "' . $home . '/cache/dependencies"');
-			clearstatcache(true);
+		if ($this->reset) {
+			$this->purgeCache();
 		}
-		if (!is_dir("$home/cache"))              mkdir("$home/cache");
-		if (!is_dir("$home/cache/dependencies")) mkdir("$home/cache/dependencies");
+		if (!is_dir("$home/cache")) {
+			mkdir("$home/cache");
+		}
+		if (!is_dir("$home/cache/dependencies")) {
+			mkdir("$home/cache/dependencies");
+		}
+	}
+
+	//------------------------------------------------------------------------------------ purgeCache
+	public function purgeCache() : void
+	{
+		$home = $this->home;
+		if (str_contains('"', $home) || !is_dir("$home/cache/dependencies")) {
+			return;
+		}
+		exec('rm -rf "' . $home . '/cache/dependencies"');
+		clearstatcache(true);
 	}
 
 	//--------------------------------------------------------------------------------------- setHome
 	protected function setHome(string $home) : void
 	{
-		$this->home = $home;
 		if ($home !== '') {
+			$this->home = realpath($home);
 			return;
 		}
 		$home = str_replace('\\', '/', getcwd());
