@@ -186,7 +186,9 @@ class Tokens_Scanner
 					if ($token[0] === T_VARIABLE) {
 						$token = next($tokens);
 						while (is_array($token) || !str_contains(',)', $token)) $token = next($tokens);
-						if ($token === ')') break;
+						if ($token === ')') {
+							break;
+						}
 					}
 				}
 				while (is_array($token) || !str_contains(':{;', $token)) $token = next($tokens);
@@ -367,7 +369,9 @@ class Tokens_Scanner
 					: ltrim($this->namespace . '\\' . $token[1], '\\');
 				break;
 			case T_STRING:
-				if (in_array($token[1], static::BASIC_TYPES)) return '';
+				if (in_array($token[1], static::BASIC_TYPES)) {
+					return '';
+				}
 				$name = ($use = $this->namespace_use[$token[1]] ?? '')
 					? $use
 					: ltrim($this->namespace . '\\' . $token[1], '\\');

@@ -11,7 +11,9 @@ class Console
 	protected function nameArguments(array &$arguments) : void
 	{
 		foreach ($arguments as $key => $argument) {
-			if (!str_contains($argument, '=')) continue;
+			if (!str_contains($argument, '=')) {
+				continue;
+			}
 			unset($arguments[$key]);
 			[$name, $value] = explode('=', $argument);
 			if ($name === '') {
@@ -22,7 +24,7 @@ class Console
 				$value = $arguments[$key + 1];
 				unset($arguments[$key + 1]);
 			}
-			$arguments[$name] = $value;
+			$arguments[$name] = str_replace('/', '\\', $value);
 		}
 	}
 
@@ -76,7 +78,9 @@ class Console
 
 		$repository = new Repository($flags);
 		echo ($flags & Repository::RESET) ? 'reset' : 'update';
-		if ($flags & Repository::VENDOR) echo ' with vendor';
+		if ($flags & Repository::VENDOR) {
+			echo ' with vendor';
+		}
 		echo ' from project directory ' . $repository->getHome();
 		echo "\n";
 

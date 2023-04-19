@@ -14,7 +14,10 @@ trait Scanner
 			$directory = $this->home;
 		}
 		$this->directories_count ++;
-		foreach (scandir($directory) as $file) if (!str_starts_with($file, '.')) {
+		foreach (scandir($directory) as $file) {
+			if (str_starts_with($file, '.')) {
+				continue;
+			}
 			$file = "$directory/$file";
 			if (is_dir($file) && ($depth || $this->vendor || !str_ends_with($file, '/vendor'))) {
 				$this->scanDirectory($file, $depth + 1);
