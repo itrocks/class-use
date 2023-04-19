@@ -5,24 +5,6 @@ This library offers a programming API and command lines to scan your PHP project
 references, store them into an indexed dependency cache into your filesystem,
 then allow you to search for all available dependency of a class.
 
-Installation
-------------
-
-### Add to your project
-
-```bash
-composer require itrocks/depend --dev
-```
-
-### Global command line
-
-This allows you to use the global command `depend` from your PHP projet directory,
-without having to look for the executable.
-
-```bash
-sudo ln -s /path/to/your/project/vendor/itrocks/depend/bin/run /usr/local/bin/depend 
-```
-
 Command line usage
 ------------------
 
