@@ -1,9 +1,30 @@
 PHP class dependency scanner 
 ----------------------------
 
-This library offers a programming API and command lines to scan your PHP project for class
+This library gives your software the ability to get a quick answer to the
+**"Where and what for is this class used ?"** question.
+
+It offers a programming API and command lines to scan your PHP project for class
 references, store them into an indexed dependency cache into your filesystem,
 then allow you to search for all available dependency of a class.
+
+It is designed to be simple to apply to any PHP project, and fast to execute.
+Its code aims for simplicity and lightweight: no library dependency,
+and I tried to limit it to the fewer abstraction layers I could
+in order to get a code simple to understand and to update.
+
+Pre-requisites
+--------------
+
+- This works with PHP 8.2 only. I wanted to make full use of the current PHP version features. \
+  To install php 8.2 on a Debian/Ubuntu/Mint system:
+  https://php.watch/articles/install-php82-ubuntu-debian.
+- You will need the enable PHP json extension.
+  On Linux Debian/Ubuntu/Mint systems:
+```bash
+sudo apt install php8.2-json
+```
+- OR, on Windows systems, just uncomment the `extension=json.so` line into your php.ini file.
 
 Command line usage
 ------------------

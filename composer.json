@@ -8,6 +8,6 @@
 	"license":     "LGPL-3.0-or-later",
 	"minimum-stability": "dev",
 	"name":    "itrocks/depend",
-	"require": { "php": ">=8.2" },
+	"require": { "ext-json": "*", "php": ">=8.2" },
 	"type":    "library"
 }
