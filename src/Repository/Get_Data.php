@@ -1,5 +1,5 @@
 <?php
-namespace ITRocks\Depend;
+namespace ITRocks\Depend\Repository;
 
 trait Get_Data
 {
@@ -8,11 +8,11 @@ trait Get_Data
 	/** @return string[] */
 	public function fileClasses(string $file_name) : array
 	{
-		return json_decode(
+		$data = json_decode(
 			file_get_contents($this->cacheFileName($file_name, 'file')),
 			JSON_OBJECT_AS_ARRAY
-		)['class']
-			?? [];
+		);
+		return $data[Type::CLASS_] ?? [];
 	}
 
 	//------------------------------------------------------------------------------- getFileContents

@@ -1,15 +1,8 @@
 <?php
-namespace ITRocks\Depend;
+namespace ITRocks\Depend\Repository;
 
 trait Classify
 {
-
-	//---------------------------------------------------------------------------------- TYPE_EXTENDS
-	protected const TYPE_EXTENDS = [
-		'class'      => ['class', 'class_type'],
-		'dependency' => ['dependency', 'dependency_type'],
-		'type'       => ['type_class', 'type_dependency']
-	];
 
 	//-------------------------------------------------------------------------------------- classify
 	public function classify() : void
@@ -32,16 +25,16 @@ trait Classify
 			foreach ($references as $reference) {
 				[$class, $dependency, $type, $line] = $reference;
 				if ($class !== '') {
-					$this->by_file[$file_name]['class'][$class] = true;
+					$this->by_file[$file_name][Type::CLASS_][$class] = true;
 					$this->by_class      [$class][$dependency][$type][$file_name][] = $line;
 					$this->by_class_type [$class][$type][$dependency][$file_name][] = $line;
 				}
 				if ($dependency !== '') {
-					$this->by_file[$file_name]['dependency'][$dependency] = true;
+					$this->by_file[$file_name][Type::DEPENDENCY][$dependency] = true;
 					$this->by_dependency      [$dependency][$class][$type][$file_name][] = $line;
 					$this->by_dependency_type [$dependency][$type][$class][$file_name][] = $line;
 				}
-				$this->by_file[$file_name]['type'][$type] = true;
+				$this->by_file[$file_name][Type::TYPE][$type] = true;
 				$this->by_type_class      [$type][$class][$dependency][$file_name][] = $line;
 				$this->by_type_dependency [$type][$dependency][$class][$file_name][] = $line;
 			}
@@ -60,7 +53,7 @@ trait Classify
 		foreach (
 			json_decode(file_get_contents($cache_file_name), JSON_OBJECT_AS_ARRAY) as $type => $values
 		) {
-			foreach (self::TYPE_EXTENDS[$type] as $type) {
+			foreach (Type::EXTENDS[$type] as $type) {
 				foreach ($values as $value) {
 					// load
 					$is_set = isset($this->{"by_$type"}[$value]);

@@ -1,8 +1,7 @@
 {
 	"authors": [{ "name": "Baptiste Pillot", "email": "baptiste@pillot.fr" }],
 	"autoload": {
-		"psr-4": { "ITRocks\\Depend\\": "" },
-		"exclude-from-classmap": ["/Tests/"]
+		"psr-4": { "ITRocks\\Depend\\": "src/" }
 	},
 	"description": "Scans your project and vendor file dependencies and provides an API to use them",
 	"homepage":    "https://it.rocks/depend",

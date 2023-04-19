@@ -1,9 +1,17 @@
 <?php
 namespace ITRocks\Depend;
 
+use ITRocks\Depend\Repository\Cache_Directory;
+use ITRocks\Depend\Repository\Classify;
+use ITRocks\Depend\Repository\Counters;
+use ITRocks\Depend\Repository\Get_Data;
+use ITRocks\Depend\Repository\Save;
+use ITRocks\Depend\Repository\Scanner;
+use ITRocks\Depend\Repository\Search;
+
 class Repository
 {
-	use Cache_Directory, Classify, Counters, Get_Data, Save, Scanner;
+	use Cache_Directory, Classify, Counters, Get_Data, Save, Scanner, Search;
 
 	//----------------------------------------------------------------------------------------- FLAGS
 	public const RESET  = 2;
@@ -46,14 +54,14 @@ class Repository
 	protected array $files = [];
 
 	//----------------------------------------------------------------------------------- $references
-	/** @var array[] [string $class, string $dependency, string $type, int $line][int] */
+	/** @var (int|string)[][] [string $file][string $class, string $dependency, string $type, int $line] */
 	protected array $references = [];
 
 	//-------------------------------------------------------------------------------- $refresh_files
 	/** @var string[] */
 	public array $refresh_files = [];
 
-	//-------------------------------------------------------------------------------------- $refresh
+	//---------------------------------------------------------------------------------------- $reset
 	protected bool $reset;
 
 	//------------------------------------------------------------------------------------ $singleton

@@ -1,5 +1,5 @@
 <?php
-namespace ITRocks\Depend;
+namespace ITRocks\Depend\Repository;
 
 trait Cache_Directory
 {
