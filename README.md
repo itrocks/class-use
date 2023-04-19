@@ -8,6 +8,10 @@ then allow you to search for all available dependency of a class.
 Command line usage
 ------------------
 
+Command line is available for usage demonstration purpose and benchmarking:
+it displays operation duration, memory usage, and counters.
+It makes it easy to test the library without having to write source code.
+
 ### Installation
 
 ```bash
@@ -15,10 +19,6 @@ git clone itrocks/depend
 # make it available from any directory 
 sudo ln -s `pwd`/depend/bin/run /usr/local/bin/depend
 ```
-
-Command line is available for usage demonstration purpose and benchmarking:
-it displays operation duration, memory usage, and counters.
-It makes it easy to test the library without having to write source code.
 
 ### Update cache
 
@@ -50,9 +50,9 @@ This example will output all the references to the class Repository into all you
 
 #### Search keys
 
-You can use one of several search criterion, identified by these keys:
+You can use one or several search criterion, identified by these keys:
 
-- `class`: Restrict search to this class only
+- `class`: Search references into this class
 - `dependency`: Search references to this class 
 - `type`: Search references of this type (type lists below)
 
@@ -61,7 +61,7 @@ You can use one of several search criterion, identified by these keys:
 These options can be added to your command line:
 
 - `display`: Display found dependencies. If not set, only the search information:
-duration, memory usage, result count, will be displayed
+  duration, memory usage, result count, will be displayed
 
 Programming API usage
 ---------------------
@@ -71,7 +71,7 @@ Programming API usage
 Types
 -----
 
-Each found dependency is qualified with any of these type identifiers:
+Each found dependency is qualified with any of these dependency type identifiers:
 
 - `argument`: the class is used as a function argument type
 - `attribute`: the class is used as an attribute, ie into a `#[...]` section
@@ -82,14 +82,14 @@ Each found dependency is qualified with any of these type identifiers:
 - `extends`: the class appears into an `extends` section of another class declaration
 - `implements`: the class appears into an `implements` section of another class declaration
 - `instance-of`: the class appears after an `instanceof` type operator
-- `namespace`: the class is used as a `namespace` name; perhaps it's not a class name,
-   but just a namespace declaration
+- `namespace`: the class is used as a `namespace` name;
+  only namespaces that match a class will be set
 - `namespace-use`: the class appears into a namespace `use` statement for import;
-   perhaps it's not a class name, but just a namespace import
+  only statements that match a class will be set
 - `new`: the class is used to instantiate an object
 - `return`: the class is used into a function return type
 - `static`: the class is used for a static call,
-   e.g. `Class_Name::static` or `Class_Name::CONSTANT`
+  e.g. `Class_Name::static` or `Class_Name::CONSTANT`
 - `use`: the class appears into a class `use` statement
 - `var`: the class is used into a class property type definition
 
