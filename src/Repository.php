@@ -53,6 +53,9 @@ class Repository
 	/** @var string[] string $file_name[int] */
 	protected array $files = [];
 
+	//--------------------------------------------------------------------------------------- $pretty
+	protected bool $pretty;
+
 	//----------------------------------------------------------------------------------- $references
 	/** @var (int|string)[][] [string $file][string $class, string $dependency, string $type, int $line] */
 	protected array $references = [];
@@ -70,6 +73,7 @@ class Repository
 	//----------------------------------------------------------------------------------- __construct
 	public function __construct(int $flags = 0, string $home = '')
 	{
+		$this->pretty     = $flags & self::PRETTY;
 		$this->reset      = $flags & self::RESET;
 		$this->start_time = time();
 		$this->vendor     = $flags & self::VENDOR;
