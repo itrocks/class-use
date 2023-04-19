@@ -16,7 +16,8 @@ It makes it easy to test the library without having to write source code.
 
 ```bash
 git clone itrocks/depend
-# make it available from any directory 
+
+# make it available from any directory (Linux systems):
 sudo ln -s `pwd`/depend/bin/run /usr/local/bin/depend
 ```
 
@@ -26,27 +27,38 @@ From any subdirectory of your PHP project (e.g. here from the project root direc
 
 ```bash
 depend vendor
+
+# OR: if you did not add a direct link to the console script, you can do the same with (Linux systems):
+/path/to/your/clone/of/itrocks/depend/bin/run vendor
+
+# OR: if you have php installed on a non-Linux system (e.g. Windows):
+php /path/to/your/clone/of/itrocks/depend/bin/run.php vendor
 ```
 
 #### Options
 
-- `vendor`: Updates dependency concerning php files from the `vendor` directory too. If not set,
+- `vendor`:
+  Updates dependency concerning php files from the `vendor` directory too. If not set,
   only your project files will be scanned, which will be quite faster, and enough only if you don't
-  need third-party PHP scripts dependency information. 
-- `reset`: Fully recalculate your dependency cache. If not set, only files modified since the last
-  update will be scanned for update.   
-- `pretty`: Dependency cache json files will be human-readable, including spaces and carriage
-  returns. Nevertheless, cache files will be bigger.
+  need third-party PHP scripts dependency information.
+- `reset`:
+  Fully recalculate your dependency cache. If not set, only files modified since the last update
+  will be scanned for update.
+- `pretty`:
+  Dependency cache json files will be human-readable, including spaces and carriage returns;
+  Nevertheless, cache files will be bigger.
 
-### Search for occurrences
+### Search for occurences
 
 From any directory of your PHP project (e.g. here from the project root directory):
 
 ```bash
-depend dependency=ITRocks\Depend\Repository detail
+depend dependency=ITRocks/Depend/Repository detail
 ```
 
 This example will output all the references to the class Repository into all your project scripts.
+
+If you love escaping antislashes, you are free to use them to match PHP class path naming rules.
 
 #### Search keys
 
@@ -66,7 +78,63 @@ These options can be added to your command line:
 Programming API usage
 ---------------------
 
-*Documentation will come soon*.
+### Installation
+
+To add this to your project :
+
+```bash
+composer require itrocks/depend
+```
+
+### Update cache
+
+When your project need to update the cache, these are the update steps to follow :
+
+```php
+$repository = new Repository(Repository::VENDOR);
+$repository->scanDirectory();
+$repository->classify();
+$repository->save();
+```
+
+#### Option flags
+
+- `Repository::VENDOR`:
+  Updates dependency concerning php files from the `vendor` directory too. If not set,
+  only your project files will be scanned, which will be quite faster, and enough only if you don't
+  need third-party PHP scripts dependency information.
+- `Repository::RESET`:
+  Fully recalculate your dependency cache. If not set, only files modified since the last update
+  will be scanned for update.
+- `Repository::PRETTY`:
+  Dependency cache json files will be human-readable, including spaces and carriage returns;
+  Nevertheless, cache files will be bigger.
+
+The constructor of `Repository` has a second argument, `$home`, to force the directory where to
+scan classes and save dependency cache from. If not set, this will scan your project files, found
+from the current working directory.
+
+### Search for occurences
+
+```php
+echo "These are all references to the Repository class:\n";
+$repository = new Repository();
+foreach ($repository->search([Type::DEPENDENCY => Repository::class]) as $dependency) {
+  [$class, $dependency, $type, $file, $line] = $dependency;
+	echo "#$key. $type into $file";
+	if ($class) echo " class $class";
+	echo " line $line";
+	echo "\n";
+}
+```
+
+This example will output all the references to the class Repository into all your project scripts.
+
+You can see multiple examples in action running the scripts into the `examples` directory. e.g.:
+
+```bash
+php examples/complete.php
+```
 
 Types
 -----
