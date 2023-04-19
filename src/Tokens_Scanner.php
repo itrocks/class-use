@@ -211,6 +211,7 @@ class Tokens_Scanner
 			case T_NAME_FULLY_QUALIFIED:
 			case T_STRING:
 				if ($this->attribute_bracket_depth === $this->bracket_depth) {
+					$this->attribute = '';
 					$this->attribute = $this->reference($token, Type::ATTRIBUTE);
 				}
 				break;
@@ -376,7 +377,7 @@ class Tokens_Scanner
 		}
 		$reference = [$this->class, $name, $type, $token[2]];
 		if ($this->attribute !== '') {
-			$reference[2] = str_replace('\\', '-', $this->attribute);
+			$reference[2] = $this->attribute;
 		}
 		if (!$this->class && ($this->attribute_square_depth || str_starts_with($type, 'declare-'))) {
 			$this->next_references[] = $reference;
