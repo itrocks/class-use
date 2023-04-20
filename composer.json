@@ -1,10 +1,8 @@
 {
-	"authors": [{ "name": "Baptiste Pillot", "email": "baptiste@pillot.fr" }],
-	"autoload": {
-		"psr-4": { "ITRocks\\Depend\\": "src/" }
-	},
+	"authors":  [{ "name": "Baptiste Pillot", "email": "baptiste@pillot.fr" }],
+	"autoload": { "psr-4": { "ITRocks\\Depend\\": "src/" } },
 	"description": "Gives your software the ability to get a quick answer to the 'Where and what for is this class used?' question",
-	"homepage":    "https://it.rocks/depend",
+	"homepage":    "https://github.com/itrocks/depend",
 	"license":     "LGPL-3.0-or-later",
 	"minimum-stability": "dev",
 	"name":    "itrocks/depend",
