@@ -1,8 +1,13 @@
 <?php
 namespace ITRocks\Depend\Repository;
 
+use Exception;
+
 trait Cache_Directory
 {
+
+	//------------------------------------------------------------------------------- CACHE_DIRECTORY
+	const CACHE_DIRECTORY = '/cache/depend';
 
 	//----------------------------------------------------------------------------------------- $home
 	/** Home directory, without right '/' */
@@ -11,32 +16,26 @@ trait Cache_Directory
 	//--------------------------------------------------------------------------------------- $vendor
 	protected bool $vendor;
 
-	//-------------------------------------------------------------------------------- cacheDirectory
-	protected function cacheDirectory() : string
-	{
-		return $this->home . '/cache/dependencies';
-	}
-
 	//--------------------------------------------------------------------------------- cacheFileName
 	protected function cacheFileName(string $name, string $type = '') : string
 	{
-		$directory = $this->cacheDirectory();
+		$directory = $this->getCacheDirectory();
 		$file_name = str_replace(['/', '\\'], '-', $name);
 		$file_name = (str_ends_with($file_name, '.php') ? substr($file_name, 0, -4) : $file_name)
 			. '.json';
 		return ($type === '') ? "$directory/$file_name" : "$directory/$type/$file_name";
 	}
 
+	//----------------------------------------------------------------------------- getCacheDirectory
+	public function getCacheDirectory() : string
+	{
+		return $this->home . static::CACHE_DIRECTORY;
+	}
+
 	//--------------------------------------------------------------------------------------- getHome
 	public function getHome() : string
 	{
 		return $this->home;
-	}
-
-	//------------------------------------------------------------------------------------- getTarget
-	public function getTarget() : string
-	{
-		return $this->home . '/cache/dependencies';
 	}
 
 	//----------------------------------------------------------------------------------- prepareHome
@@ -47,20 +46,20 @@ trait Cache_Directory
 			if ($home !== '') {
 				$home = ' ' . $home;
 			}
-			echo "Missing directory$home: need a root PHP project directory with a composer.lock file\n";
-			exit(1);
-		}
-		if (!is_dir("$home/cache")) {
-			mkdir("$home/cache");
+			/** @noinspection PhpUnhandledExceptionInspection app-level */
+			throw new Exception(
+				"Missing directory$home: need a root PHP project directory with a composer.lock file"
+			);
 		}
 		if ($this->reset) {
 			$this->purgeCache();
 		}
-		if (!is_dir("$home/cache")) {
-			mkdir("$home/cache");
-		}
-		if (!is_dir("$home/cache/dependencies")) {
-			mkdir("$home/cache/dependencies");
+		$directory = '';
+		foreach (array_slice(explode('/', $this->getCacheDirectory()), 1) as $subdirectory) {
+			$directory .= '/' . $subdirectory;
+			if (!is_dir($directory)) {
+				mkdir($directory);
+			}
 		}
 	}
 
@@ -68,10 +67,10 @@ trait Cache_Directory
 	public function purgeCache() : void
 	{
 		$home = $this->home;
-		if (str_contains('"', $home) || !is_dir("$home/cache/dependencies")) {
+		if (str_contains('"', $home) || !is_dir($this->getCacheDirectory())) {
 			return;
 		}
-		exec('rm -rf "' . $home . '/cache/dependencies"');
+		exec('rm -rf "' . $this->getCacheDirectory() . '"');
 		clearstatcache(true);
 	}
 
@@ -85,7 +84,7 @@ trait Cache_Directory
 		$home = str_replace('\\', '/', getcwd());
 		while (
 			str_contains($home, '/')
-			&& !(file_exists("$home/cache") && file_exists("$home/composer.json"))
+			&& !file_exists("$home/composer.json")
 			&& !file_exists("$home/composer.lock")
 		) {
 			$home = substr($home, 0, strrpos($home, '/'));

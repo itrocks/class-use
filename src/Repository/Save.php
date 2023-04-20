@@ -18,7 +18,7 @@ trait Save
 		if ($this->pretty) {
 			$json_flags |= JSON_PRETTY_PRINT;
 		}
-		$directory = $this->cacheDirectory();
+		$directory = $this->getCacheDirectory();
 		$types     = Type::SAVE;
 
 		foreach ($types as $type) {

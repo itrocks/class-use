@@ -32,12 +32,12 @@ class Console
 	public function quickDocumentation() : string
 	{
 		return join("\n", [
-			'Scan your PHP project for dependencies',
+			'Scan your PHP project for class uses / internal dependencies',
 			'',
 			'usage to calculate cache : ./run [reset] [vendor] [pretty]',
 			'- reset  : purge dependency cache and calculate it from scratch',
 			'- vendor : include dependencies from the vendor source code directory',
-			'- pretty : updated cache files use json pretty print',
+			'- pretty : updated cache files use json pretty print to be human-readable',
 			'usage to get dependency info : ./run [type] [name]',
 			''
 		]);
@@ -105,7 +105,7 @@ class Console
 		echo date('Y-m-d H:i:s') . "\n";
 		echo 'duration = ' . $this->showDuration(microtime(true) - $total) . "\n";
 		echo 'memory   = ' . ceil(memory_get_peak_usage(true) / 1024 / 1024) . " Mo\n";
-		echo "cache$pretty written into directory " . $repository->getTarget() . "\n";
+		echo "cache$pretty written into directory " . $repository->getCacheDirectory() . "\n";
 	}
 
 	//---------------------------------------------------------------------------------------- search
