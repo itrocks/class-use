@@ -4,14 +4,13 @@ namespace ITRocks\Depend;
 use ITRocks\Depend\Repository\Cache_Directory;
 use ITRocks\Depend\Repository\Classify;
 use ITRocks\Depend\Repository\Counters;
-use ITRocks\Depend\Repository\Get_Data;
 use ITRocks\Depend\Repository\Save;
 use ITRocks\Depend\Repository\Scanner;
 use ITRocks\Depend\Repository\Search;
 
 class Repository
 {
-	use Cache_Directory, Classify, Counters, Get_Data, Save, Scanner, Search;
+	use Cache_Directory, Classify, Counters, Save, Scanner, Search;
 
 	//----------------------------------------------------------------------------------------- FLAGS
 	public const RESET  = 2;
@@ -45,9 +44,12 @@ class Repository
 	/** int $line[string $type][string $dependency][string $class][string $file][int] */
 	protected array $by_type_dependency = [];
 
-	//-------------------------------------------------------------------------------- $file_contents
-	/** @var string[] [$file_name => $file_content] */
-	protected array $file_contents = [];
+	//---------------------------------------------------------------------------------- $file_tokens
+	/**
+	 * File tokens will be kept during scan only if this was initialized using keepFileTokens().
+	 * [string $file_path_relative_to_project => array $file_tokens]
+	 */
+	public array $file_tokens;
 
 	//---------------------------------------------------------------------------------------- $files
 	/** @var string[] string $file_name[int] */
@@ -85,6 +87,15 @@ class Repository
 	public static function get() : static
 	{
 		return static::$singleton ?? (static::$singleton = new static);
+	}
+
+	//-------------------------------------------------------------------------------- keepFileTokens
+	/** Keep file tokens in memory : this allows other libraries to avoid re-scanning file tokens */
+	public function keepFileTokens() : void
+	{
+		if (!isset($this->file_tokens)) {
+			$this->file_tokens = [];
+		}
 	}
 
 	//---------------------------------------------------------------------------------------- update

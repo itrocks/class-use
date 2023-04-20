@@ -13,6 +13,9 @@ trait Cache_Directory
 	/** Home directory, without right '/' */
 	protected string $home;
 
+	//---------------------------------------------------------------------------------- $home_length
+	protected int $home_length;
+
 	//--------------------------------------------------------------------------------------- $vendor
 	protected bool $vendor;
 
@@ -78,7 +81,8 @@ trait Cache_Directory
 	protected function setHome(string $home) : void
 	{
 		if ($home !== '') {
-			$this->home = realpath($home);
+			$this->home        = realpath($home);
+			$this->home_length = strlen($this->home);
 			return;
 		}
 		$home = str_replace('\\', '/', getcwd());
@@ -89,7 +93,8 @@ trait Cache_Directory
 		) {
 			$home = substr($home, 0, strrpos($home, '/'));
 		}
-		$this->home = $home;
+		$this->home        = $home;
+		$this->home_length = strlen($this->home);
 	}
 
 }

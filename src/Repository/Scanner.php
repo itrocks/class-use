@@ -41,7 +41,16 @@ trait Scanner
 	public function scanFile(string $file) : void
 	{
 		$this->files_count ++;
-		$tokens  = token_get_all($this->file_contents[$file] = file_get_contents($file));
+		if (isset($this->file_tokens)) {
+			$tokens = $this->file_tokens[substr($file, $this->home_length)] ?? null;
+			if (!isset($tokens)) {
+				$tokens = token_get_all(file_get_contents($file));
+				$this->file_tokens[substr($file, strlen($this->home))] = $tokens;
+			}
+		}
+		else {
+			$tokens = token_get_all(file_get_contents($file));
+		}
 		$scanner = new Tokens_Scanner();
 		$scanner->scan($tokens);
 		$this->references[$file] = $scanner->references;
