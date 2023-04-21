@@ -41,9 +41,8 @@ trait Classify
 		$this->by_use        = [];
 		$this->by_use_type   = [];
 
-		$home_length = strlen($this->home) + 1;
 		foreach ($this->references as $file_name => $references) {
-			$file_name = substr($file_name, $home_length);
+			$file_name = substr($file_name, $this->home_length);
 			if (!$this->reset) {
 				$this->loadAndFilter($file_name);
 			}
