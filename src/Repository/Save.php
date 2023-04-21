@@ -1,5 +1,5 @@
 <?php
-namespace ITRocks\Depend\Repository;
+namespace ITRocks\Class_Use\Repository;
 
 trait Save
 {
@@ -22,8 +22,9 @@ trait Save
 		$types     = Type::SAVE;
 
 		foreach ($types as $type) {
-			if (!is_dir("$directory/$type")) {
-				mkdir("$directory/$type");
+			$type_directory = str_replace('_', '-', $type);
+			if (!is_dir("$directory/$type_directory")) {
+				mkdir("$directory/$type_directory");
 			}
 			foreach ($this->{"by_$type"} as $name => $references) {
 				if ($name === '') {

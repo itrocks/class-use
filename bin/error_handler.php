@@ -1,5 +1,5 @@
 <?php
-namespace ITRocks\Depend;
+namespace ITRocks\Class_Use;
 
 //-------------------------------------------------------------------------------------- error_type
 function error_type(int $errno) : string

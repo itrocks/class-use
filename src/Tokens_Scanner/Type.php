@@ -1,5 +1,5 @@
 <?php
-namespace ITRocks\Depend\Tokens_Scanner;
+namespace ITRocks\Class_Use\Tokens_Scanner;
 
 abstract class Type
 {

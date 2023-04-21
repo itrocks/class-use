@@ -1,11 +1,11 @@
 {
 	"authors":  [{ "name": "Baptiste Pillot", "email": "baptiste@pillot.fr" }],
-	"autoload": { "psr-4": { "ITRocks\\Depend\\": "src/" } },
-	"description": "Gives your software the ability to get a quick answer to the 'Where and what for is this class used?' question",
-	"homepage":    "https://github.com/itrocks/depend",
+	"autoload": { "psr-4": { "ITRocks\\Class_Use\\": "src/" } },
+	"description": "Give your software the ability to get a quick answer to the 'Where and what for is this class used?' question",
+	"homepage":    "https://github.com/itrocks/class-use",
 	"license":     "LGPL-3.0-or-later",
 	"minimum-stability": "dev",
-	"name":    "itrocks/depend",
+	"name":    "itrocks/class-use",
 	"require": { "ext-json": "*", "php": ">=8.2" },
 	"type":    "library"
 }

@@ -1,12 +1,12 @@
 <?php
-namespace ITRocks\Depend;
+namespace ITRocks\Class_Use;
 
-use ITRocks\Depend\Repository\Cache_Directory;
-use ITRocks\Depend\Repository\Classify;
-use ITRocks\Depend\Repository\Counters;
-use ITRocks\Depend\Repository\Save;
-use ITRocks\Depend\Repository\Scanner;
-use ITRocks\Depend\Repository\Search;
+use ITRocks\Class_Use\Repository\Cache_Directory;
+use ITRocks\Class_Use\Repository\Classify;
+use ITRocks\Class_Use\Repository\Counters;
+use ITRocks\Class_Use\Repository\Save;
+use ITRocks\Class_Use\Repository\Scanner;
+use ITRocks\Class_Use\Repository\Search;
 
 class Repository
 {
@@ -15,34 +15,6 @@ class Repository
 	//----------------------------------------------------------------------------------------- FLAGS
 	public const RESET  = 2;
 	public const VENDOR = 1;
-
-	//------------------------------------------------------------------------------------- $by_class
-	/** int $line[string $class][string $dependency][string $type][string $file][int] */
-	protected array $by_class = [];
-
-	//-------------------------------------------------------------------------------- $by_class_type
-	/** int $line[string $class][string $type][string $dependency][string $file][int] */
-	protected array $by_class_type = [];
-
-	//-------------------------------------------------------------------------------- $by_dependency
-	/** int $line[string $dependency][string $class][string $type][string $file][int] */
-	protected array $by_dependency = [];
-
-	//--------------------------------------------------------------------------- $by_dependency_type
-	/** int $line[string $dependency][string $type][string $class][string $file][int] */
-	protected array $by_dependency_type = [];
-
-	//-------------------------------------------------------------------------------------- $by_file
-	/** string $reference[string $file_name][string $reference_type][int] */
-	protected array $by_file = [];
-
-	//-------------------------------------------------------------------------------- $by_type_class
-	/** int $line[string $type][string $class][string $dependency][string $file][int] */
-	protected array $by_type_class = [];
-
-	//--------------------------------------------------------------------------- $by_type_dependency
-	/** int $line[string $type][string $dependency][string $class][string $file][int] */
-	protected array $by_type_dependency = [];
 
 	//---------------------------------------------------------------------------------- $file_tokens
 	/**
@@ -59,7 +31,7 @@ class Repository
 	protected bool $pretty;
 
 	//----------------------------------------------------------------------------------- $references
-	/** @var (int|string)[][] [string $file][string $class, string $dependency, string $type, int $line] */
+	/** @var (int|string)[][] [string $file][string $class, string $use, string $type, int $line] */
 	protected array $references = [];
 
 	//-------------------------------------------------------------------------------- $refresh_files

@@ -1,7 +1,7 @@
 <?php
-namespace ITRocks\Depend;
+namespace ITRocks\Class_Use;
 
-use ITRocks\Depend\Tokens_Scanner\Type;
+use ITRocks\Class_Use\Tokens_Scanner\Type;
 
 class Tokens_Scanner
 {
@@ -50,11 +50,11 @@ class Tokens_Scanner
 	protected array $namespace_use = [];
 
 	//------------------------------------------------------------------------------ $next_references
-	/** [string $class, string $dependency, string $type, int $line] */
+	/** [string $class, string $use, string $type, int $line] */
 	public array $next_references = [];
 
 	//----------------------------------------------------------------------------------- $references
-	/** [string $class, string $dependency, string $type, int $line] */
+	/** [string $class, string $use, string $type, int $line] */
 	public array $references = [];
 
 	//--------------------------------------------------------------------------------- $square_depth
@@ -235,27 +235,20 @@ class Tokens_Scanner
 				break;
 
 			case T_PAAMAYIM_NEKUDOTAYIM:
-				$back = 0;
-				while (!in_array($token[0], self::MEMBER_TOKENS, true)) {
-					$back ++;
-					$token = next($tokens);
-				}
-				$type = ($token[0] === T_CLASS) ? Type::CLASS_ : Type::STATIC;
-				while ($back--) prev($tokens);
 				$token = prev($tokens);
 				while (!in_array($token[0], self::FULL_TOKENS, true)) $token = prev($tokens);
-				if (!is_array($token) && in_array($token, ['}', ')'])) {
-					// ignore dynamic class name before ::
-					next($tokens);
-					break;
-				}
+				$ignore_token = in_array($token, ['}', ')'], true);
 				if (in_array($token[1], self::RESERVED_CLASSES, true)) {
 					$token[0] = T_NAME_FULLY_QUALIFIED;
 					$token[1] = $this->class;
 				}
-				$this->reference($token, $type);
+				$member_token = $token;
 				while ($token[0] !== T_PAAMAYIM_NEKUDOTAYIM) $token = next($tokens);
-				if ($type === 'class') while ($token[0] !== T_CLASS) $token = next($tokens);
+				while (!in_array($token[0], self::MEMBER_TOKENS, true)) $token = next($tokens);
+				$type = ($token[0] === T_CLASS) ? Type::CLASS_ : Type::STATIC;
+				if (!$ignore_token) {
+					$this->reference($member_token, $type);
+				}
 				break;
 
 			case T_USE:

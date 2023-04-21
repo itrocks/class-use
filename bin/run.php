@@ -1,5 +1,5 @@
 <?php
-namespace ITRocks\Depend;
+namespace ITRocks\Class_Use;
 
 include __DIR__ . '/autoload.php';
 include __DIR__ . '/error_handler.php';

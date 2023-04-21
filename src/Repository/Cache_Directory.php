@@ -1,5 +1,5 @@
 <?php
-namespace ITRocks\Depend\Repository;
+namespace ITRocks\Class_Use\Repository;
 
 use Exception;
 
@@ -7,7 +7,7 @@ trait Cache_Directory
 {
 
 	//------------------------------------------------------------------------------- CACHE_DIRECTORY
-	const CACHE_DIRECTORY = '/cache/depend';
+	const CACHE_DIRECTORY = '/cache/class-use';
 
 	//----------------------------------------------------------------------------------------- $home
 	/** Home directory, without right '/' */
@@ -26,6 +26,7 @@ trait Cache_Directory
 		$file_name = str_replace(['/', '\\'], '-', $name);
 		$file_name = (str_ends_with($file_name, '.php') ? substr($file_name, 0, -4) : $file_name)
 			. '.json';
+		$type = str_replace('_', '-', $type);
 		return ($type === '') ? "$directory/$file_name" : "$directory/$type/$file_name";
 	}
 

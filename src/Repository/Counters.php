@@ -1,5 +1,5 @@
 <?php
-namespace ITRocks\Depend\Repository;
+namespace ITRocks\Class_Use\Repository;
 
 trait Counters
 {

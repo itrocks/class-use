@@ -1,7 +1,7 @@
 <?php
-namespace ITRocks\Depend\Repository;
+namespace ITRocks\Class_Use\Repository;
 
-use ITRocks\Depend\Tokens_Scanner;
+use ITRocks\Class_Use\Tokens_Scanner;
 
 trait Scanner
 {

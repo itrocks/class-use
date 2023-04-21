@@ -1,7 +1,7 @@
 <?php
-namespace ITRocks\Depend;
+namespace ITRocks\Class_Use;
 
-use ITRocks\Depend\Repository\Type;
+use ITRocks\Class_Use\Repository\Type;
 
 class Console
 {
@@ -32,13 +32,13 @@ class Console
 	public function quickDocumentation() : string
 	{
 		return join("\n", [
-			'Scan your PHP project for class uses / internal dependencies',
+			'Scan your PHP project for class uses',
 			'',
 			'usage to calculate cache : ./run [reset] [vendor] [pretty]',
-			'- reset  : purge dependency cache and calculate it from scratch',
-			'- vendor : include dependencies from the vendor source code directory',
+			'- reset  : purge class use cache and calculate it from scratch',
+			'- vendor : scan class uses into the vendor source code directory too',
 			'- pretty : updated cache files use json pretty print to be human-readable',
-			'usage to get dependency info : ./run [type] [name]',
+			'usage to get class use info : ./run [class=<class>] [file=<file>] [type=<type>] [use=<class>]',
 			''
 		]);
 	}

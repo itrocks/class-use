@@ -1,17 +1,45 @@
 <?php
-namespace ITRocks\Depend\Repository;
+namespace ITRocks\Class_Use\Repository;
 
 trait Classify
 {
 
+	//------------------------------------------------------------------------------------- $by_class
+	/** int $line[string $class][string $use][string $type][string $file][int] */
+	protected array $by_class = [];
+
+	//-------------------------------------------------------------------------------- $by_class_type
+	/** int $line[string $class][string $type][string $use][string $file][int] */
+	protected array $by_class_type = [];
+
+	//-------------------------------------------------------------------------------------- $by_file
+	/** string $reference[string $file_name][string $reference_type][int] */
+	protected array $by_file = [];
+
+	//-------------------------------------------------------------------------------- $by_type_class
+	/** int $line[string $type][string $class][string $use][string $file][int] */
+	protected array $by_type_class = [];
+
+	//---------------------------------------------------------------------------------- $by_type_use
+	/** int $line[string $type][string $use][string $class][string $file][int] */
+	protected array $by_type_use = [];
+
+	//--------------------------------------------------------------------------------------- $by_use
+	/** int $line[string $use][string $class][string $type][string $file][int] */
+	protected array $by_use = [];
+
+	//---------------------------------------------------------------------------------- $by_use_type
+	/** int $line[string $use][string $type][string $class][string $file][int] */
+	protected array $by_use_type = [];
+
 	//-------------------------------------------------------------------------------------- classify
 	public function classify() : void
 	{
-		$this->by_file            = [];
-		$this->by_class           = [];
-		$this->by_class_type      = [];
-		$this->by_dependency      = [];
-		$this->by_dependency_type = [];
+		$this->by_file       = [];
+		$this->by_class      = [];
+		$this->by_class_type = [];
+		$this->by_use        = [];
+		$this->by_use_type   = [];
 
 		$home_length = strlen($this->home) + 1;
 		foreach ($this->references as $file_name => $references) {
@@ -23,20 +51,20 @@ trait Classify
 				$this->by_file[$file_name] = [];
 			}
 			foreach ($references as $reference) {
-				[$class, $dependency, $type, $line] = $reference;
+				[$class, $use, $type, $line] = $reference;
 				if ($class !== '') {
 					$this->by_file[$file_name][Type::CLASS_][$class] = true;
-					$this->by_class      [$class][$dependency][$type][$file_name][] = $line;
-					$this->by_class_type [$class][$type][$dependency][$file_name][] = $line;
+					$this->by_class      [$class][$use][$type][$file_name][] = $line;
+					$this->by_class_type [$class][$type][$use][$file_name][] = $line;
 				}
-				if ($dependency !== '') {
-					$this->by_file[$file_name][Type::DEPENDENCY][$dependency] = true;
-					$this->by_dependency      [$dependency][$class][$type][$file_name][] = $line;
-					$this->by_dependency_type [$dependency][$type][$class][$file_name][] = $line;
+				if ($use !== '') {
+					$this->by_file[$file_name][Type::USE][$use] = true;
+					$this->by_use      [$use][$class][$type][$file_name][] = $line;
+					$this->by_use_type [$use][$type][$class][$file_name][] = $line;
 				}
 				$this->by_file[$file_name][Type::TYPE][$type] = true;
-				$this->by_type_class      [$type][$class][$dependency][$file_name][] = $line;
-				$this->by_type_dependency [$type][$dependency][$class][$file_name][] = $line;
+				$this->by_type_class [$type][$class][$use][$file_name][] = $line;
+				$this->by_type_use   [$type][$use][$class][$file_name][] = $line;
 			}
 			foreach ($this->by_file[$file_name] as &$values) {
 				$values = array_keys($values);

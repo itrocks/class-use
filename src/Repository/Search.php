@@ -1,5 +1,5 @@
 <?php
-namespace ITRocks\Depend\Repository;
+namespace ITRocks\Class_Use\Repository;
 
 trait Search
 {
@@ -13,30 +13,30 @@ trait Search
 			$type = Type::CLASS_;
 			if (isset($search[Type::TYPE])) {
 				$cache   = 'by_class_type';
-				$tree    = [Type::CLASS_ => 0, Type::TYPE => 1, Type::DEPENDENCY => 2];
+				$tree    = [Type::CLASS_ => 0, Type::TYPE => 1, Type::USE => 2];
 				$search1 = $search[Type::TYPE];
-				if (isset($search[Type::DEPENDENCY])) {
-					$search2 = $search[Type::DEPENDENCY];
+				if (isset($search[Type::USE])) {
+					$search2 = $search[Type::USE];
 				}
 			}
 			else {
 				$cache = 'by_class';
-				$tree  = [Type::CLASS_ => 0, Type::DEPENDENCY => 1, Type::TYPE => 2];
+				$tree  = [Type::CLASS_ => 0, Type::USE => 1, Type::TYPE => 2];
 			}
 		}
-		elseif (isset($search[Type::DEPENDENCY])) {
-			$type  = Type::DEPENDENCY;
+		elseif (isset($search[Type::USE])) {
+			$type  = Type::USE;
 			if (isset($search[Type::TYPE])) {
-				$cache   = 'by_dependency_type';
-				$tree    = [Type::DEPENDENCY => 0, Type::TYPE => 1, Type::CLASS_ => 2];
+				$cache   = 'by_use_type';
+				$tree    = [Type::USE => 0, Type::TYPE => 1, Type::CLASS_ => 2];
 				$search1 = $search[Type::TYPE];
 				if (isset($search[Type::CLASS_])) {
 					$search2 = $search[Type::CLASS_];
 				}
 			}
 			else {
-				$cache = 'by_dependency';
-				$tree  = [Type::DEPENDENCY => 0, Type::CLASS_ => 1, Type::TYPE => 2];
+				$cache = 'by_use';
+				$tree  = [Type::USE => 0, Type::CLASS_ => 1, Type::TYPE => 2];
 			}
 		}
 		else {
@@ -71,7 +71,7 @@ trait Search
 					foreach ($lines as $line) {
 						$references[] = [
 							$names[$tree[Type::CLASS_]],
-							$names[$tree[Type::DEPENDENCY]],
+							$names[$tree[Type::USE]],
 							$names[$tree[Type::TYPE]],
 							$file,
 							$line
