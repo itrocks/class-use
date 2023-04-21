@@ -19,11 +19,11 @@ $repository->save();
 echo "\nThese are all references into the " . Repository::class . " class :\n";
 $found = $repository->search([Type::CLASS_ => Repository::class]);
 foreach ($found as $key => $use) {
-	[, $use, $type, $file, $line] = $use;
+	[, $use, $type, $file, $line, $token_key] = $use;
 	if (!$key) {
 		echo "    the class is into file $file\n";
 	}
-	echo "#$key. line $line refers to $type $use\n";
+	echo "#$key. token $token_key line $line refers to $type $use\n";
 }
 
 //=================================================================================================
@@ -32,10 +32,10 @@ foreach ($found as $key => $use) {
 echo "\nThese are all use references to the " . Repository::class . " class :\n";
 $found = $repository->search([Type::USE => Repository::class]);
 foreach ($found as $key => $use) {
-	[$class,, $type, $file, $line] = $use;
+	[$class,, $type, $file, $line, $token_key] = $use;
 	echo "#$key. $type into $file";
 	if ($class) echo " class $class";
-	echo " line $line";
+	echo " token $token_key line $line";
 	echo "\n";
 }
 
@@ -46,10 +46,10 @@ $type  = 'new';
 echo "\nThese are all the $type references to the $class class :\n";
 $found = $repository->search([Type::USE => Repository::class, Type::TYPE => $type]);
 foreach ($found as $key => $use) {
-	[$class,,, $file, $line] = $use;
+	[$class,,, $file, $line, $token_key] = $use;
 	echo "#$key. into $file";
 	if ($class) echo " class $class";
-	echo " line $line";
+	echo " token $token_key line $line";
 	echo "\n";
 }
 
@@ -65,10 +65,10 @@ $found = $repository->search([
 	Type::TYPE       => $type
 ]);
 foreach ($found as $key => $use) {
-	[$class,,,, $line] = $use;
+	[$class,,,, $line, $token_key] = $use;
 	echo "#$key. in";
 	if ($class) echo " class $class";
-	echo " line $line";
+	echo " token $token_key line $line";
 	echo "\n";
 }
 

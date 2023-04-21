@@ -136,12 +136,12 @@ class Console
 	}
 
 	//---------------------------------------------------------------------------------- showDuration
-	protected function showDuration(float $duration) : string
+	protected function showDuration(float $duration, $decimals = 3) : string
 	{
 		if ($duration < .1) {
-			return round($duration * 1000, 3) . ' ms';
+			return round($duration * 1000, $decimals) . ' ms';
 		}
-		return round($duration, 3) . ' seconds';
+		return round($duration, $decimals) . ' seconds';
 	}
 
 }

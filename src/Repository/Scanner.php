@@ -6,6 +6,9 @@ use ITRocks\Class_Use\Tokens_Scanner;
 trait Scanner
 {
 
+	//------------------------------------------------------------------------------- $tokens_scanner
+	public Tokens_Scanner $tokens_scanner;
+
 	//--------------------------------------------------------------------------------- scanDirectory
 	public function scanDirectory(string $directory = '', int $depth = 0) : void
 	{
@@ -50,10 +53,9 @@ trait Scanner
 		else {
 			$tokens = token_get_all(file_get_contents($file));
 		}
-		$scanner = new Tokens_Scanner();
-		$scanner->scan($tokens);
-		$this->references[$file] = $scanner->references;
-		$this->references_count += count($scanner->references);
+		$this->tokens_scanner->scan($tokens);
+		$this->references[$file] = $this->tokens_scanner->references;
+		$this->references_count += count($this->tokens_scanner->references);
 	}
 
 }

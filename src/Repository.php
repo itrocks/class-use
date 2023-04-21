@@ -43,10 +43,11 @@ class Repository
 	//----------------------------------------------------------------------------------- __construct
 	public function __construct(int $flags = 0, string $home = '')
 	{
-		$this->pretty     = $flags & self::PRETTY;
-		$this->reset      = $flags & self::RESET;
-		$this->start_time = time();
-		$this->vendor     = $flags & self::VENDOR;
+		$this->pretty         = $flags & self::PRETTY;
+		$this->reset          = $flags & self::RESET;
+		$this->start_time     = time();
+		$this->tokens_scanner = new Tokens_Scanner;
+		$this->vendor         = $flags & self::VENDOR;
 		$this->setHome($home);
 		$this->prepareHome();
 	}

@@ -68,13 +68,14 @@ trait Search
 					$array2 = [$search3 => $array2[$search3] ?? []];
 				}
 				foreach ($array2 as $file => $lines) {
-					foreach ($lines as $line) {
+					foreach ($lines as $token_key => $line) {
 						$references[] = [
 							$names[$tree[Type::CLASS_]],
 							$names[$tree[Type::USE]],
 							$names[$tree[Type::TYPE]],
 							$file,
-							$line
+							$line,
+							$token_key
 						];
 					}
 				}

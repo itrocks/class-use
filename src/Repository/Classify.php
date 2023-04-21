@@ -50,20 +50,20 @@ trait Classify
 				$this->by_file[$file_name] = [];
 			}
 			foreach ($references as $reference) {
-				[$class, $use, $type, $line] = $reference;
+				[$class, $use, $type, $line, $token_key] = $reference;
 				if ($class !== '') {
 					$this->by_file[$file_name][Type::CLASS_][$class] = true;
-					$this->by_class      [$class][$use][$type][$file_name][] = $line;
-					$this->by_class_type [$class][$type][$use][$file_name][] = $line;
+					$this->by_class      [$class][$use][$type][$file_name][$token_key] = $line;
+					$this->by_class_type [$class][$type][$use][$file_name][$token_key] = $line;
 				}
 				if ($use !== '') {
 					$this->by_file[$file_name][Type::USE][$use] = true;
-					$this->by_use      [$use][$class][$type][$file_name][] = $line;
-					$this->by_use_type [$use][$type][$class][$file_name][] = $line;
+					$this->by_use      [$use][$class][$type][$file_name][$token_key] = $line;
+					$this->by_use_type [$use][$type][$class][$file_name][$token_key] = $line;
 				}
 				$this->by_file[$file_name][Type::TYPE][$type] = true;
-				$this->by_type_class [$type][$class][$use][$file_name][] = $line;
-				$this->by_type_use   [$type][$use][$class][$file_name][] = $line;
+				$this->by_type_class [$type][$class][$use][$file_name][$token_key] = $line;
+				$this->by_type_use   [$type][$use][$class][$file_name][$token_key] = $line;
 			}
 			foreach ($this->by_file[$file_name] as &$values) {
 				$values = array_keys($values);

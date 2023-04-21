@@ -141,10 +141,10 @@ from the current working directory.
 echo "These are where the Repository class is used:\n";
 $repository = new Repository();
 foreach ($repository->search([Type::USE => Repository::class]) as $reference) {
-  [$class, $use, $type, $file, $line] = $reference;
+  [$class, $use, $type, $file, $line, $token_key] = $reference;
 	echo "#$key. $type into $file";
 	if ($class) echo " class $class";
-	echo " line $line";
+	echo " token $token_key line $line";
 	echo "\n";
 }
 ```
