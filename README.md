@@ -2,7 +2,7 @@ PHP class use scanner
 ---------------------
 
 This library gives your software the ability to get a quick answer to the
-**"Where and what for is this class used ?"** question.
+**"Where and what is this class used for?"** question.
 
 It offers a programming API and command lines to scan your PHP project for class
 references, store them into an indexed class use cache into your filesystem,
