@@ -83,7 +83,7 @@ trait Cache_Directory
 	{
 		if ($home !== '') {
 			$this->home        = realpath($home);
-			$this->home_length = strlen($this->home);
+			$this->home_length = strlen($this->home) + 1;
 			return;
 		}
 		$home = str_replace('\\', '/', getcwd());
@@ -95,7 +95,7 @@ trait Cache_Directory
 			$home = substr($home, 0, strrpos($home, '/'));
 		}
 		$this->home        = $home;
-		$this->home_length = strlen($this->home);
+		$this->home_length = strlen($this->home) + 1;
 	}
 
 }

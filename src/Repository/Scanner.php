@@ -9,7 +9,6 @@ trait Scanner
 	//--------------------------------------------------------------------------------- scanDirectory
 	public function scanDirectory(string $directory = '', int $depth = 0) : void
 	{
-		$home_length = strlen($this->home) + 1;
 		if ($directory === '') {
 			$directory = $this->home;
 		}
@@ -23,6 +22,7 @@ trait Scanner
 				$this->scanDirectory($file, $depth + 1);
 			}
 			elseif (str_ends_with($file, '.php')) {
+				$home_length   = $this->home_length;
 				$this->files[] = substr($file, $home_length);
 				if (
 					$this->reset
@@ -30,7 +30,6 @@ trait Scanner
 					|| (filemtime($file) > filemtime($cache_file))
 					|| str_contains($file, 'repository/Repository')
 				) {
-					$this->refresh_files[] = substr($file, $home_length);
 					$this->scanFile($file);
 				}
 			}

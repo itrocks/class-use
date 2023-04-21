@@ -34,10 +34,6 @@ class Repository
 	/** @var (int|string)[][] [string $file][string $class, string $use, string $type, int $line] */
 	protected array $references = [];
 
-	//-------------------------------------------------------------------------------- $refresh_files
-	/** @var string[] */
-	public array $refresh_files = [];
-
 	//---------------------------------------------------------------------------------------- $reset
 	protected bool $reset;
 
