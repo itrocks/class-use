@@ -155,14 +155,14 @@ class Tokens_Scanner
 				do $token = next($tokens); while (!in_array($token[0], self::CLASS_TOKENS, true));
 				/** @noinspection PhpFieldAssignmentTypeMismatchInspection $token is an array here */
 				$this->parent_token = $token;
-				$this->reference(T_EXTENDS, $token, key($tokens));
+				$this->reference(Type::EXTENDS, $token, key($tokens));
 				continue 2;
 
 			case T_IMPLEMENTS:
 				do {
 					$token = next($tokens);
 					if (in_array($token[0], self::CLASS_TOKENS, true)) {
-						$this->reference(T_IMPLEMENTS, $token, key($tokens));
+						$this->reference(Type::IMPLEMENTS, $token, key($tokens));
 					}
 				} while ($token[0] !== '{');
 				$this->curly_depth ++;
@@ -171,14 +171,14 @@ class Tokens_Scanner
 			case T_INTERFACE:
 				$this->class_depths[] = $this->curly_depth;
 				do $token = next($tokens); while ($token[0] !== T_STRING);
-				$this->class = $this->reference(T_INTERFACE, $token, key($tokens));
+				$this->class = $this->reference(Type::DECLARE_INTERFACE, $token, key($tokens));
 				if ($this->next_references) $this->appendNextReferences();
 				continue 2;
 
 			case T_TRAIT:
 				$this->class_depths[] = $this->curly_depth;
 				do $token = next($tokens); while ($token[0] !== T_STRING);
-				$this->class = $this->reference(T_TRAIT, $token, key($tokens));
+				$this->class = $this->reference(Type::DECLARE_TRAIT, $token, key($tokens));
 				if ($this->next_references) $this->appendNextReferences();
 				continue 2;
 
