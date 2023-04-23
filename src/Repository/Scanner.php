@@ -46,7 +46,7 @@ trait Scanner
 		if (isset($this->file_tokens)) {
 			$tokens = $this->file_tokens[substr($file, $this->home_length)] ?? null;
 			if (!isset($tokens)) {
-				$tokens = token_get_all(file_get_contents($file));
+				$tokens = token_get_all(file_get_contents($file), TOKEN_PARSE);
 				$this->file_tokens[substr($file, $this->home_length)] = $tokens;
 			}
 		}
