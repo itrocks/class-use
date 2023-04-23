@@ -55,7 +55,7 @@ class Tokens_Scanner
 	public array $next_references;
 
 	//--------------------------------------------------------------------------------- $parent_token
-	public array $parent_token;
+	public array $parent_token = [];
 
 	//----------------------------------------------------------------------------------- $references
 	/** [string $class, string $use, string $type, int $line, int $token_key] */
@@ -100,7 +100,8 @@ class Tokens_Scanner
 				$this->curly_depth --;
 				if ($this->curly_depth === end($this->class_depths)) {
 					array_pop($this->class_depths);
-					$this->class = '';
+					$this->class        = '';
+					$this->parent_token = [];
 					continue 2;
 				}
 				if ($this->curly_depth === $this->namespace_depth) {
@@ -268,14 +269,21 @@ class Tokens_Scanner
 				$type  = ($token[0] === T_CLASS) ? Type::CLASS_ : Type::STATIC;
 				$token = $tokens[$token_key];
 				if ($token[1] === self::PARENT) {
-					$token[0] = $this->parent_token[0];
-					$token[1] = $this->parent_token[1];
+					if ($this->parent_token) {
+						$token[0] = $this->parent_token[0];
+						$token[1] = $this->parent_token[1];
+					}
+					else {
+						$token = [];
+					}
 				}
 				elseif (in_array($token[1], [self::SELF, self::STATIC], true)) {
 					$token[0] = T_NAME_FULLY_QUALIFIED;
 					$token[1] = $this->class;
 				}
-				$this->reference($type, $token, $token_key);
+				if ($token) {
+					$this->reference($type, $token, $token_key);
+				}
 				continue 2;
 
 			case T_USE:
