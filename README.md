@@ -1,7 +1,7 @@
 PHP class use scanner 
 ---------------------
 
-This library gives your software the ability to get a quick answer to the
+This it.rocks library gives your software the ability to get a quick answer to the
 **"Where and what is this class used for?"** question.
 
 It offers a programming API and command lines to scan your PHP project for class
@@ -135,7 +135,7 @@ The constructor of `Repository` has a second argument, `$home`, to force the dir
 scan classes and save class use cache from. If not set, this will scan your project files, found
 from the current working directory.
 
-### Search for occurences
+### Search for occurrences
 
 ```php
 echo "These are where the Repository class is used:\n";

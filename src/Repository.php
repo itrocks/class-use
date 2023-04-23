@@ -24,7 +24,7 @@ class Repository
 	public array $file_tokens;
 
 	//---------------------------------------------------------------------------------------- $files
-	/** @var string[] string $file_name[int] */
+	/** @var string[] string $file_name[] */
 	protected array $files = [];
 
 	//--------------------------------------------------------------------------------------- $pretty
