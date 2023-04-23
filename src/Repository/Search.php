@@ -14,35 +14,37 @@ trait Search
 	public function search(array $search, bool $associative = false) : array
 	{
 		$search1 = $search2 = null;
-		if (isset($search[Type::CLASS_])) {
-			$type = Type::CLASS_;
-			if (isset($search[Type::TYPE])) {
-				$cache   = 'by_class_type';
-				$tree    = [Type::CLASS_ => 0, Type::TYPE => 1, Type::USE => 2];
-				$search1 = $search[Type::TYPE];
+		if (isset($search[Type::TYPE])) {
+			$type = Type::TYPE;
+			if (isset($search[Type::USE])) {
+				$cache   = 'by_type_use';
+				$tree    = [Type::TYPE => 0, Type::USE => 1, Type::CLASS_ => 2];
+				$search1 = $search[Type::USE];
+				if (isset($search[Type::CLASS_])) {
+					$search2 = $search[Type::CLASS_];
+				}
+			}
+			elseif (isset($search[Type::CLASS_])) {
+				$cache   = 'by_type_class';
+				$tree    = [Type::TYPE => 0, Type::CLASS_ => 1, Type::USE => 2];
+				$search1 = $search[Type::CLASS_];
 				if (isset($search[Type::USE])) {
 					$search2 = $search[Type::USE];
 				}
 			}
 			else {
-				$cache = 'by_class';
-				$tree  = [Type::CLASS_ => 0, Type::USE => 1, Type::TYPE => 2];
+				trigger_error('Missing class/use search criterion', E_USER_ERROR);
 			}
 		}
+		elseif (isset($search[Type::CLASS_])) {
+			$type = Type::CLASS_;
+			$cache = 'by_class';
+			$tree  = [Type::CLASS_ => 0, Type::USE => 1, Type::TYPE => 2];
+		}
 		elseif (isset($search[Type::USE])) {
-			$type  = Type::USE;
-			if (isset($search[Type::TYPE])) {
-				$cache   = 'by_use_type';
-				$tree    = [Type::USE => 0, Type::TYPE => 1, Type::CLASS_ => 2];
-				$search1 = $search[Type::TYPE];
-				if (isset($search[Type::CLASS_])) {
-					$search2 = $search[Type::CLASS_];
-				}
-			}
-			else {
-				$cache = 'by_use';
-				$tree  = [Type::USE => 0, Type::CLASS_ => 1, Type::TYPE => 2];
-			}
+			$type = Type::USE;
+			$cache = 'by_use';
+			$tree  = [Type::USE => 0, Type::CLASS_ => 1, Type::TYPE => 2];
 		}
 		else {
 			return [];
