@@ -8,6 +8,8 @@ abstract class Type
 	const CLASS_     = 'class';
 	const CLASS_TYPE = 'class_type';
 	const FILE       = 'file';
+	const LINE       = 'line';
+	const TOKEN_KEY  = 'token_key';
 	const TYPE       = 'type';
 	const TYPE_CLASS = 'type_class';
 	const TYPE_USE   = 'type_use';

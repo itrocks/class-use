@@ -5,7 +5,11 @@ trait Search
 {
 
 	//---------------------------------------------------------------------------------------- search
-	/** @var $search string[] [string $type => string $value] */
+	/**
+	 * @param $search string[] string $value[string $type]
+	 * @return (int|string)[][]
+	 *         [][string $class, string $use, string $type, string $file, int $line, int $token]
+	 */
 	public function search(array $search) : array
 	{
 		$search1 = $search2 = null;
@@ -70,12 +74,12 @@ trait Search
 				foreach ($array2 as $file => $lines) {
 					foreach ($lines as $token_key => $line) {
 						$references[] = [
-							$names[$tree[Type::CLASS_]],
-							$names[$tree[Type::USE]],
-							$names[$tree[Type::TYPE]],
-							$file,
-							$line,
-							$token_key
+							Type::CLASS_    => $names[$tree[Type::CLASS_]],
+							Type::USE       => $names[$tree[Type::USE]],
+							Type::TYPE      => $names[$tree[Type::TYPE]],
+							Type::FILE      => $file,
+							Type::LINE      => $line,
+							Type::TOKEN_KEY => $token_key
 						];
 					}
 				}
