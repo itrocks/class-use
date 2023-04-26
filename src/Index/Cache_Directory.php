@@ -1,7 +1,8 @@
 <?php
-namespace ITRocks\Class_Use\Repository;
+namespace ITRocks\Class_Use\Index;
 
 use Exception;
+use ITRocks\Class_Use\Token\Name;
 
 trait Cache_Directory
 {
@@ -20,14 +21,15 @@ trait Cache_Directory
 	protected bool $vendor;
 
 	//--------------------------------------------------------------------------------- cacheFileName
-	protected function cacheFileName(string $name, string $type = '') : string
+	protected function cacheFileName(string $name, int $type = null) : string
 	{
 		$directory = $this->getCacheDirectory();
 		$file_name = str_replace(['/', '\\'], '-', $name);
 		$file_name = (str_ends_with($file_name, '.php') ? substr($file_name, 0, -4) : $file_name)
 			. '.json';
-		$type = str_replace('_', '-', $type);
-		return ($type === '') ? "$directory/$file_name" : "$directory/$type/$file_name";
+		return isset($type)
+			? ($directory . '/' . Name::OF[$type] . '/' . $file_name)
+			: ($directory . '/' . $file_name);
 	}
 
 	//----------------------------------------------------------------------------- getCacheDirectory

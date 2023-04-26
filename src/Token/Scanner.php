@@ -1,9 +1,7 @@
 <?php
-namespace ITRocks\Class_Use;
+namespace ITRocks\Class_Use\Token;
 
-use ITRocks\Class_Use\Tokens_Scanner\Type;
-
-class Tokens_Scanner
+class Scanner
 {
 
 	//----------------------------------------------------------------------------- TESTED VALUE SETS
@@ -51,14 +49,14 @@ class Tokens_Scanner
 	protected array $namespace_use;
 
 	//------------------------------------------------------------------------------ $next_references
-	/** [string $class, string $use, string $type, int $line, int $token_key] */
+	/** [string $class, string $use, int $type, int $line, int $token_key] */
 	public array $next_references;
 
 	//--------------------------------------------------------------------------------- $parent_token
 	public array $parent_token = [];
 
 	//----------------------------------------------------------------------------------- $references
-	/** [string $class, string $use, string $type, int $line, int $token_key] */
+	/** [string $class, string $use, int $type, int $line, int $token_key] */
 	public array $references;
 
 	//--------------------------------------------------------------------------------- $square_depth
@@ -134,7 +132,7 @@ class Tokens_Scanner
 				$this->class_depths[] = $this->curly_depth;
 				do $token = next($tokens); while (!in_array($token[0], self::CLASS_NAME_END, true));
 				if ($token[0] === T_STRING) {
-					$this->class = $this->reference(Type::DECLARE_CLASS, $token, key($tokens));
+					$this->class = $this->reference(T_DECLARE_CLASS, $token, key($tokens));
 				}
 				else {
 					prev($tokens);
@@ -155,14 +153,14 @@ class Tokens_Scanner
 				do $token = next($tokens); while (!in_array($token[0], self::CLASS_TOKENS, true));
 				/** @noinspection PhpFieldAssignmentTypeMismatchInspection $token is an array here */
 				$this->parent_token = $token;
-				$this->reference(Type::EXTENDS, $token, key($tokens));
+				$this->reference(T_EXTENDS, $token, key($tokens));
 				continue 2;
 
 			case T_IMPLEMENTS:
 				do {
 					$token = next($tokens);
 					if (in_array($token[0], self::CLASS_TOKENS, true)) {
-						$this->reference(Type::IMPLEMENTS, $token, key($tokens));
+						$this->reference(T_IMPLEMENTS, $token, key($tokens));
 					}
 				} while ($token[0] !== '{');
 				$this->curly_depth ++;
@@ -171,14 +169,14 @@ class Tokens_Scanner
 			case T_INTERFACE:
 				$this->class_depths[] = $this->curly_depth;
 				do $token = next($tokens); while ($token[0] !== T_STRING);
-				$this->class = $this->reference(Type::DECLARE_INTERFACE, $token, key($tokens));
+				$this->class = $this->reference(T_DECLARE_INTERFACE, $token, key($tokens));
 				if ($this->next_references) $this->appendNextReferences();
 				continue 2;
 
 			case T_TRAIT:
 				$this->class_depths[] = $this->curly_depth;
 				do $token = next($tokens); while ($token[0] !== T_STRING);
-				$this->class = $this->reference(Type::DECLARE_TRAIT, $token, key($tokens));
+				$this->class = $this->reference(T_DECLARE_TRAIT, $token, key($tokens));
 				if ($this->next_references) $this->appendNextReferences();
 				continue 2;
 
@@ -190,7 +188,7 @@ class Tokens_Scanner
 						in_array($token[0], self::CLASS_TOKENS, true)
 						&& !in_array($token[1], self::BASIC_TYPES, true)
 					) {
-						$this->reference(Type::ARGUMENT, $token, key($tokens));
+						$this->reference(T_ARGUMENT, $token, key($tokens));
 						$token = next($tokens);
 					}
 					if ($token[0] !== T_VARIABLE) {
@@ -207,7 +205,7 @@ class Tokens_Scanner
 						in_array($token[0], self::CLASS_TOKENS, true)
 						&& !in_array($token[1], self::BASIC_TYPES, true)
 					) {
-						$this->reference(Type::RETURN, $token, key($tokens));
+						$this->reference(T_RETURN, $token, key($tokens));
 					}
 					$token = next($tokens);
 				}
@@ -217,9 +215,11 @@ class Tokens_Scanner
 				continue 2;
 
 			case T_INSTANCEOF:
+			case T_NEW:
+				$type = $token[0];
 				do $token = next($tokens); while (in_array($token[0], self::IGNORE, true));
 				if (in_array($token[0], self::CLASS_TOKENS, true)) {
-					$this->reference(Type::INSTANCE_OF, $token, key($tokens));
+					$this->reference($type, $token, key($tokens));
 				}
 				elseif (is_string($token) && str_contains('{([])}', $token)) {
 					prev($tokens);
@@ -231,30 +231,18 @@ class Tokens_Scanner
 			case T_STRING:
 				if ($this->attribute_bracket_depth === $this->bracket_depth) {
 					$this->attribute = '';
-					$this->attribute = $this->reference(Type::ATTRIBUTE, $token, key($tokens));
+					$this->attribute = $this->reference(T_ATTRIBUTE, $token, key($tokens));
 				}
 				continue 2;
 
 			case T_NAMESPACE:
 				do $token = next($tokens); while (in_array($token[0], self::IGNORE, true));
-				$this->reference(
-					Type::NAMESPACE, [T_NAME_FULLY_QUALIFIED, $token[1], $token[2]], key($tokens)
-				);
+				$this->reference(T_NAMESPACE, [T_NAME_FULLY_QUALIFIED, $token[1], $token[2]], key($tokens));
 				$this->namespace = $token[1];
 				do $token = next($tokens); while (is_array($token) || !str_contains(';{', $token));
 				if ($token === '{') {
 					$this->namespace_depth = $this->curly_depth;
 					$this->curly_depth ++;
-				}
-				continue 2;
-
-			case T_NEW:
-				do $token = next($tokens); while (in_array($token[0], self::IGNORE, true));
-				if (in_array($token[0], self::CLASS_TOKENS, true)) {
-					$this->reference(Type::NEW, $token, key($tokens));
-				}
-				elseif (is_string($token) && str_contains('{([])}', $token)) {
-					prev($tokens);
 				}
 				continue 2;
 
@@ -266,7 +254,7 @@ class Tokens_Scanner
 				if (!isset($token_key)) {
 					continue 2;
 				}
-				$type  = ($token[0] === T_CLASS) ? Type::CLASS_ : Type::STATIC;
+				$type  = ($token[0] === T_CLASS) ? T_CLASS : T_STATIC;
 				$token = $tokens[$token_key];
 				if ($token[1] === self::PARENT) {
 					if ($this->parent_token) {
@@ -291,7 +279,7 @@ class Tokens_Scanner
 				if ($this->class_depths) {
 					do {
 						do $token = next($tokens); while (!in_array($token[0], self::CLASS_TOKENS, true));
-						$this->reference(Type::USE, $token, key($tokens));
+						$this->reference(T_USE, $token, key($tokens));
 						$depth = 0;
 						do {
 							$token = next($tokens);
@@ -304,7 +292,7 @@ class Tokens_Scanner
 									break;
 								case T_PAAMAYIM_NEKUDOTAYIM:
 									do $token = prev($tokens); while (!in_array($token[0], self::CLASS_TOKENS, true));
-									$this->reference(Type::STATIC, $token, key($tokens));
+									$this->reference(T_STATIC, $token, key($tokens));
 									do $token = next($tokens); while ($token[0] !== T_PAAMAYIM_NEKUDOTAYIM);
 							}
 						} while ($depth || is_array($token) || !str_contains(',;}', $token));
@@ -317,7 +305,7 @@ class Tokens_Scanner
 					do $token = next($tokens); while (!in_array($token[0], self::CLASS_TOKENS, true));
 					$use = ltrim($token[1], '\\');
 					$this->reference(
-						Type::NAMESPACE_USE, [T_NAME_FULLY_QUALIFIED, $token[1], $token[2]], key($tokens)
+						T_NAMESPACE_USE, [T_NAME_FULLY_QUALIFIED, $token[1], $token[2]], key($tokens)
 					);
 					while ($token = next($tokens)) switch ($token[0]) {
 						case T_AS:
@@ -346,7 +334,7 @@ class Tokens_Scanner
 					in_array($token[0], self::CLASS_TOKENS, true)
 					&& !in_array($token[1], self::BASIC_TYPES, true)
 				) {
-					$this->reference(Type::VAR, $token, key($tokens));
+					$this->reference(T_VAR, $token, key($tokens));
 					continue 2;
 				}
 				$doc_comment = '';
@@ -378,7 +366,7 @@ class Tokens_Scanner
 						if     (str_starts_with($token[1], '\\')) $token[0] = T_NAME_FULLY_QUALIFIED;
 						elseif (str_contains($token[1], '\\'))    $token[0] = T_NAME_QUALIFIED;
 						else                                      $token[0] = T_STRING;
-						$this->reference(Type::VAR, $token, key($tokens));
+						$this->reference(T_VAR, $token, key($tokens));
 					} while (str_contains("|&", $doc_comment[$stop]));
 				}
 				while ($back--) next($tokens);
@@ -386,7 +374,7 @@ class Tokens_Scanner
 	}
 
 	//------------------------------------------------------------------------------------- reference
-	protected function reference(string $type, array|string $token, int $token_key) : string
+	protected function reference(int $type, array|string $token, int $token_key) : string
 	{
 		switch ($token[0]) {
 			case T_NAME_FULLY_QUALIFIED:
@@ -411,7 +399,10 @@ class Tokens_Scanner
 		}
 		if (
 			!$this->class
-			&& (($this->attribute_square_depth >= 0) || str_starts_with($type, 'declare-'))
+			&& (
+				($this->attribute_square_depth >= 0)
+				|| in_array($type, [T_DECLARE_CLASS, T_DECLARE_INTERFACE, T_DECLARE_TRAIT], true)
+			)
 		) {
 			$this->next_references[] = $reference;
 		}

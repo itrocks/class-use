@@ -1,6 +1,6 @@
 {
 	"authors":     [{ "name": "Baptiste Pillot", "email": "baptiste@pillot.fr" }],
-	"autoload":    { "psr-4": { "ITRocks\\Class_Use\\": "src/" } },
+	"autoload":    { "files": ["src/tokens.php"], "psr-4": { "ITRocks\\Class_Use\\": "src/" } },
 	"description": "The \"Where is this class used, and what for?\" index-and-query library",
 	"homepage":    "https://github.com/itrocks/class-use",
 	"license":     "LGPL-3.0-or-later",

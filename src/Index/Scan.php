@@ -1,13 +1,13 @@
 <?php
-namespace ITRocks\Class_Use\Repository;
+namespace ITRocks\Class_Use\Index;
 
-use ITRocks\Class_Use\Tokens_Scanner;
+use ITRocks\Class_Use\Token;
 
-trait Scanner
+trait Scan
 {
 
-	//------------------------------------------------------------------------------- $tokens_scanner
-	public Tokens_Scanner $tokens_scanner;
+	//-------------------------------------------------------------------------------------- $scanner
+	public Token\Scanner $scanner;
 
 	//--------------------------------------------------------------------------------- scanDirectory
 	public function scanDirectory(string $directory = '', int $depth = 0) : void
@@ -29,9 +29,8 @@ trait Scanner
 				$this->files[] = substr($file, $home_length);
 				if (
 					$this->reset
-					|| !file_exists($cache_file = $this->cacheFileName(substr($file, $home_length), 'file'))
+					|| !file_exists($cache_file = $this->cacheFileName(substr($file, $home_length), T_FILE))
 					|| (filemtime($file) > filemtime($cache_file))
-					|| str_contains($file, 'repository/Repository')
 				) {
 					$this->scanFile($file);
 				}
@@ -53,9 +52,9 @@ trait Scanner
 		else {
 			$tokens = token_get_all(file_get_contents($file));
 		}
-		$this->tokens_scanner->scan($tokens);
-		$this->references[$file] = $this->tokens_scanner->references;
-		$this->references_count += count($this->tokens_scanner->references);
+		$this->scanner->scan($tokens);
+		$this->references[$file] = $this->scanner->references;
+		$this->references_count += count($this->scanner->references);
 	}
 
 }

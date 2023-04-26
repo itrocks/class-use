@@ -1,25 +1,26 @@
 <?php
 namespace ITRocks\Class_Use;
 
-use ITRocks\Class_Use\Repository\Type;
+use ITRocks\Class_Use\Token\Name;
 
 include __DIR__ . '/../bin/autoload.php';
 
 //=================================================================================================
 // Calculate cache
 
-$repository = new Repository(Repository::VENDOR, __DIR__ . '/..');
-$repository->scanDirectory();
-$repository->classify();
-$repository->save();
+$index = new Index(Index::VENDOR, __DIR__ . '/..');
+$index->scanDirectory();
+$index->classify();
+$index->save();
 
 //=================================================================================================
-// List all references into Repository
+// List all class uses into Index
 
-echo "\nThese are all references into the " . Repository::class . " class :\n";
-$found = $repository->search([Type::CLASS_ => Repository::class]);
+echo "\nThese are all class uses into the " . Index::class . " class:\n";
+$found = $index->search([T_CLASS => Index::class]);
 foreach ($found as $key => $use) {
 	[, $use, $type, $file, $line, $token_key] = $use;
+	$type = Name::OF[$type];
 	if (!$key) {
 		echo "    the class is into file $file\n";
 	}
@@ -27,12 +28,13 @@ foreach ($found as $key => $use) {
 }
 
 //=================================================================================================
-// Search all uses of the class Repository
+// Search all uses of the class Index
 
-echo "\nThese are all use references to the " . Repository::class . " class :\n";
-$found = $repository->search([Type::USE => Repository::class]);
+echo "\nThese are all use of the class " . Index::class . ":\n";
+$found = $index->search([T_USE => Index::class]);
 foreach ($found as $key => $use) {
 	[$class,, $type, $file, $line, $token_key] = $use;
+	$type = Name::OF[$type];
 	echo "#$key. $type into $file";
 	if ($class) echo " class $class";
 	echo " token $token_key line $line";
@@ -41,10 +43,9 @@ foreach ($found as $key => $use) {
 
 // Only after new keyword
 
-$class = Repository::class;
-$type  = 'new';
-echo "\nThese are all the $type references to the $class class :\n";
-$found = $repository->search([Type::USE => Repository::class, Type::TYPE => $type]);
+$class = Index::class;
+echo "\nThese are all the new class $class uses:\n";
+$found = $index->search([T_USE => Index::class, T_TYPE => T_NEW]);
 foreach ($found as $key => $use) {
 	[$class,,, $file, $line, $token_key] = $use;
 	echo "#$key. into $file";
@@ -55,15 +56,10 @@ foreach ($found as $key => $use) {
 
 // Only static calls into a given file
 
-$class = Repository::class;
-$type  = 'static';
+$class = Index::class;
 $file  = 'src/Console.php';
-echo "\nThese are all the $type references to the $class class into the file $file\n";
-$found = $repository->search([
-	Type::USE => Repository::class,
-	Type::FILE       => $file,
-	Type::TYPE       => $type
-]);
+echo "\nThese are all the static class $class uses into the file $file\n";
+$found = $index->search([T_USE => Index::class, T_FILE => $file, T_TYPE => T_STATIC]);
 foreach ($found as $key => $use) {
 	[$class,,,, $line, $token_key] = $use;
 	echo "#$key. in";
@@ -77,6 +73,6 @@ echo "\n";
 //=================================================================================================
 // Purge cache. Remove this if you want to study how class use data it stored.
 
-echo "Purge cache directory " . $repository->getHome() . "/cache\n";
-$repository->purgeCache();
-rmdir($repository->getHome() . '/cache');
+echo "Purge cache directory " . $index->getHome() . "/cache\n";
+$index->purgeCache();
+rmdir($index->getHome() . '/cache');

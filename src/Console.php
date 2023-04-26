@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Class_Use;
 
-use ITRocks\Class_Use\Repository\Type;
+use ITRocks\Class_Use\Token\Name;
 
 class Console
 {
@@ -48,8 +48,8 @@ class Console
 	public function run(array $arguments) : void
 	{
 		$this->nameArguments($arguments);
-		foreach (Type::SAVE as $type) {
-			if (isset($arguments[$type])) {
+		foreach (Index::SAVE as $type) {
+			if (isset($arguments[Name::OF[$type]])) {
 				$this->search($arguments);
 				return;
 			}
@@ -63,73 +63,84 @@ class Console
 	{
 		$flags = 0;
 		if (in_array('reset', $arguments, true)) {
-			$flags |= Repository::RESET;
+			$flags |= Index::RESET;
 		}
 		if (in_array('vendor', $arguments, true)) {
-			$flags |= Repository::VENDOR;
+			$flags |= Index::VENDOR;
 		}
 		if (in_array('pretty', $arguments, true)) {
-			$flags |= Repository::PRETTY;
+			$flags |= Index::PRETTY;
 			$pretty = ' pretty';
 		}
 		else {
 			$pretty = '';
 		}
 
-		$repository = new Repository($flags);
-		echo ($flags & Repository::RESET) ? 'reset' : 'update';
-		if ($flags & Repository::VENDOR) {
+		$index = new Index($flags);
+		echo ($flags & Index::RESET) ? 'reset' : 'update';
+		if ($flags & Index::VENDOR) {
 			echo ' with vendor';
 		}
-		echo ' from project directory ' . $repository->getHome();
+		echo ' from project directory ' . $index->getHome();
 		echo "\n";
 
 		echo date('Y-m-d H:i:s') . "\n";
 		$total = microtime(true);
 
 		$start = microtime(true);
-		$repository->scanDirectory();
-		echo "- scanned $repository->directories_count directories and $repository->files_count files in "
+		$index->scanDirectory();
+		echo "- scanned $index->directories_count directories and $index->files_count files in "
 			. $this->showDuration(microtime(true) - $start) . "\n";
 
 		$start = microtime(true);
-		$repository->classify();
-		echo "- classified $repository->references_count references in "
+		$index->classify();
+		echo "- classified $index->references_count references in "
 			. $this->showDuration(microtime(true) - $start) . "\n";
 
 		$start = microtime(true);
-		$repository->save();
-		echo "- saved $repository->files_count files in "
+		$index->save();
+		echo "- saved $index->files_count files in "
 			. $this->showDuration(microtime(true) - $start) . "\n";
 
 		echo date('Y-m-d H:i:s') . "\n";
 		echo 'duration = ' . $this->showDuration(microtime(true) - $total) . "\n";
 		echo 'memory   = ' . ceil(memory_get_peak_usage(true) / 1024 / 1024) . " Mo\n";
-		echo "cache$pretty written into directory " . $repository->getCacheDirectory() . "\n";
+		echo "cache$pretty written into directory " . $index->getCacheDirectory() . "\n";
 	}
 
 	//---------------------------------------------------------------------------------------- search
-	/** @param $search string[] [string $type => string $name] */
-	protected function search(array $search) : void
+	/** @param $arguments string[] [int $type => string $name] */
+	protected function search(array $arguments) : void
 	{
-		$start      = microtime(true);
-		$repository = Repository::get();
-		$result     = $repository->search($search);
-		$stop       = microtime(true);
-		if (in_array('detail', $search, true)) {
+		$options = [];
+		$search  = [];
+		foreach ($arguments as $key => $value) {
+			if (is_string($key)) {
+				$search[array_flip(Name::OF)[$key]] = $value;
+			}
+			else {
+				$options[] = $value;
+			}
+		}
+
+		$start  = microtime(true);
+		$index  = Index::get();
+		$result = $index->search($search);
+		$stop   = microtime(true);
+		if (in_array('detail', $options, true)) {
 			print_r($result);
 		}
 		echo count($result) . " results\n";
 		echo 'first duration  = ' . $this->showDuration($stop - $start) . "\n";
 
-		$start      = microtime(true);
-		$repository = Repository::get();
-		$repository->search($search);
+		$start = microtime(true);
+		$index = Index::get();
+		$index->search($search);
 		echo 'second duration = ' . $this->showDuration(microtime(true) - $start) . "\n";
 
-		$start      = microtime(true);
-		$repository = Repository::get();
-		$repository->search($search);
+		$start = microtime(true);
+		$index = Index::get();
+		$index->search($search);
 		echo 'third duration  = ' . $this->showDuration(microtime(true) - $start) . "\n";
 
 		echo 'memory = ' . ceil(memory_get_peak_usage(true) / 1024 / 1024) . " Mo\n";

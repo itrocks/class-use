@@ -1,16 +1,17 @@
 <?php
 namespace ITRocks\Class_Use;
 
-use ITRocks\Class_Use\Repository\Cache_Directory;
-use ITRocks\Class_Use\Repository\Classify;
-use ITRocks\Class_Use\Repository\Counters;
-use ITRocks\Class_Use\Repository\Save;
-use ITRocks\Class_Use\Repository\Scanner;
-use ITRocks\Class_Use\Repository\Search;
+use ITRocks\Class_Use\Index\Cache_Directory;
+use ITRocks\Class_Use\Index\Classify;
+use ITRocks\Class_Use\Index\Counters;
+use ITRocks\Class_Use\Index\Save;
+use ITRocks\Class_Use\Index\Scan;
+use ITRocks\Class_Use\Index\Search;
+use ITRocks\Class_Use\Token\Scanner;
 
-class Repository
+class Index
 {
-	use Cache_Directory, Classify, Counters, Save, Scanner, Search;
+	use Cache_Directory, Classify, Counters, Save, Scan, Search;
 
 	//----------------------------------------------------------------------------------------- FLAGS
 	public const RESET  = 2;
@@ -31,7 +32,7 @@ class Repository
 	protected bool $pretty;
 
 	//----------------------------------------------------------------------------------- $references
-	/** @var (int|string)[][] [string $file][string $class, string $use, string $type, int $line] */
+	/** @var (int|string)[][] [string $file][string $class, string $use, int $type, int $line] */
 	protected array $references = [];
 
 	//---------------------------------------------------------------------------------------- $reset
@@ -43,11 +44,11 @@ class Repository
 	//----------------------------------------------------------------------------------- __construct
 	public function __construct(int $flags = 0, string $home = '')
 	{
-		$this->pretty         = $flags & self::PRETTY;
-		$this->reset          = $flags & self::RESET;
-		$this->start_time     = time();
-		$this->tokens_scanner = new Tokens_Scanner;
-		$this->vendor         = $flags & self::VENDOR;
+		$this->pretty     = $flags & self::PRETTY;
+		$this->reset      = $flags & self::RESET;
+		$this->start_time = time();
+		$this->scanner    = new Scanner;
+		$this->vendor     = $flags & self::VENDOR;
 		$this->setHome($home);
 		$this->prepareHome();
 	}

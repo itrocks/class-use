@@ -1,5 +1,5 @@
 <?php
-namespace ITRocks\Class_Use\Repository;
+namespace ITRocks\Class_Use\Index;
 
 trait Counters
 {

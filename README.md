@@ -74,10 +74,10 @@ php /path/to/your/clone/of/itrocks/class-use/bin/run.php vendor
 From any directory of your PHP project (e.g. here from the project root directory):
 
 ```bash
-class-use use=ITRocks/Class_Use/Repository detail
+class-use use=ITRocks/Class_Use/Index detail
 ```
 
-This example will output all uses of the class Repository into all your project scripts.
+This example will output all uses of the class use Index into all your project scripts.
 
 If you love escaping antislashes, feel free to type them to match PHP class path naming rules.
 
@@ -112,35 +112,39 @@ composer require itrocks/class-use
 When your project need to update the cache, these are the update steps to follow :
 
 ```php
-$repository = new Repository(Repository::VENDOR);
-$repository->scanDirectory();
-$repository->classify();
-$repository->save();
+use ITRocks\Class_Use\Index;
+
+$index = new Index(Index::VENDOR);
+$index->scanDirectory();
+$index->classify();
+$index->save();
 ```
 
 #### Option flags
 
-- `Repository::VENDOR`:
+- `Index::VENDOR`:
   Updates class use cache concerning php files from the `vendor` directory too. If not set,
   only your project files will be scanned, which will be quite faster, and enough only if you don't
   need third-party PHP scripts class use information.
-- `Repository::RESET`:
+- `Index::RESET`:
   Fully recalculate your class use cache. If not set, only files modified since the last update
   will be scanned for update.
-- `Repository::PRETTY`:
+- `Index::PRETTY`:
   Class use cache json files will be human-readable, including spaces and carriage returns;
   Nevertheless, cache files will be bigger.
 
-The constructor of `Repository` has a second argument, `$home`, to force the directory where to
+The constructor of `Index` has a second argument, `$home`, to force the directory where to
 scan classes and save class use cache from. If not set, this will scan your project files, found
 from the current working directory.
 
 ### Search for occurrences
 
 ```php
-echo "These are where the Repository class is used:\n";
-$repository = new Repository();
-foreach ($repository->search([Type::USE => Repository::class]) as $reference) {
+use ITRocks\Class_Use\Index;
+
+echo "These are where the Index class is used:\n";
+$index = new Index();
+foreach ($index->search([T_USE => Index::class]) as $reference) {
   [$class, $use, $type, $file, $line, $token_key] = $reference;
 	echo "#$key. $type into $file";
 	if ($class) echo " class $class";
@@ -149,7 +153,7 @@ foreach ($repository->search([Type::USE => Repository::class]) as $reference) {
 }
 ```
 
-This example will output all the references to the class Repository into all your project scripts.
+This example will output all the references to the class use Index into all your project scripts.
 
 You can see multiple examples in action running the scripts into the `examples` directory. e.g.:
 
@@ -157,30 +161,38 @@ You can see multiple examples in action running the scripts into the `examples` 
 php examples/complete.php
 ```
 
+#### Search keys
+
+You can use one or several search criterion, identified by these keys:
+
+- T_CLASS: Search class uses into this class source code
+- T_USE: Search class uses of this class, everywhere
+- T_TYPE: Search class uses of this type (type lists below)
+
 Class use Types
 ---------------
 
 Each found reference to the class use is qualified with any of these class use type identifiers:
 
-- `argument`: the class is used as a function argument type
-- `attribute`: the class is used as an attribute, ie into a `#[...]` section
-- `class`: an explicit use of the name of the class into the source code, ie `Class_Name::class`
-- `declare-class`: the class declaration
-- `declare-interface`: the interface declaration
-- `declare-trait`: the trait declaration
-- `extends`: the class appears into an `extends` section of another class declaration
-- `implements`: the class appears into an `implements` section of another class declaration
-- `instance-of`: the class appears after an `instanceof` type operator
-- `namespace`: the class is used as a `namespace` name;
+- T_ARGUMENT: the class is used as a function argument type
+- T_ATTRIBUTE: the class is used as an attribute, ie into a `#[...]` section
+- T_CLASS: an explicit use of the name of the class into the source code, ie `Class_Name::class`
+- T_DECLARE_CLASS: the class declaration
+- T_DECLARE_INTERFACE: the interface declaration
+- T_DECLARE_TRAIT: the trait declaration
+- T_EXTENDS: the class appears into an `extends` section of another class declaration
+- T_IMPLEMENTS: the class appears into an `implements` section of another class declaration
+- T_INSTANCEOF: the class appears after an `instanceof` type operator
+- T_NAMESPACE: the class is used as a `namespace` name;
   only namespaces that match a class will be set
-- `namespace-use`: the class appears into a namespace `use` statement for import;
+- T_NAMESPACE_USE: the class appears into a namespace `use` statement for import;
   only statements that match a class will be set
-- `new`: the class is used to instantiate an object
-- `return`: the class is used into a function return type
-- `static`: the class is used for a static call,
+- T_NEW: the class is used to instantiate an object
+- T_RETURN: the class is used into a function return type
+- T_STATIC: the class is used for a static call,
   e.g. `Class_Name::static` or `Class_Name::CONSTANT`
-- `use`: the class appears into a class `use` statement
-- `var`: the class is used into a class property type definition
+- T_USE: the class appears into a class `use` statement
+- T_VAR: the class is used into a class property type definition
 
 Attribute names are used as types too : every reference to a class into an attribute will be
 referred as a class use reference which type is the name of the attribute.

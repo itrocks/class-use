@@ -1,11 +1,16 @@
 <?php
-namespace ITRocks\Class_Use\Repository;
+namespace ITRocks\Class_Use\Index;
+
+use ITRocks\Class_Use\Token\Name;
 
 trait Save
 {
 
 	//---------------------------------------------------------------------------------------- PRETTY
 	public const PRETTY = 4;
+
+	//------------------------------------------------------------------------------------------ SAVE
+	const SAVE = [T_CLASS, T_CLASS_TYPE, T_FILE, T_TYPE_CLASS, T_TYPE_USE, T_USE, T_USE_TYPE];
 
 	//----------------------------------------------------------------------------------- $start_time
 	public int $start_time;
@@ -19,14 +24,13 @@ trait Save
 			$json_flags |= JSON_PRETTY_PRINT;
 		}
 		$directory = $this->getCacheDirectory();
-		$types     = Type::SAVE;
 
-		foreach ($types as $type) {
-			$type_directory = str_replace('_', '-', $type);
+		foreach (static::SAVE as $type) {
+			$type_directory = Name::OF[$type];
 			if (!is_dir("$directory/$type_directory")) {
 				mkdir("$directory/$type_directory");
 			}
-			foreach ($this->{"by_$type"} as $name => $references) {
+			foreach ($this->by[$type] as $name => $references) {
 				if ($name === '') {
 					continue;
 				}
