@@ -246,17 +246,18 @@ class Scanner
 
 			case T_PAAMAYIM_NEKUDOTAYIM:
 				do $token = prev($tokens); while (in_array($token[0], self::IGNORE_TOKENS, true));
-				$token_key = in_array($token, ['}', ')'], true) ? null : key($tokens);
+				$ignore = is_array($token)
+					? in_array($token[1], self::IGNORE_CLASSES, true)
+					: str_contains('])}', $token);
+				$token_key = key($tokens);
 				do $token = next($tokens); while ($token[0] !== T_PAAMAYIM_NEKUDOTAYIM);
 				do $token = next($tokens); while (in_array($token[0], self::IGNORE_TOKENS, true));
-				if (!isset($token_key)) {
+				if ($ignore) {
 					continue 2;
 				}
 				$type  = ($token[0] === T_CLASS) ? T_CLASS : T_STATIC;
 				$token = $tokens[$token_key];
-				if (!in_array($token[1], self::IGNORE_CLASSES, true)) {
-					$this->reference($type, $token, $token_key);
-				}
+				$this->reference($type, $token, $token_key);
 				continue 2;
 
 			case T_USE:
