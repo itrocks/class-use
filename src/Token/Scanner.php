@@ -5,15 +5,13 @@ class Scanner
 {
 
 	//----------------------------------------------------------------------------- TESTED VALUE SETS
-	protected const BASIC_TYPES = ['array', 'bool', 'callable', 'false', 'float', 'int', 'null', 'object', 'string', 'true', 'void'];
-	protected const PARENT      = 'parent';
-	protected const SELF        = 'self';
-	protected const STATIC      = 'static';
+	protected const BASIC_TYPES    = ['array', 'bool', 'callable', 'false', 'float', 'int', 'null', 'object', 'string', 'true', 'void'];
+	protected const IGNORE_CLASSES = ['__CLASS__', 'parent', 'self', 'static'];
 
 	//------------------------------------------------------------------------------------ TOKEN SETS
 	protected const CLASS_NAME_END    = [T_EXTENDS, T_IMPLEMENTS, T_STRING, '{'];
 	protected const CLASS_TOKENS      = [T_NAME_FULLY_QUALIFIED, T_NAME_QUALIFIED, T_STRING];
-	protected const IGNORE            = [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT];
+	protected const IGNORE_TOKENS     = [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT];
 	protected const VISIBILITY_TOKENS = [T_CONST, T_FUNCTION, ...self::CLASS_TOKENS, T_VARIABLE];
 
 	//------------------------------------------------------------------------------------ $attribute
@@ -217,7 +215,7 @@ class Scanner
 			case T_INSTANCEOF:
 			case T_NEW:
 				$type = $token[0];
-				do $token = next($tokens); while (in_array($token[0], self::IGNORE, true));
+				do $token = next($tokens); while (in_array($token[0], self::IGNORE_TOKENS, true));
 				if (in_array($token[0], self::CLASS_TOKENS, true)) {
 					$this->reference($type, $token, key($tokens));
 				}
@@ -236,7 +234,7 @@ class Scanner
 				continue 2;
 
 			case T_NAMESPACE:
-				do $token = next($tokens); while (in_array($token[0], self::IGNORE, true));
+				do $token = next($tokens); while (in_array($token[0], self::IGNORE_TOKENS, true));
 				$this->reference(T_NAMESPACE, [T_NAME_FULLY_QUALIFIED, $token[1], $token[2]], key($tokens));
 				$this->namespace = $token[1];
 				do $token = next($tokens); while (is_array($token) || !str_contains(';{', $token));
@@ -247,29 +245,16 @@ class Scanner
 				continue 2;
 
 			case T_PAAMAYIM_NEKUDOTAYIM:
-				do $token = prev($tokens); while (in_array($token[0], self::IGNORE, true));
+				do $token = prev($tokens); while (in_array($token[0], self::IGNORE_TOKENS, true));
 				$token_key = in_array($token, ['}', ')'], true) ? null : key($tokens);
 				do $token = next($tokens); while ($token[0] !== T_PAAMAYIM_NEKUDOTAYIM);
-				do $token = next($tokens); while (in_array($token[0], self::IGNORE, true));
+				do $token = next($tokens); while (in_array($token[0], self::IGNORE_TOKENS, true));
 				if (!isset($token_key)) {
 					continue 2;
 				}
 				$type  = ($token[0] === T_CLASS) ? T_CLASS : T_STATIC;
 				$token = $tokens[$token_key];
-				if ($token[1] === self::PARENT) {
-					if ($this->parent_token) {
-						$token[0] = $this->parent_token[0];
-						$token[1] = $this->parent_token[1];
-					}
-					else {
-						$token = [];
-					}
-				}
-				elseif (in_array($token[1], [self::SELF, self::STATIC], true)) {
-					$token[0] = T_NAME_FULLY_QUALIFIED;
-					$token[1] = $this->class;
-				}
-				if ($token) {
+				if (!in_array($token[1], self::IGNORE_CLASSES, true)) {
 					$this->reference($type, $token, $token_key);
 				}
 				continue 2;
