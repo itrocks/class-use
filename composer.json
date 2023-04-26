@@ -1,11 +1,12 @@
 {
-	"authors":     [{ "name": "Baptiste Pillot", "email": "baptiste@pillot.fr" }],
-	"autoload":    { "files": ["src/tokens.php"], "psr-4": { "ITRocks\\Class_Use\\": "src/" } },
-	"description": "The \"Where is this class used, and what for?\" index-and-query library",
-	"homepage":    "https://github.com/itrocks/class-use",
-	"license":     "LGPL-3.0-or-later",
+	"authors":           [{ "name": "Baptiste Pillot", "email": "baptiste@pillot.fr" }],
+	"autoload":          { "files": ["src/tokens.php"], "psr-4": { "ITRocks\\Class_Use\\": "src/" } },
+	"description":       "The \"Where is this class used, and what for?\" index-and-query library",
+	"homepage":          "https://github.com/itrocks/class-use",
+	"license":           "LGPL-3.0-or-later",
 	"minimum-stability": "dev",
-	"name":    "itrocks/class-use",
-	"require": { "ext-json": "*", "php": ">=8.2" },
-	"type":    "library"
+	"name":              "itrocks/class-use",
+	"require":           { "ext-json": "*", "php": ">=8.2" },
+	"require-dev":       { "phpunit/phpunit": "^10.1" },
+	"type":              "library"
 }
