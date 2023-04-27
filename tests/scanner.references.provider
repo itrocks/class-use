@@ -83,13 +83,20 @@ N\C, declare-class, N\C, 3
 <?php
 class C {
 	const READONLY = true;
-	const USE = C::class;
+	const USE      = C::class;
 	function namespace() {}
 	function use() {}
 }
 ?>
 C, declare-class, C, 2
 C, class,         C, 4
+
+<?php
+class C {
+	public const ER_MESSAGE = 'message';
+}
+?>
+C, declare-class, C, 2
 
 # --------------------------------------------------------------------------------------- T_EXTENDS
 
@@ -464,12 +471,14 @@ C, implements,    J, 4
 C, use,           T, 5
 C, use,           U, 5
 
-# ------------------------------------------------------------------------------------------- T_VAR
+# -------------------------------------------------------------------------------------- T_VARIABLE
 
 <?php
 class C {
 	public D $v;
 	public int $i;
+	protected const USE = 'use';
+	public function readonly() {}
 }
 ?>
 C, declare-class, C, 2

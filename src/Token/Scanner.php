@@ -264,7 +264,7 @@ class Scanner
 			case T_PUBLIC:
 			case T_VAR:
 				do $token = next($tokens); while (!in_array($token[0], self::VARIABLE_TOKENS, true));
-				if ($token[0] === T_FUNCTION) {
+				if (in_array($token[0], [T_CONST, T_FUNCTION], true)) {
 					prev($tokens);
 					continue 2;
 				}
