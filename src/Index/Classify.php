@@ -45,7 +45,7 @@ trait Classify
 				$this->by[T_FILE][$file_name] = [];
 			}
 			foreach ($references as $reference) {
-				[$class, $use, $type, $line, $token_key] = $reference;
+				[$class, $type, $use, $line, $token_key] = $reference;
 				if ($class !== '') {
 					$this->by[T_FILE][$file_name][T_CLASS][$class] = true;
 					$this->by[T_CLASS]     [$class][$use][$type][$file_name][$token_key] = $line;

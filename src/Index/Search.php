@@ -9,7 +9,7 @@ trait Search
 	 * @param $search      string[] string $value[string $type]
 	 * @param $associative boolean Each returned record is an int|string[string $type] array
 	 * @return (int|string)[][]
-	 *         [][string $class, string $use, int $type, string $file, int $line, int $token_key]
+	 * [][string $class, int|string $type, string $use, string $file, int $line, int $token_key]
 	 */
 	public function search(array $search, bool $associative = false) : array
 	{
@@ -74,8 +74,8 @@ trait Search
 						if ($associative) {
 							$references[] = [
 								T_CLASS     => $names[$tree[T_CLASS]],
-								T_USE       => $names[$tree[T_USE]],
 								T_TYPE      => $names[$tree[T_TYPE]],
+								T_USE       => $names[$tree[T_USE]],
 								T_FILE      => $file,
 								T_LINE      => $line,
 								T_TOKEN_KEY => $token_key
@@ -84,8 +84,8 @@ trait Search
 						else {
 							$references[] = [
 								$names[$tree[T_CLASS]],
-								$names[$tree[T_USE]],
 								$names[$tree[T_TYPE]],
+								$names[$tree[T_USE]],
 								$file,
 								$line,
 								$token_key

@@ -145,7 +145,7 @@ use ITRocks\Class_Use\Index;
 echo "These are where the Index class is used:\n";
 $index = new Index();
 foreach ($index->search([T_USE => Index::class]) as $reference) {
-  [$class, $use, $type, $file, $line, $token_key] = $reference;
+  [$class, $type, $use, $file, $line, $token_key] = $reference;
 	echo "#$key. $type into $file";
 	if ($class) echo " class $class";
 	echo " token $token_key line $line";
@@ -161,28 +161,33 @@ You can see multiple examples in action running the scripts into the `examples` 
 php examples/complete.php
 ```
 
+The unit test into `tests/scanner.references.proviver` and `Scanner_Test.php` contain a lot of other
+examples with expected results.
+
 #### Search keys
 
 You can use one or several search criterion, identified by these keys:
 
 - T_CLASS: Search class uses into this class source code
-- T_USE: Search class uses of this class, everywhere
 - T_TYPE: Search class uses of this type (type lists below)
+- T_USE: Search class uses of this class, everywhere
 
 Class use Types
 ---------------
 
-Each found reference to the class use is qualified with any of these class use type identifiers:
+When it is a numeric, each found class use reference is qualified with any of these class use type
+identifiers:
 
 - T_ARGUMENT: the class is used as a function argument type
-- T_ATTRIBUTE: the class is used as an attribute, ie into a `#[...]` section
+- T_ATTRIBUTE: the class is an attribute used into a `#[...]` statement
 - T_CLASS: an explicit use of the name of the class into the source code, ie `Class_Name::class`
 - T_DECLARE_CLASS: the class declaration
 - T_DECLARE_INTERFACE: the interface declaration
 - T_DECLARE_TRAIT: the trait declaration
-- T_EXTENDS: the class appears into an `extends` section of another class declaration
-- T_IMPLEMENTS: the class appears into an `implements` section of another class declaration
-- T_INSTANCEOF: the class appears after an `instanceof` type operator
+- T_EXTENDS: the class appears into an `extends` statement of another class declaration
+- T_IMPLEMENTS: the class appears into an `implements` statement of another class declaration
+- T_INSTANCEOF: the class appears after an `instanceof` statement
+- T_INSTEADOF: the class appears after an `insteadof` statement
 - T_NAMESPACE: the class is used as a `namespace` name;
   only namespaces that match a class will be set
 - T_NAMESPACE_USE: the class appears into a namespace `use` statement for import;
@@ -192,7 +197,8 @@ Each found reference to the class use is qualified with any of these class use t
 - T_STATIC: the class is used for a static call,
   e.g. `Class_Name::static` or `Class_Name::CONSTANT`
 - T_USE: the class appears into a class `use` statement
-- T_VAR: the class is used into a class property type definition
+- T_VARIABLE: the class is used into a class property type definition
 
-Attribute names are used as types too : every reference to a class into an attribute will be
-referred as a class use reference which type is the name of the attribute.
+When it is a string, attribute names are used as types: every class use into an attribute will be
+referred with a type being the name of the attribute. Only ::class as an argument, or as a value
+into an array argument, are taken in account.

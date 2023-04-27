@@ -17,6 +17,7 @@ class Name
 		T_FILE              => 'file',
 		T_IMPLEMENTS        => 'implements',
 		T_INSTANCEOF        => 'instanceof',
+		T_INSTEADOF         => 'insteadof',
 		T_LINE              => 'line',
 		T_NAMESPACE         => 'namespace',
 		T_NAMESPACE_USE     => 'namespace-use',
@@ -29,7 +30,7 @@ class Name
 		T_TYPE_USE          => 'type-use',
 		T_USE               => 'use',
 		T_USE_TYPE          => 'use-type',
-		T_VAR               => 'var'
+		T_VARIABLE          => 'variable'
 	];
 
 }
