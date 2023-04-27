@@ -1,0 +1,532 @@
+# ------------------------------------------------------------------------------------- T_ATTRIBUTE
+
+<?php
+#[A] class C { }
+?>
+C, attribute,     A, 2
+C, declare-class, C, 2
+
+<?php
+#[A, B] class C { }
+?>
+C, attribute,     A, 2
+C, attribute,     B, 2
+C, declare-class, C, 2
+
+<?php
+#[A(B::class)] class C { }
+?>
+C, attribute,     A, 2
+C, A,             B, 2
+C, declare-class, C, 2
+
+<?php
+#[A(B::CONST)] class C { }
+?>
+C, attribute,     A, 2
+C, static,        B, 2
+C, declare-class, C, 2
+
+<?php
+namespace N;
+use ITRocks\Extend;
+#[Extend(E::class, F::class)]
+class C { }
+?>
+,    namespace,      N,              2
+N\C, attribute,      ITRocks\Extend, 4
+N\C, ITRocks\Extend, N\E,            4
+N\C, ITRocks\Extend, N\F,            4
+N\C, declare-class,  N\C,            5
+
+<?php
+#[A([E::class])]
+#[A(new C(E::class))]
+class C { }
+?>
+C, attribute,     A, 2
+C, A,             E, 2
+C, attribute,     A, 3
+C, new,           C, 3
+C, class,         E, 3
+C, declare-class, C, 4
+
+# ----------------------------------------------------------------------------------------- T_CLASS
+
+<?php
+class C { }
+?>
+C, declare-class, C, 2
+
+<?php
+final readonly class C { }
+?>
+C, declare-class, C, 2
+
+<?php
+namespace N;
+class C { }
+?>
+,    namespace,     N,   2
+N\C, declare-class, N\C, 3
+
+<?php
+namespace N {
+	class C { }
+}
+?>
+,    namespace,     N,   2
+N\C, declare-class, N\C, 3
+
+# ----------------------------------------------------------------------------------------- T_CONST
+
+<?php
+class C {
+	const READONLY = true;
+	const USE = C::class;
+	function namespace() {}
+	function use() {}
+}
+?>
+C, declare-class, C, 2
+C, class,         C, 4
+
+# --------------------------------------------------------------------------------------- T_EXTENDS
+
+<?php
+namespace N;
+class C extends E { }
+?>
+, namespace, N, 2
+N\C, declare-class, N\C, 3
+N\C, extends,       N\E, 3
+
+<?php
+namespace N;
+class C extends \E { }
+?>
+,    namespace,     N,   2
+N\C, declare-class, N\C, 3
+N\C, extends,       E,   3
+
+<?php
+namespace N;
+class C extends S\E { }
+?>
+, namespace, N, 2
+N\C, declare-class, N\C,   3
+N\C, extends,       N\S\E, 3
+
+# -------------------------------------------------------------------------------------- T_FUNCTION
+
+<?php
+function f(){}
+?>
+
+<?php
+function f(A $a){}
+?>
+, argument, A, 2
+
+<?php
+function f(A $a):R{}
+?>
+, argument, A, 2
+, return,   R, 2
+
+<?php
+function f(A $a1, B &$b1, string $a2) : void { }
+?>
+, argument, A, 2
+, argument, B, 2
+
+<?php
+function f(A|B|string $a1) : int|C|D { }
+?>
+, argument, A, 2
+, argument, B, 2
+, return,   C, 2
+, return,   D, 2
+
+<?php
+abstract function f(A|(B&C&int)|string $a1, (A&B)|(A&C) &$a2) : (R&T)|(S&T)|int;
+?>
+, argument, A, 2
+, argument, B, 2
+, argument, C, 2
+, argument, A, 2
+, argument, B, 2
+, argument, A, 2
+, argument, C, 2
+, return,   R, 2
+, return,   T, 2
+, return,   S, 2
+, return,   T, 2
+
+# ------------------------------------------------------------------------------------ T_IMPLEMENTS
+
+<?php
+class C implements I { }
+?>
+C, declare-class, C, 2
+C, implements,    I, 2
+
+<?php
+namespace N;
+use O\J, P\K as T;
+class C implements I, J, T\U { }
+?>
+,    namespace,     N,     2
+N\C, declare-class, N\C,   4
+N\C, implements,    N\I,   4
+N\C, implements,    O\J,   4
+N\C, implements,    P\K\U, 4
+
+# ------------------------------------------------------------------------------------- T_INTERFACE
+
+<?php
+interface C { }
+?>
+C, declare-interface, C, 2
+
+<?php
+final readonly interface C { }
+?>
+C, declare-interface, C, 2
+
+<?php
+namespace N;
+interface C { }
+?>
+,    namespace,         N,   2
+N\C, declare-interface, N\C, 3
+
+<?php
+namespace N {
+	interface C { }
+}
+?>
+,    namespace,         N,   2
+N\C, declare-interface, N\C, 3
+
+# ------------------------------------------------------------------------------------ T_INSTANCEOF
+
+<?php
+$b = $a instanceof A;
+?>
+, instanceof, A, 2
+
+<?php
+class A { function f() { return $a instanceof A; } }
+?>
+A, declare-class, A, 2
+A, instanceof,    A, 2
+
+<?php
+$b = $a instanceof (A::class);
+?>
+, class, A, 2
+
+# ------------------------------------------------------------------------------------- T_NAMESPACE
+
+<?php
+namespace N;
+?>
+, namespace, N, 2
+
+<?php
+namespace N {
+}
+?>
+, namespace, N, 2
+
+<?php
+namespace A\B;
+use V\P\N;
+class C { function() {
+	N::class;
+	N\O::class;
+} }
+new D;
+?>
+, namespace, A\B, 2
+A\B\C, declare-class, A\B\C,   4
+A\B\C, class,         V\P\N,   5
+A\B\C, class,         V\P\N\O, 6
+,      new,           A\B\D,   8
+
+<?php
+namespace A\B {
+	use V\P\N;
+	class C { function() {
+		N::class;
+		N\O::class;
+	} }
+	new D;
+}
+namespace C\D {
+	use U\R\L;
+	class C { function() {
+		L::class;
+		N::class;
+		N\O::class;
+	} }
+	new D;
+}
+?>
+, namespace, A\B, 2
+A\B\C, declare-class, A\B\C,   4
+A\B\C, class,         V\P\N,   5
+A\B\C, class,         V\P\N\O, 6
+,      new,           A\B\D,   8
+, namespace, C\D, 10
+C\D\C, declare-class, C\D\C,   12
+C\D\C, class,         U\R\L,   13
+C\D\C, class,         C\D\N,   14
+C\D\C, class,         C\D\N\O, 15
+,      new,           C\D\D,   17
+
+# ------------------------------------------------------------------------------------------- T_NEW
+
+<?php
+new C;
+?>
+, new, C, 2
+
+<?php
+new C(D::class);
+?>
+, new,   C, 2
+, class, D, 2
+
+<?php
+namespace N;
+new C(\D::class);
+?>
+, namespace, N,   2
+, new,       N\C, 3
+, class,     D,   3
+
+<?php
+class C { function f() { return new C; } }
+?>
+C, declare-class, C, 2
+C, new,           C, 2
+
+<?php
+new $v;
+?>
+
+<?php
+new (C::class);
+?>
+, class, C, 2
+
+<?php
+new (C::class(D::class));
+?>
+, class, C, 2
+, class, D, 2
+
+# -------------------------------------------------------------------------- T_PAAMAYIM_NEKUDOTAYIM
+
+<?php
+A::class;
+?>
+, class, A, 2
+
+<?php
+A::call();
+B::READONLY;
+C::$p;
+D::class;
+E::THING;
+?>
+, static, A, 2
+, static, B, 3
+, static, C, 4
+, class,  D, 5
+, static, E, 6
+
+<?php
+class C extends E { function f() {
+	$var = C::class;
+	self::class;
+	static::class;
+	__CLASS__::class;
+	$var::class;
+	('C')::class;
+	__CLASS__::CONSTANT;
+	$var::CONSTANT;
+	('C')::CONSTANT;
+} }
+?>
+C, declare-class, C, 2
+C, extends, E, 2
+C, class, C, 3
+
+# ----------------------------------------------------------------------------------------- T_TRAIT
+
+<?php
+trait C { }
+?>
+C, declare-trait, C, 2
+
+<?php
+final readonly trait C { }
+?>
+C, declare-trait, C, 2
+
+<?php
+namespace N;
+trait C { }
+?>
+,    namespace,     N,   2
+N\C, declare-trait, N\C, 3
+
+<?php
+namespace N {
+	trait C { }
+}
+?>
+,    namespace,     N,   2
+N\C, declare-trait, N\C, 3
+
+# ------------------------------------------------------------------------------------------- T_USE
+
+<?php
+class C { use T, U; }
+?>
+C, declare-class, C, 2
+C, use,           T, 2
+C, use,           U, 2
+
+<?php
+class C { use T, U; }
+?>
+C, declare-class, C, 2
+C, use,           T, 2
+C, use,           U, 2
+
+<?php
+class C { use T, U { T::f insteadof U as protected g; } }
+?>
+C, declare-class, C, 2
+C, use,           T, 2
+C, use,           U, 2
+C, static,        T, 2
+C, insteadof,     U, 2
+
+<?php
+class C {
+	use T, U { T::f insteadof U as protected g; }
+	use V, W { V::f insteadof W as protected g; }
+}
+?>
+C, declare-class, C, 2
+C, use,           T, 3
+C, use,           U, 3
+C, static,        T, 3
+C, insteadof,     U, 3
+C, use,           V, 4
+C, use,           W, 4
+C, static,        V, 4
+C, insteadof,     W, 4
+
+<?php
+namespace N;
+class C {
+	use T, U {
+		T::f insteadof U as protected g;
+		T::g insteadof U as protected h;
+	}
+}
+?>
+,    namespace,     N,   2
+N\C, declare-class, N\C, 3
+N\C, use,           N\T, 4
+N\C, use,           N\U, 4
+N\C, static,        N\T, 5
+N\C, insteadof,     N\U, 5
+N\C, static,        N\T, 6
+N\C, insteadof,     N\U, 6
+
+<?php
+final class /* */
+//
+C /* */ extends /* */ E /* */ implements /* */ I, /* */ J
+{ /* */ use /* */ T /* */, /* */ U /* */ { /* */ f as private p; } }
+?>
+C, declare-class, C, 4
+C, extends,       E, 4
+C, implements,    I, 4
+C, implements,    J, 4
+C, use,           T, 5
+C, use,           U, 5
+
+# ------------------------------------------------------------------------------------------- T_VAR
+
+<?php
+class C {
+	public D $v;
+	public int $i;
+}
+?>
+C, declare-class, C, 2
+C, variable,      D, 3
+
+<?php
+class C {
+	public D|E|int $v;
+	public D&E&int $w;
+	public (A&B)|C $x;
+}
+?>
+C, declare-class, C, 2
+C, variable,      D, 3
+C, variable,      E, 3
+C, variable,      D, 4
+C, variable,      E, 4
+C, variable,      A, 5
+C, variable,      B, 5
+C, variable,      C, 5
+
+<?php
+class C {
+	/** @var C[] */
+	public array $v;
+}
+?>
+C, declare-class, C, 2
+C, variable,      C, 3
+
+<?php
+class C {
+	/** @var E|string */
+	public D $v;
+}
+?>
+C, declare-class, C, 2
+C, variable,      D, 4
+C, variable,      E, 3
+
+<?php
+class C {
+	/** @var C[]|D[] */
+	public array $v;
+}
+?>
+C, declare-class, C, 2
+C, variable,      C, 3
+C, variable,      D, 3
+
+<?php
+class C {
+	/** @var C[]|(D&E)[] */
+	public array $v;
+}
+?>
+C, declare-class, C, 2
+C, variable,      C, 3
+C, variable,      D, 3
+C, variable,      E, 3

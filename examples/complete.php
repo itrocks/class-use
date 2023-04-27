@@ -19,7 +19,7 @@ $index->save();
 echo "\nThese are all class uses into the " . Index::class . " class:\n";
 $found = $index->search([T_CLASS => Index::class]);
 foreach ($found as $key => $use) {
-	[, $use, $type, $file, $line, $token_key] = $use;
+	[, $type, $use, $file, $line, $token_key] = $use;
 	$type = Name::OF[$type];
 	if (!$key) {
 		echo "    the class is into file $file\n";
@@ -33,7 +33,7 @@ foreach ($found as $key => $use) {
 echo "\nThese are all use of the class " . Index::class . ":\n";
 $found = $index->search([T_USE => Index::class]);
 foreach ($found as $key => $use) {
-	[$class,, $type, $file, $line, $token_key] = $use;
+	[$class, $type,, $file, $line, $token_key] = $use;
 	$type = Name::OF[$type];
 	echo "#$key. $type into $file";
 	if ($class) echo " class $class";
@@ -45,7 +45,7 @@ foreach ($found as $key => $use) {
 
 $class = Index::class;
 echo "\nThese are all the new class $class uses:\n";
-$found = $index->search([T_USE => Index::class, T_TYPE => T_NEW]);
+$found = $index->search([T_TYPE => T_NEW, T_USE => Index::class]);
 foreach ($found as $key => $use) {
 	[$class,,, $file, $line, $token_key] = $use;
 	echo "#$key. into $file";
@@ -59,7 +59,7 @@ foreach ($found as $key => $use) {
 $class = Index::class;
 $file  = 'src/Console.php';
 echo "\nThese are all the static class $class uses into the file $file\n";
-$found = $index->search([T_USE => Index::class, T_FILE => $file, T_TYPE => T_STATIC]);
+$found = $index->search([T_TYPE => T_STATIC, T_USE => Index::class, T_FILE => $file]);
 foreach ($found as $key => $use) {
 	[$class,,,, $line, $token_key] = $use;
 	echo "#$key. in";
