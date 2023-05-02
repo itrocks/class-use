@@ -10,7 +10,6 @@ class Scanner
 	];
 
 	//------------------------------------------------------------------------------------ TOKEN SETS
-	protected const CLASS_NAME_END  = [T_EXTENDS, T_IMPLEMENTS, T_STRING, '{'];
 	protected const CLASS_TOKENS    = [T_NAME_FULLY_QUALIFIED, T_NAME_QUALIFIED, T_STRING];
 	protected const IGNORE_TOKENS   = [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT];
 	protected const VARIABLE_TOKENS = [T_CONST, T_FUNCTION, ...self::CLASS_TOKENS, T_VARIABLE];
@@ -53,9 +52,6 @@ class Scanner
 	//------------------------------------------------------------------------------ $next_references
 	/** [string $class, int|string $type, string $use, int $line, int $token_key] */
 	public array $next_references;
-
-	//--------------------------------------------------------------------------------- $parent_token
-	public array $parent_token = [];
 
 	//---------------------------------------------------------------------------------- $parentheses
 	protected int $parentheses;
@@ -100,8 +96,7 @@ class Scanner
 				$this->braces --;
 				if ($this->braces === end($this->class_braces)) {
 					array_pop($this->class_braces);
-					$this->class        = '';
-					$this->parent_token = [];
+					$this->class = '';
 					continue 2;
 				}
 				if ($this->braces === $this->namespace_braces) {
@@ -132,13 +127,8 @@ class Scanner
 
 			case T_CLASS:
 				$this->class_braces[] = $this->braces;
-				do $token = next($tokens); while (!in_array($token[0], self::CLASS_NAME_END, true));
-				if ($token[0] === T_STRING) {
-					$this->class = $this->reference(T_DECLARE_CLASS, $token, key($tokens));
-				}
-				else {
-					prev($tokens);
-				}
+				do $token = next($tokens); while ($token[0] !== T_STRING);
+				$this->class = $this->reference(T_DECLARE_CLASS, $token, key($tokens));
 				if ($this->next_references) $this->appendNextReferences();
 				continue 2;
 
@@ -153,8 +143,6 @@ class Scanner
 
 			case T_EXTENDS:
 				do $token = next($tokens); while (!in_array($token[0], self::CLASS_TOKENS, true));
-				/** @noinspection PhpFieldAssignmentTypeMismatchInspection $token is an array here */
-				$this->parent_token = $token;
 				$this->reference(T_EXTENDS, $token, key($tokens));
 				continue 2;
 
@@ -211,8 +199,10 @@ class Scanner
 				do $token = next($tokens); while (in_array($token[0], self::IGNORE_TOKENS, true));
 				if (in_array($token[0], self::CLASS_TOKENS, true)) {
 					$this->reference($type, $token, key($tokens));
+					continue 2;
 				}
-				elseif (is_string($token) && str_contains('{([])}', $token)) {
+				// anonymous
+				if (is_string($token) && str_contains('{([])}', $token)) {
 					prev($tokens);
 				}
 				continue 2;
@@ -395,10 +385,8 @@ class Scanner
 			case T_STRING:
 				$name = ($this->namespace_use[$token[1]] ?? false)
 					?: ltrim($this->namespace . '\\' . $token[1], '\\');
-				break;
-			default:
-				return '';
 		}
+		/** @noinspection PhpUndefinedVariableInspection Call it with a $token[0] value into switch */
 		$reference = [$this->class, $type, $name, $token[2], $token_key];
 		if (
 			($type === T_CLASS)

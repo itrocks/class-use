@@ -23,9 +23,7 @@ class Scanner_Test extends TestCase
 	];
 
 	//------------------------------------------------------------------------------------ REFERENCES
-	protected const REFERENCES = [
-		T_CLASS, T_USE, T_TYPE, T_LINE
-	];
+	protected const REFERENCES = [T_CLASS, T_USE, T_TYPE, T_LINE];
 
 	//-------------------------------------------------------------------------------- assertComplete
 	protected function assertComplete(Scanner $scanner, array $exceptions = []) : void
@@ -153,6 +151,38 @@ class Scanner_Test extends TestCase
 		return $provide;
 	}
 
+	//------------------------------------------------------------------------------------ testBlocks
+	public function testBlocks() : void
+	{
+		$code = <<<EOT
+
+<?php
+class C { }
+?>
+<html>
+	$o = new C;
+</html>
+<?php
+$o = new C;
+?>
+EOT;
+		$expected_references = [
+			['C', 'declare-class', 'C', 3],
+			['',  'new',           'C', 9]
+		];
+
+		$scanner = new Scanner;
+		$scanner->scan(token_get_all($code));
+
+		foreach ($scanner->references as $key => $reference) {
+			$reference = array_slice($reference, 0, 4);
+			if (isset(Name::OF[$reference[1]])) {
+				$reference[1] = Name::OF[$reference[1]];
+			}
+			$this->assertEquals($expected_references[$key] ?? [], $reference, $this->dataSet());
+		}
+	}
+
 	//---------------------------------------------------------------------------------- testBrackets
 	#[DataProvider('provideBrackets')]
 	public function testBrackets(string $code, array $expected_values = []) : void
@@ -186,8 +216,7 @@ class Scanner_Test extends TestCase
 		if (str_contains($code, 'namespace N;'))   $exceptions = ['namespace' => 'N'];
 		if (str_contains($code, 'namespace A\B;')) $exceptions = ['namespace' => 'A\B'];
 		$this->assertComplete($scanner, $exceptions);
-		$references = new ReflectionProperty(Scanner::class, 'references');
-		$references = $references->getValue($scanner);
+		$references = $scanner->references;
 		foreach ($references as $key => $reference) {
 			$reference = array_slice($reference, 0, 4);
 			if (isset(Name::OF[$reference[1]])) {
