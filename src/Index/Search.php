@@ -30,7 +30,8 @@ trait Search
 				$search1 = $search[T_CLASS];
 			}
 			else {
-				trigger_error('Missing class/use search criterion', E_USER_ERROR);
+				$cache = T_TYPE_USE;
+				$tree  = [T_TYPE => 0, T_USE => 1, T_CLASS => 2];
 			}
 		}
 		elseif (isset($search[T_CLASS])) {
