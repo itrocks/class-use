@@ -1,8 +1,7 @@
 <?php
-namespace ITRocks\Class_Use\Token;
+namespace ITRocks\Class_Use\Index;
 
 use Exception;
-use ITRocks\Class_Use\Index\Cache_Directory;
 use PHPUnit\Framework\TestCase;
 
 class Cache_Directory_Test extends TestCase

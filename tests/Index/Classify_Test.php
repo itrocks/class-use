@@ -1,10 +1,7 @@
 <?php
-namespace ITRocks\Class_Use\Token;
+namespace ITRocks\Class_Use\Index;
 
-use ITRocks\Class_Use\Index\Cache_Directory;
-use ITRocks\Class_Use\Index\Classify;
-use ITRocks\Class_Use\Index\Save;
-use ITRocks\Class_Use\Index\Scan;
+use ITRocks\Class_Use\Token\Scanner;
 use PHPUnit\Framework\TestCase;
 
 class Classify_Test extends TestCase

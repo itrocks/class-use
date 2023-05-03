@@ -25,7 +25,7 @@ trait Save
 	public function save() : void
 	{
 		$this->saved_files_count = 0;
-		$json_flags        = JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES;
+		$json_flags = JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES;
 		if ($this->pretty) {
 			$json_flags |= JSON_PRETTY_PRINT;
 		}

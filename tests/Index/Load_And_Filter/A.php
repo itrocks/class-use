@@ -1,5 +1,5 @@
 <?php
-namespace ITRocks\Class_Use\Tests\Load_And_Filter;
+namespace ITRocks\Class_Use\Tests\Index\Load_And_Filter;
 
 use Attribute;
 
