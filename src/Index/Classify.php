@@ -41,27 +41,24 @@ trait Classify
 			if (!$this->reset) {
 				$this->loadAndFilter($file_name);
 			}
-			if (!$references) {
-				$this->by[T_FILE][$file_name] = [];
-			}
 			foreach ($references as $reference) {
 				[$class, $type, $use, $line, $token_key] = $reference;
+				/** @noinspection DuplicatedCode */
 				if ($class !== '') {
-					$this->by[T_FILE][$file_name][T_CLASS][$class] = true;
+					$this->by[T_FILE][$file_name][T_CLASS][$class][$token_key] = $line;
 					$this->by[T_CLASS]     [$class][$use][$type][$file_name][$token_key] = $line;
 					$this->by[T_CLASS_TYPE][$class][$type][$use][$file_name][$token_key] = $line;
 				}
+				/** @noinspection DuplicatedCode */
 				if ($use !== '') {
-					$this->by[T_FILE][$file_name][T_USE][$use] = true;
+					$this->by[T_FILE][$file_name][T_USE][$use][$token_key] = $line;
 					$this->by[T_USE]     [$use][$class][$type][$file_name][$token_key] = $line;
 					$this->by[T_USE_TYPE][$use][$type][$class][$file_name][$token_key] = $line;
 				}
-				$this->by[T_FILE][$file_name][T_TYPE][$type] = true;
+				/** @noinspection DuplicatedCode */
+				$this->by[T_FILE][$file_name][T_TYPE][$type][$token_key] = $line;
 				$this->by[T_TYPE_CLASS][$type][$class][$use][$file_name][$token_key] = $line;
 				$this->by[T_TYPE_USE]  [$type][$use][$class][$file_name][$token_key] = $line;
-			}
-			foreach ($this->by[T_FILE][$file_name] as &$values) {
-				$values = array_keys($values);
 			}
 		}
 	}
@@ -69,24 +66,28 @@ trait Classify
 	//--------------------------------------------------------------------------------- loadAndFilter
 	protected function loadAndFilter(string $file_name) : void
 	{
-		if (!file_exists($cache_file_name = $this->cacheFileName($file_name, T_FILE))) {
+		// load file references
+		if (isset($this->by[T_FILE][$file_name])) {
+			$file_references = $this->by[T_FILE][$file_name];
+			unset($this->by[T_FILE][$file_name]);
+		}
+		elseif (file_exists($cache_file_name = $this->cacheFileName($file_name, T_FILE))) {
+			$file_references = json_decode(file_get_contents($cache_file_name), JSON_OBJECT_AS_ARRAY);
+		}
+		else {
 			return;
 		}
-		foreach (
-			json_decode(file_get_contents($cache_file_name), JSON_OBJECT_AS_ARRAY) as $type => $values
-		) {
+		// load and filter all referencing files
+		foreach ($file_references as $type => $values) {
 			foreach (static::EXTENDS[$type] as $type) {
-				foreach ($values as $value) {
+				foreach (array_keys($values) as $value) {
 					// load
-					$is_set = isset($this->by[$type][$value]);
-					if (!$is_set && file_exists($cache_file_name = $this->cacheFileName($value, $type))) {
-						$is_set = true;
+					if (!isset($this->by[$type][$value])) {
+						// The case of a reference into T_FILE to a non-existing cache file should never happen.
+						// It would throw an error you may solve with a reset of the index.
 						$this->by[$type][$value] = json_decode(
-							file_get_contents($cache_file_name), JSON_OBJECT_AS_ARRAY
+							file_get_contents($this->cacheFileName($value, $type)), JSON_OBJECT_AS_ARRAY
 						);
-					}
-					if (!$is_set) {
-						continue;
 					}
 					// filter
 					$references =& $this->by[$type][$value];
