@@ -3,11 +3,14 @@ namespace ITRocks\Class_Use\Index;
 
 use PHPUnit\Framework\TestCase;
 
+include_once __DIR__ . '/Test_Common.php';
+
 class Save_Test extends TestCase
 {
 	use Cache_Directory { getCacheDirectory as private originGetCacheDirectory; }
 	use Save;
-	
+	use Test_Common;
+
 	//------------------------------------------------------------------------------------------- $by
 	protected array $by;
 
@@ -18,25 +21,6 @@ class Save_Test extends TestCase
 	public function getCacheDirectory() : string
 	{
 		return __DIR__ . '/cache';
-	}
-
-	//-------------------------------------------------------------------------------- recurseScanDir
-	/** @return string[] */
-	private function recurseScanDir(string $directory, string $parent = '') : array
-	{
-		$files = [];
-		foreach (scandir($directory) as $file) {
-			if (str_starts_with($file, '.')) {
-				continue;
-			}
-			if (is_dir("$directory/$file")) {
-				$files = array_merge($files, $this->recurseScanDir("$directory/$file", "$parent/$file"));
-			}
-			else {
-				$files[] = "$parent/$file";
-			}
-		}
-		return $files;
 	}
 
 	//-------------------------------------------------------------------------------------- testSave
