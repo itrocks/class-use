@@ -34,11 +34,13 @@ class Console
 		return join("\n", [
 			'Scan your PHP project for class uses',
 			'',
-			'usage to calculate cache : ./run [reset] [vendor] [pretty]',
-			'- reset  : purge class use cache and calculate it from scratch',
-			'- vendor : scan class uses into the vendor source code directory too',
-			'- pretty : updated cache files use json pretty print to be human-readable',
-			'usage to get class use info : ./run [class=<class>] [file=<file>] [type=<type>] [use=<class>]',
+			'usage to calculate cache : ./run [home=/path/to/project] [pretty] [reset] [vendor]',
+			'- home:   the project home directory where to scan classes into'
+				. ' (default : current/parent project directory)',
+			'- pretty: updated cache files use json pretty print to be human-readable',
+			'- reset:  purge class use cache and calculate it from scratch',
+			'- vendor: scan class uses into the vendor source code directory too',
+			'usage to search class uses: ./run [class=<class>] [file=<file>] [type=<type>] [use=<class>]',
 			''
 		]);
 	}
@@ -76,7 +78,7 @@ class Console
 			$pretty = '';
 		}
 
-		$index = new Index($flags);
+		$index = new Index($flags, $arguments['home'] ?? '');
 		echo ($flags & Index::RESET) ? 'reset' : 'update';
 		if ($flags & Index::VENDOR) {
 			echo ' with vendor';
@@ -99,7 +101,7 @@ class Console
 
 		$start = microtime(true);
 		$index->save();
-		echo "- saved $index->files_count files in "
+		echo "- saved $index->saved_files_count files in "
 			. $this->showDuration(microtime(true) - $start) . "\n";
 
 		echo date('Y-m-d H:i:s') . "\n";
