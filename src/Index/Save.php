@@ -12,13 +12,19 @@ trait Save
 	//------------------------------------------------------------------------------------------ SAVE
 	const SAVE = [T_CLASS, T_CLASS_TYPE, T_FILE, T_TYPE_CLASS, T_TYPE_USE, T_USE, T_USE_TYPE];
 
+	//--------------------------------------------------------------------------------------- $pretty
+	protected bool $pretty;
+
+	//---------------------------------------------------------------------------- $saved_files_count
+	public int $saved_files_count;
+
 	//----------------------------------------------------------------------------------- $start_time
 	public int $start_time;
 
 	//------------------------------------------------------------------------------------------ save
 	public function save() : void
 	{
-		$this->files_count = 0;
+		$this->saved_files_count = 0;
 		$json_flags        = JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES;
 		if ($this->pretty) {
 			$json_flags |= JSON_PRETTY_PRINT;
@@ -37,7 +43,7 @@ trait Save
 				$file_name = $this->cacheFileName($name, $type);
 				file_put_contents($file_name, json_encode($references, $json_flags));
 				touch($file_name, $this->start_time);
-				$this->files_count ++;
+				$this->saved_files_count ++;
 			}
 		}
 

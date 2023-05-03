@@ -6,8 +6,33 @@ use ITRocks\Class_Use\Token;
 trait Scan
 {
 
+	//---------------------------------------------------------------------------- $directories_count
+	public int $directories_count = 0;
+
+	//---------------------------------------------------------------------------------- $file_tokens
+	/**
+	 * File tokens will be kept during scan only if this was initialized using keepFileTokens().
+	 * [string $file_path_relative_to_project => array $file_tokens]
+	 */
+	public array $file_tokens;
+
+	//---------------------------------------------------------------------------------- $files_count
+	public int $files_count = 0;
+
+	//----------------------------------------------------------------------------- $references_count
+	public int $references_count = 0;
+
 	//-------------------------------------------------------------------------------------- $scanner
 	public Token\Scanner $scanner;
+
+	//-------------------------------------------------------------------------------- keepFileTokens
+	/** Keep file tokens in memory : this allows other libraries to avoid re-scanning file tokens */
+	public function keepFileTokens() : void
+	{
+		if (!isset($this->file_tokens)) {
+			$this->file_tokens = [];
+		}
+	}
 
 	//--------------------------------------------------------------------------------- scanDirectory
 	public function scanDirectory(string $directory = '', int $depth = 0) : void
