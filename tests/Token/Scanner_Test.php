@@ -160,10 +160,10 @@ class Scanner_Test extends TestCase
 class C { }
 ?>
 <html>
-	$o = new C;
+	new C;
 </html>
 <?php
-$o = new C;
+new C;
 ?>
 EOT;
 		$expected_references = [
@@ -179,7 +179,7 @@ EOT;
 			if (isset(Name::OF[$reference[1]])) {
 				$reference[1] = Name::OF[$reference[1]];
 			}
-			$this->assertEquals($expected_references[$key] ?? [], $reference, $this->dataSet());
+			self::assertEquals($expected_references[$key] ?? [], $reference, $this->dataSet());
 		}
 	}
 
@@ -189,7 +189,7 @@ EOT;
 	{
 		$scanner = new Scanner;
 		$scanner->scan(token_get_all($code));
-		$this->assertComplete($scanner, $expected_values);
+		self::assertComplete($scanner, $expected_values);
 	}
 
 	//------------------------------------------------------------------------------ testNamespaceUse
@@ -199,7 +199,7 @@ EOT;
 		$scanner = new Scanner;
 		$scanner->scan(token_get_all($code));
 		$namespace_use = new ReflectionProperty(Scanner::class, 'namespace_use');
-		$this->assertEquals(
+		self::assertEquals(
 			$expected_namespace_use,
 			$namespace_use->getValue($scanner),
 			$this->dataSet()
@@ -215,18 +215,18 @@ EOT;
 		$exceptions = [];
 		if (str_contains($code, 'namespace N;'))   $exceptions = ['namespace' => 'N'];
 		if (str_contains($code, 'namespace A\B;')) $exceptions = ['namespace' => 'A\B'];
-		$this->assertComplete($scanner, $exceptions);
+		self::assertComplete($scanner, $exceptions);
 		$references = $scanner->references;
 		foreach ($references as $key => $reference) {
 			$reference = array_slice($reference, 0, 4);
 			if (isset(Name::OF[$reference[1]])) {
 				$reference[1] = Name::OF[$reference[1]];
 			}
-			$this->assertEquals($expected_references[$key] ?? [], $reference, $this->dataSet());
+			self::assertEquals($expected_references[$key] ?? [], $reference, $this->dataSet());
 		}
 		foreach (array_slice($expected_references, count($references)) as $expected_reference) {
 			/** @noinspection PhpUnitMisorderedAssertEqualsArgumentsInspection always false */
-			$this->assertEquals($expected_reference, [], $this->dataSet());
+			self::assertEquals($expected_reference, [], $this->dataSet());
 		}
 	}
 
