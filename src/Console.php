@@ -24,7 +24,9 @@ class Console
 				$value = $arguments[$key + 1];
 				unset($arguments[$key + 1]);
 			}
-			$arguments[$name] = str_replace('/', '\\', $value);
+			$arguments[$name] = in_array($name, ['class', 'type', 'use'], true)
+				? str_replace('/', '\\', $value)
+				: $value;
 		}
 	}
 
