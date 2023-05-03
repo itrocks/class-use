@@ -21,6 +21,11 @@ trait Cache_Directory
 	protected bool $vendor;
 
 	//--------------------------------------------------------------------------------- cacheFileName
+	/**
+	 * @param $name string   The name of the php file, relative to the home directory
+	 * @param $type int|null The type of the cache file
+	 * @return string The json cache filename, absolute
+	 */
 	protected function cacheFileName(string $name, int $type = null) : string
 	{
 		$directory = $this->getCacheDirectory();
@@ -81,9 +86,13 @@ trait Cache_Directory
 	}
 
 	//--------------------------------------------------------------------------------------- setHome
-	protected function setHome(string $home) : void
+	/** @throws Exception */
+	protected function setHome(string $home = '') : void
 	{
 		if ($home !== '') {
+			if (!is_dir($home)) {
+				throw new Exception("Directory $home does not exist");
+			}
 			$this->home        = realpath($home);
 			$this->home_length = strlen($this->home) + 1;
 			return;
