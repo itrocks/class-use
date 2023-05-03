@@ -97,13 +97,16 @@ trait Cache_Directory
 			$this->home_length = strlen($this->home) + 1;
 			return;
 		}
-		$home = str_replace('\\', '/', getcwd());
+		$directory = $home = str_replace('\\', '/', getcwd());
 		while (
 			str_contains($home, '/')
 			&& !file_exists("$home/composer.json")
 			&& !file_exists("$home/composer.lock")
 		) {
 			$home = substr($home, 0, strrpos($home, '/'));
+		}
+		if ($home === '') {
+			throw new Exception("Directory $directory does not contain a php project");
 		}
 		$this->home        = $home;
 		$this->home_length = strlen($this->home) + 1;
