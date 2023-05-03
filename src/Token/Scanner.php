@@ -218,7 +218,6 @@ class Scanner
 
 			case T_NAMESPACE:
 				do $token = next($tokens); while (in_array($token[0], self::IGNORE_TOKENS, true));
-				$this->reference(T_NAMESPACE, $token, key($tokens));
 				$this->namespace = $token[1];
 				do $token = next($tokens); while (is_array($token) || !str_contains(';{', $token));
 				if ($token === '{') {
