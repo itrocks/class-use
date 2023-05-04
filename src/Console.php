@@ -1,17 +1,37 @@
 <?php
 namespace ITRocks\Class_Use;
 
+use Error;
 use ITRocks\Class_Use\Token\Name;
 
 class Console
 {
 
+	//------------------------------------------------------------------------------ SEARCH ARGUMENTS
+	const ASSOCIATIVE = 'associative';
+	const BENCHMARK   = 'benchmark';
+	const DATA        = 'data';
+	const TOTAL       = 'total';
+
+	//------------------------------------------------------------------------------- CLASS_ARGUMENTS
+	const CLASS_ARGUMENTS = ['class', 'type', 'use'];
+
+	//------------------------------------------------------------------------------------------ HOME
+	const HOME = 'home';
+
+	//-------------------------------------------------------------------------------- SCAN ARGUMENTS
+	const PRETTY = 'pretty';
+	const RESET  = 'reset';
+	const UPDATE = 'update';
+	const VENDOR = 'vendor';
+
 	//--------------------------------------------------------------------------------- nameArguments
 	/** @var string[] $arguments */
 	protected function nameArguments(array &$arguments) : void
 	{
-		foreach ($arguments as $key => $argument) {
+		foreach ($arguments as $key => &$argument) {
 			if (!str_contains($argument, '=')) {
+				$argument = strtolower($argument);
 				continue;
 			}
 			unset($arguments[$key]);
@@ -24,10 +44,17 @@ class Console
 				$value = $arguments[$key + 1];
 				unset($arguments[$key + 1]);
 			}
-			$arguments[$name] = in_array($name, ['class', 'type', 'use'], true)
+			$name = strtolower($name);
+			$arguments[$name] = in_array($name, static::CLASS_ARGUMENTS, true)
 				? str_replace('/', '\\', $value)
 				: $value;
 		}
+	}
+
+	//-------------------------------------------------------------------------------------- newIndex
+	protected function newIndex(int $flags = 0, string $home = '') : Index
+	{
+		return new Index($flags, $home);
 	}
 
 	//---------------------------------------------------------------------------- quickDocumentation
@@ -66,22 +93,22 @@ class Console
 	protected function scan(array $arguments) : void
 	{
 		$flags = 0;
-		if (in_array('reset', $arguments, true)) {
+		if (in_array(self::RESET, $arguments, true)) {
 			$flags |= Index::RESET;
 		}
-		if (in_array('vendor', $arguments, true)) {
+		if (in_array(self::VENDOR, $arguments, true)) {
 			$flags |= Index::VENDOR;
 		}
-		if (in_array('pretty', $arguments, true)) {
+		if (in_array(self::PRETTY, $arguments, true)) {
 			$flags |= Index::PRETTY;
-			$pretty = ' pretty';
+			$pretty = ' ' . self::PRETTY;
 		}
 		else {
 			$pretty = '';
 		}
 
-		$index = new Index($flags, $arguments['home'] ?? '');
-		echo ($flags & Index::RESET) ? 'reset' : 'update';
+		$index = $this->newIndex($flags, $arguments[self::HOME] ?? '');
+		echo ($flags & Index::RESET) ? self::RESET : self::UPDATE;
 		if ($flags & Index::VENDOR) {
 			echo ' with vendor';
 		}
@@ -116,38 +143,58 @@ class Console
 	/** @param $arguments string[] [int $type => string $name] */
 	protected function search(array $arguments) : void
 	{
+		$of_name = array_flip(Name::OF);
 		$options = [];
 		$search  = [];
 		foreach ($arguments as $key => $value) {
 			if (is_string($key)) {
-				$search[array_flip(Name::OF)[$key]] = $value;
+				$search[$of_name[$key]] = $value;
+			}
+			elseif ($value === 'associative') {
+				$options[$value] = T_STRING;
 			}
 			else {
-				$options[] = $value;
+				$options[$value] = true;
 			}
+		}
+		if ($value = ($search[T_TYPE] ?? false)) {
+			if (str_starts_with($value, 't_') || str_starts_with($value, 'T_')) {
+				try {
+					$search[T_TYPE] = constant(strtoupper($value));
+				}
+				catch (Error) {
+				}
+			}
+			else {
+				$search[T_TYPE] = $of_name[str_replace('_', '-', $value)] ?? $value;
+			}
+		}
+		if ($options[self::ASSOCIATIVE] ?? $options[self::PRETTY] ?? false) {
+			$options[self::DATA] = true;
 		}
 
 		$start  = microtime(true);
-		$index  = Index::get();
-		$result = $index->search($search);
+		$index  = $this->newIndex(0, $arguments[self::HOME] ?? '');
+		$result = $index->search($search, $options[self::ASSOCIATIVE] ?? false);
 		$stop   = microtime(true);
-		if (in_array('detail', $options, true)) {
-			print_r($result);
+		if ($options[self::DATA] ?? false) {
+			echo json_encode($result, ($options[self::PRETTY] ?? false) ? JSON_PRETTY_PRINT : 0);
+			if ($options[self::BENCHMARK] ?? $options[self::TOTAL] ?? false) {
+				echo "\n";
+			}
 		}
-		echo count($result) . " results\n";
-		echo 'first duration  = ' . $this->showDuration($stop - $start) . "\n";
-
-		$start = microtime(true);
-		$index = Index::get();
-		$index->search($search);
-		echo 'second duration = ' . $this->showDuration(microtime(true) - $start) . "\n";
-
-		$start = microtime(true);
-		$index = Index::get();
-		$index->search($search);
-		echo 'third duration  = ' . $this->showDuration(microtime(true) - $start) . "\n";
-
-		echo 'memory = ' . ceil(memory_get_peak_usage(true) / 1024 / 1024) . " Mo\n";
+		if (($options[self::TOTAL] ?? false) || !($options[self::DATA] ?? false)) {
+			echo count($result) . " results\n";
+		}
+		if ($options[self::BENCHMARK] ?? false) {
+			echo 'duration  = ' . $this->showDuration($stop - $start) . "\n";
+			for ($i = 2; $i < 8; $i ++) {
+				$start = microtime(true);
+				$index->search($search, $options[self::ASSOCIATIVE] ?? false);
+				echo "duration $i = " . $this->showDuration(microtime(true) - $start) . "\n";
+			}
+			echo 'memory = ' . ceil(memory_get_peak_usage(true) / 1024 / 1024) . " Mo\n";
+		}
 	}
 
 	//---------------------------------------------------------------------------------- showDuration
