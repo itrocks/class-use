@@ -41,19 +41,36 @@ class Search_Test extends TestCase
 		return __DIR__ . '/cache/cached.json';
 	}
 
-	//------------------------------------------------------------------------------- testAssociative
-	public function testAssociative() : void
+	//------------------------------------------------------------------------- testAssociativeString
+	public function testAssociativeString() : void
 	{
-		$actual   = $this->search([T_CLASS => 'C'], true);
+		$actual   = $this->search([T_CLASS => 'C'], T_STRING);
 		$expected = [[
-			T_CLASS     => 'C',
-			T_TYPE      => T_DECLARE_CLASS,
-			T_USE       => 'C',
-			T_FILE      => 'C.php',
-			T_LINE      => 2,
-			T_TOKEN_KEY => 3
+			'class'     => 'C',
+			'type'      => T_DECLARE_CLASS,
+			'use'       => 'C',
+			'file'      => 'C.php',
+			'line'      => 2,
+			'token_key' => 3
 		]];
 		self::assertEquals($expected, $actual);
+	}
+
+	//--------------------------------------------------------------------------- testAssociativeType
+	public function testAssociativeType() : void
+	{
+		foreach ([T_TYPE, true] as $associative) {
+			$actual   = $this->search([T_CLASS => 'C'], $associative);
+			$expected = [[
+				T_CLASS     => 'C',
+				T_TYPE      => T_DECLARE_CLASS,
+				T_USE       => 'C',
+				T_FILE      => 'C.php',
+				T_LINE      => 2,
+				T_TOKEN_KEY => 3
+			]];
+			self::assertEquals($expected, $actual);
+		}
 	}
 
 	//------------------------------------------------------------------------------------- testClass
