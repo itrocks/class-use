@@ -12,9 +12,11 @@ class Save_Test extends TestCase
 	use Test_Common;
 
 	//------------------------------------------------------------------------------------------- $by
+	/** @var array<int,array<int|string,array<int|string,array<int|string,array<string,array<int,int>>|int>>>> */
 	protected array $by;
 
 	//---------------------------------------------------------------------------------------- $files
+	/** @var string[] */
 	protected array $files;
 
 	//---------------------------------------------------------------------------------------- $reset

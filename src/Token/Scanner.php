@@ -422,6 +422,10 @@ class Scanner
 	}
 
 	//------------------------------------------------------------------------------------------ scan
+	/**
+	 * @param array<int,array{int,string,int}|string> $tokens
+	 * <int $token_key, array $tokens{int $type, string $value, int $line} | string $value>
+	 */
 	public function scan(array $tokens) : void
 	{
 		$this->attribute             = '';

@@ -13,13 +13,14 @@ trait Classify
 
 	//------------------------------------------------------------------------------------------- $by
 	/**
-	 * T_CLASS_     => int $line[string $class][string $use][string $type][string $file][int]
-	 * T_CLASS_TYPE => int $line[string $class][string $type][string $use][string $file][int]
-	 * T_FILE       => string $reference[string $file_name][string $reference_type][int]
-	 * T_TYPE_CLASS => int $line[string $type][string $class][string $use][string $file][int]
-	 * T_TYPE_USE   => int $line[string $type][string $use][string $class][string $file][int]
-	 * T_USE        => int $line[string $use][string $class][string $type][string $file][int]
-	 * T_USE_TYPE   => int $line[string $use][string $type][string $class][string $file][int]
+	 * @var array<int,array<int|string,array<int|string,array<int|string,array<string,array<int,int>>|int>>>>
+	 * <int=T_CLASS,      <string $class, <string $use, <int|string $type, <string $file, <int $token, int $line>>>>>>
+	 * <int=T_CLASS_TYPE, <string $class, <int|string $type, <string $use, <string $file, <int $token, int $line>>>>>>
+	 * <int=T_FILE,       <string $file_name, <int $reference_type, <int $token_key, int $line>>>>
+	 * <int=T_TYPE_CLASS, <int|string $type, <string $class, <string $use, <string $file, <int $token, int $line>>>>>>
+	 * <int=T_TYPE_USE,   <int|string $type, <string $use, <string $class, <string $file, <int $token, int $line>>>>>>
+	 * <int=T_USE,        <string $use, <string $class, <int|string $type, <string $file, <int $token, int $line>>>>>>
+	 * <int=T_USE_TYPE,   <string $use, <int|string $type, <string $class, <string $file, <int $token, int $line>>>>>>
 	 */
 	protected array $by;
 

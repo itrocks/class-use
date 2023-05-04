@@ -15,18 +15,25 @@ class Scan_Test extends TestCase
 	}
 
 	//----------------------------------------------------------------------------------------- $call
+	/**
+	 * @var array<string,array<string,bool>>
+	 * <string $method, <string $directory_file, bool $call>>
+	 */
 	private array $call = [];
 
 	//---------------------------------------------------------------------------------------- $files
+	/** @var string[] */
 	protected array $files;
 
 	//----------------------------------------------------------------------------------------- $mock
+	/** @var array<string,bool> */
 	private array $mock = [
 		'scanDirectory' => true,
 		'scanFile'      => true
 	];
 
 	//----------------------------------------------------------------------------------- $references
+	/** @var array<string,array<array{string,int|string,string,int,int}>> */
 	protected array $references;
 
 	//---------------------------------------------------------------------------------------- $reset
@@ -86,9 +93,9 @@ class Scan_Test extends TestCase
 	//--------------------------------------------------------------------- testKeepFileTokensAlready
 	public function testKeepFileTokensAlready() : void
 	{
-		$this->file_tokens = [__FILE__ => 'ok'];
+		$this->file_tokens = [__FILE__ => ['ok']];
 		$this->keepFileTokens();
-		self::assertEquals([__FILE__ => 'ok'], $this->file_tokens);
+		self::assertEquals([__FILE__ => ['ok']], $this->file_tokens);
 		unset($this->file_tokens);
 	}
 

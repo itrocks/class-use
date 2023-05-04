@@ -15,18 +15,22 @@ class Classify_Test extends TestCase
 	use Scan;
 
 	//----------------------------------------------------------------------------------------- $call
+	/** @var array<string,bool> */
 	private array $call = [];
 
 	//---------------------------------------------------------------------------------------- $files
+	/** @var string[] */
 	protected array $files;
 
 	//----------------------------------------------------------------------------------------- $mock
+	/** @var array<string,bool> */
 	private array $mock = [
 		'cacheFileName'     => true,
 		'getCacheDirectory' => true
 	];
 
 	//----------------------------------------------------------------------------------- $references
+	/** @var array<string,array<array{string,int|string,string,int,int}>> */
 	protected array $references;
 
 	//---------------------------------------------------------------------------------------- $reset

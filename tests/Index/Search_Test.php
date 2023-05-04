@@ -8,6 +8,7 @@ class Search_Test extends TestCase
 	use Search;
 
 	//------------------------------------------------------------------------------------------- $by
+	/** @var array<int,array<int|string,array<int|string,array<int|string,array<string,array<int,int>>|int>>>> */
 	protected array $by = [
 		T_CLASS => [
 			'C' => ['C' => [T_DECLARE_CLASS => ['C.php' => [3 => 2]]]],

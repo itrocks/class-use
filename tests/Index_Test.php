@@ -229,13 +229,10 @@ class Index_Test extends TestCase
 	{
 		$index = new class extends Index {
 			//----------------------------------------------------------------------------------------- $call
+			/** @var array<string,bool> */
 			public array $call = ['scanDirectory' => false, 'classify' => false, 'save' => false];
-			public function classify() : void {
-				$this->call[__FUNCTION__] = true;
-			}
-			public function save() : void {
-				$this->call[__FUNCTION__] = true;
-			}
+			public function classify() : void { $this->call[__FUNCTION__] = true; }
+			public function save()     : void { $this->call[__FUNCTION__] = true; }
 			public function scanDirectory(string $directory = '', int $depth = 0) : void {
 				$this->call[__FUNCTION__] = true;
 			}

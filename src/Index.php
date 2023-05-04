@@ -18,13 +18,13 @@ class Index
 	public const VENDOR = 1;
 
 	//---------------------------------------------------------------------------------------- $files
-	/** @var string[] string $file_name[] */
+	/** @var string[] */
 	protected array $files = [];
 
 	//----------------------------------------------------------------------------------- $references
 	/**
-	 * @var array< string, array< array{ string, int|string, string, int, int } > >
-	 * [string $file => [string $class, int|string $type, string $use, int $line, int $token_key]]
+	 * @var array<string,array<array{string,int|string,string,int,int}>>
+	 * <string $file, <{string $class, int|string $type, string $use, int $line, int $token_key}>>
 	 */
 	protected array $references = [];
 

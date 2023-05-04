@@ -27,6 +27,10 @@ class Scanner_Test extends TestCase
 	protected const REFERENCES = [T_CLASS, T_USE, T_TYPE, T_LINE];
 
 	//-------------------------------------------------------------------------------- assertComplete
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param array<string,array<int>|int|string> $exceptions
+	 */
 	protected function assertComplete(Scanner $scanner, array $exceptions = []) : void
 	{
 		foreach (static::DEFAULT_EXPECTED_VALUES as $property_name => $expected) {
@@ -49,6 +53,7 @@ class Scanner_Test extends TestCase
 	}
 
 	//------------------------------------------------------------------------------- provideBrackets
+	/** @return array<array{0:string,1?:array<string,array<int>|int|string>}> */
 	public static function provideBrackets() : array
 	{
 		return [
@@ -97,6 +102,7 @@ class Scanner_Test extends TestCase
 	}
 
 	//--------------------------------------------------------------------------- provideNamespaceUse
+	/** @return array<array{string,array<string,string>}> */
 	public static function provideNamespaceUse() : array
 	{
 		return [
@@ -120,6 +126,7 @@ class Scanner_Test extends TestCase
 	}
 
 	//------------------------------------------------------------------------------ provideReference
+	/** @return array<array{int,array{int,array{int,string,int}},array{string,int,string,int,int}}> */
 	public static function provideReference() : array
 	{
 		return [
@@ -133,6 +140,7 @@ class Scanner_Test extends TestCase
 	}
 
 	//----------------------------------------------------------------------------- provideReferences
+	/** @return array<string,array{string,array{string,string,string,string}}> */
 	public static function provideReferences() : array
 	{
 		$counter = 0;
@@ -155,10 +163,9 @@ class Scanner_Test extends TestCase
 			$references          = ($references === '') ? [] : explode("\n", $references);
 			foreach ($references as &$reference) {
 				$reference = array_map(
-					function(string $value) { return trim($value); },
+					function(string $value) : string { return trim($value); },
 					explode(',', $reference)
 				);
-				$reference[3] = intval($reference[3]);
 			}
 			$provide[$name . ':' . ++$counter] = [$code, $references];
 		}
@@ -198,6 +205,7 @@ EOT;
 	}
 
 	//---------------------------------------------------------------------------------- testBrackets
+	/** @param array<string,array<int>|int|string> $expected_values */
 	#[DataProvider('provideBrackets')]
 	public function testBrackets(string $code, array $expected_values = []) : void
 	{
@@ -207,6 +215,7 @@ EOT;
 	}
 
 	//------------------------------------------------------------------------------ testNamespaceUse
+	/** @param array<string,string> $expected_namespace_use */
 	#[DataProvider('provideNamespaceUse')]
 	public function testNamespaceUse(string $code, array $expected_namespace_use) : void
 	{
@@ -221,6 +230,11 @@ EOT;
 	}
 
 	//--------------------------------------------------------------------------------- testReference
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param array{int,array{int,string,int}} $arguments
+	 * @param array{string,int,string,int,int} $expected
+	 */
 	#[DataProvider('provideReference')]
 	public function testReference(int $index, array $arguments, array $expected) : void
 	{
@@ -253,6 +267,7 @@ EOT;
 	}
 
 	//-------------------------------------------------------------------------------- testReferences
+	/** @param array{string,array{string,string,string,string}} $expected_references */
 	#[DataProvider('provideReferences')]
 	public function testReferences(string $code, array $expected_references) : void
 	{

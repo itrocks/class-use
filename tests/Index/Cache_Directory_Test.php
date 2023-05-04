@@ -12,9 +12,11 @@ class Cache_Directory_Test extends TestCase
 	}
 
 	//----------------------------------------------------------------------------------------- $call
+	/** @var array<string,bool> */
 	private array $call = [];
 
 	//----------------------------------------------------------------------------------------- $mock
+	/** @var array<string,bool> */
 	private array $mock = [
 		'getCacheDirectory' => true,
 		'purgeCache'        => true

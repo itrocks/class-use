@@ -26,7 +26,7 @@ class Console
 	const VENDOR = 'vendor';
 
 	//--------------------------------------------------------------------------------- nameArguments
-	/** @param $arguments string[] */
+	/** @param array<int|string,string> $arguments */
 	protected function nameArguments(array &$arguments) : void
 	{
 		foreach ($arguments as $key => &$argument) {
@@ -75,7 +75,7 @@ class Console
 	}
 
 	//------------------------------------------------------------------------------------------- run
-	/** @param $arguments string[] */
+	/** @param array<int|string,string> $arguments */
 	public function run(array $arguments) : void
 	{
 		$this->nameArguments($arguments);
@@ -89,7 +89,7 @@ class Console
 	}
 
 	//------------------------------------------------------------------------------------------ scan
-	/** @param $arguments string[] */
+	/** @param array<int|string,string> $arguments */
 	protected function scan(array $arguments) : void
 	{
 		$flags = 0;
@@ -140,7 +140,7 @@ class Console
 	}
 
 	//---------------------------------------------------------------------------------------- search
-	/** @param $arguments string[] [int $type => string $name] */
+	/** @param array<int|string,string> $arguments <int $type, string $name> */
 	protected function search(array $arguments) : void
 	{
 		$of_name = array_flip(Name::OF);
@@ -198,7 +198,7 @@ class Console
 	}
 
 	//---------------------------------------------------------------------------------- showDuration
-	protected function showDuration(float $duration, $decimals = 3) : string
+	protected function showDuration(float $duration, int $decimals = 3) : string
 	{
 		if ($duration < .1) {
 			return round($duration * 1000, $decimals) . ' ms';
