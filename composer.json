@@ -12,6 +12,7 @@
 	},
 	"require-dev": {
 		"ext-xdebug":      "*",
+		"phpstan/phpstan": "^1.10",
 		"phpunit/phpunit": "^10.1"
 	},
 	"type": "library"
