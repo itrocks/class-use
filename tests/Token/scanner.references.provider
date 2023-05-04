@@ -283,13 +283,15 @@ use V\P\N;
 class C { function() {
 	N::class;
 	N\O::class;
+	namespace\T::class;
 } }
 new D;
 ?>
 A\B\C, declare-class, A\B\C,   4
 A\B\C, class,         V\P\N,   5
 A\B\C, class,         V\P\N\O, 6
-,      new,           A\B\D,   8
+A\B\C, class,         A\B\T,   7
+,      new,           A\B\D,   9
 
 <?php
 namespace A\B {

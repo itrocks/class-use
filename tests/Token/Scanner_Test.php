@@ -3,6 +3,7 @@ namespace ITRocks\Class_Use\Token;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use ReflectionMethod;
 use ReflectionProperty;
 
 class Scanner_Test extends TestCase
@@ -118,6 +119,19 @@ class Scanner_Test extends TestCase
 		];
 	}
 
+	//------------------------------------------------------------------------------ provideReference
+	public static function provideReference() : array
+	{
+		return [
+			[1, [T_NEW, [T_NAME_FULLY_QUALIFIED, '\A', 1], 2],   ['C', T_NEW, 'A', 1, 2]],
+			[2, [T_NEW, [T_NAME_QUALIFIED, 'A\B', 1], 2],        ['C', T_NEW, 'U\N\B', 1, 2]],
+			[3, [T_NEW, [T_NAME_QUALIFIED, 'C\D', 1], 2],        ['C', T_NEW, 'N\S\C\D', 1, 2]],
+			[4, [T_NEW, [T_NAME_RELATIVE, 'namespace\A', 1], 2], ['C', T_NEW, 'N\S\A', 1, 2]],
+			[5, [T_NEW, [T_STRING, 'A', 1], 2],                  ['C', T_NEW, 'U\N', 1, 2]],
+			[5, [T_NEW, [T_STRING, 'C', 1], 2],                  ['C', T_NEW, 'N\S\C', 1, 2]],
+		];
+	}
+
 	//----------------------------------------------------------------------------- provideReferences
 	public static function provideReferences() : array
 	{
@@ -204,6 +218,38 @@ EOT;
 			$namespace_use->getValue($scanner),
 			$this->dataSet()
 		);
+	}
+
+	//--------------------------------------------------------------------------------- testReference
+	#[DataProvider('provideReference')]
+	public function testReference(int $index, array $arguments, array $expected) : void
+	{
+		$scanner = new Scanner;
+		$class   = new ReflectionProperty(Scanner::class, 'class');
+		$class->setValue($scanner, 'C');
+		$namespace = new ReflectionProperty(Scanner::class, 'namespace');
+		$namespace->setValue($scanner, 'N\S');
+		$namespace_use = new ReflectionProperty(Scanner::class, 'namespace_use');
+		$namespace_use->setValue($scanner, ['A' => 'U\N']);
+		$reference = new ReflectionMethod(Scanner::class, 'reference');
+		/** @noinspection PhpUnhandledExceptionInspection Will be valid */
+		$reference->invokeArgs($scanner, $arguments);
+		$references = new ReflectionProperty(Scanner::class, 'references');
+		self::assertEquals($expected, $references->getValue($scanner)[0], $index);
+	}
+
+	//----------------------------------------------------------------- testReferenceInvalidTokenType
+	public function testReferenceInvalidTokenType() : void
+	{
+		$scanner = new Scanner;
+		$class   = new ReflectionProperty(Scanner::class, 'class');
+		$class->setValue($scanner, 'C');
+		$references = new ReflectionProperty(Scanner::class, 'references');
+		$references->setValue($scanner, []);
+		$reference = new ReflectionMethod(Scanner::class, 'reference');
+		/** @noinspection PhpUnhandledExceptionInspection Will be valid */
+		$reference->invoke($scanner, T_NEW, [0, 'A', 1], 2);
+		self::assertEquals([], $references->getValue($scanner));
 	}
 
 	//-------------------------------------------------------------------------------- testReferences

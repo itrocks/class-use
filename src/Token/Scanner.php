@@ -10,7 +10,7 @@ class Scanner
 	];
 
 	//------------------------------------------------------------------------------------ TOKEN SETS
-	protected const CLASS_TOKENS    = [T_NAME_FULLY_QUALIFIED, T_NAME_QUALIFIED, T_STRING];
+	protected const CLASS_TOKENS    = [T_NAME_FULLY_QUALIFIED, T_NAME_QUALIFIED, T_NAME_RELATIVE, T_STRING];
 	protected const IGNORE_TOKENS   = [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT];
 	protected const VARIABLE_TOKENS = [T_CONST, T_FUNCTION, ...self::CLASS_TOKENS, T_VARIABLE];
 
@@ -50,14 +50,20 @@ class Scanner
 	protected array $namespace_use;
 
 	//------------------------------------------------------------------------------ $next_references
-	/** [string $class, int|string $type, string $use, int $line, int $token_key] */
+	/**
+	 * @var array< array{ string, int|string, string, int, int } >
+	 * [[string $class, int|string $type, string $use, int $line, int $token_key]]
+	 */
 	public array $next_references;
 
 	//---------------------------------------------------------------------------------- $parentheses
 	protected int $parentheses;
 
 	//----------------------------------------------------------------------------------- $references
-	/** [string $class, int|string $type, string $use, int $line, int $token_key] */
+	/**
+	 * @var array< array{ string, int|string, string, int, int } >
+	 * [[string $class, int|string $type, string $use, int $line, int $token_key]]
+	 */
 	public array $references;
 
 	//-------------------------------------------------------------------------- appendNextReferences
@@ -74,7 +80,7 @@ class Scanner
 	}
 
 	//-------------------------------------------------------------------------------------- phpBlock
-	/** @param $tokens int[]|string[]|string */
+	/** @param array< array{ integer | array{ integer, string, integer } } > $tokens */
 	protected function phpBlock(array &$tokens) : void
 	{
 		while ($token = next($tokens)) switch ($token[0]) {
@@ -369,7 +375,8 @@ class Scanner
 	}
 
 	//------------------------------------------------------------------------------------- reference
-	protected function reference(int $type, array|string $token, int $token_key) : string
+	/** @param array{integer, string, integer} $token */
+	protected function reference(int $type, array $token, int $token_key) : string
 	{
 		switch ($token[0]) {
 			case T_NAME_FULLY_QUALIFIED:
@@ -381,11 +388,16 @@ class Scanner
 					? ($use . substr($token[1], $slash))
 					: ltrim($this->namespace . '\\' . $token[1], '\\');
 				break;
+			case T_NAME_RELATIVE:
+				$name = ltrim($this->namespace . substr($token[1], 9), '\\');
+				break;
 			case T_STRING:
 				$name = ($this->namespace_use[$token[1]] ?? false)
 					?: ltrim($this->namespace . '\\' . $token[1], '\\');
+				break;
+			default:
+				return '';
 		}
-		/** @noinspection PhpUndefinedVariableInspection Call it with a $token[0] value into switch */
 		$reference = [$this->class, $type, $name, $token[2], $token_key];
 		if (
 			($type === T_CLASS)
