@@ -28,9 +28,10 @@ class Console_Test extends TestCase
 	#[TestWith(['I', ['prefix', 'home=', '/home/pro'],     ['prefix', 'home' => '/home/pro']])]
 	#[TestWith(['J', ['prefix', 'home=/home/pro'],         ['prefix', 'home' => '/home/pro']])]
 	#[TestWith(['K', ['home', '=', '/home/pro', 'reset'], ['home' => '/home/pro', 3 => 'reset']])]
-	#[TestWith(['L', ['home', '=/home/project', 'reset'], ['home' => '/home/project', 2 => 'reset']])]
-	#[TestWith(['M', ['home=', '/home/project', 'reset'], ['home' => '/home/project', 2 => 'reset']])]
-	#[TestWith(['N', ['home=/home/project', 'RESET'], ['home' => '/home/project', 1 => 'reset']])]
+	#[TestWith(['L', ['home', '=', '/Home/Project', 'reset'], ['home' => '/Home/Project', 3 => 'reset']])]
+	#[TestWith(['M', ['home', '=/home/project', 'reset'], ['home' => '/home/project', 2 => 'reset']])]
+	#[TestWith(['N', ['home=', '/home/project', 'reset'], ['home' => '/home/project', 2 => 'reset']])]
+	#[TestWith(['O', ['home=/home/project', 'RESET'], ['home' => '/home/project', 1 => 'reset']])]
 	public function testNameArguments(string $key, array $arguments, array $expected) : void
 	{
 		$console        = new Console;

@@ -30,6 +30,9 @@ class Console
 	protected function nameArguments(array &$arguments) : void
 	{
 		foreach ($arguments as $key => &$argument) {
+			if (!is_numeric($key)) {
+				continue;
+			}
 			if (!str_contains($argument, '=')) {
 				$argument = strtolower($argument);
 				continue;
