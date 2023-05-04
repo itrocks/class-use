@@ -58,50 +58,69 @@ php /path/to/your/clone/of/itrocks/class-use/bin/run.php vendor
 
 #### Options
 
-- `vendor`:
-  Updates class uses concerning php files from the `vendor` directory too. If not set,
-  only your project files will be scanned, which will be quite faster, and enough only if you don't
-  need third-party PHP scripts class use information.
 - `reset`:
   Fully recalculate your class use cache. If not set, only files modified since the last update
   will be scanned for update.
 - `pretty`:
   Class use cache json files will be human-readable, including spaces and carriage returns;
   Nevertheless, cache files will be bigger.
+- `vendor`:
+  Updates class uses concerning php files from the `vendor` directory too. If not set,
+  only your project files will be scanned, which will be quite faster, and enough only if you don't
+  need third-party PHP scripts class use information.
 
 ### Search for occurrences
 
 From any directory of your PHP project (e.g. here from the project root directory):
 
 ```bash
-class-use use=ITRocks/Class_Use/Index detail
+class-use type=declare-class use=ITRocks/Class_Use/Index data
 ```
 
 This example will output all uses of the class use Index into all your project scripts.
 
-If you love escaping antislashes, feel free to type them to match PHP class path naming rules.
+If you love escaping antislashes, feel free to type them to match PHP class path naming rules:
+
+```bash
+class-use type=declare-class use=ITRocks\\Class_Use\\Index data
+```
 
 #### Search keys
 
 You can use one or several search criterion, identified by these keys:
 
-- `class`: Search class uses into this class source code
-- `use`: Search class uses of this class, everywhere 
-- `type`: Search class uses of this type (type lists below)
+- `class`: Search class uses only into this class source code
+- `use`:   Search class uses of this class 
+- `type`:  Search class uses of this type (type lists below)
 
 #### Options
 
 These options can be added to your command line:
 
-- `display`: Display found class uses. If not set, only the search information:
-  duration, memory usage, result count, will be displayed
+- `associative`: Result record keys will be text instead of arbitrary numeric counter.
+- `benchmark`: Display a benchmark measure of search speed and memory consumption.
+- `data`: Display found class uses into a compact json format.
+- `total`: Display the total results count, e.g. "2 results".
+- `pretty`: Display found class uses into a pretty json format.
+
+If no `associative`/`data`/`pretty`/`total` option is set,
+the `total` option will be applied by default.
+
+Associative result keys are:
+
+- `class`:     The name of the class context where the use is
+- `type`:      The use type (type lists below)
+- `use`:       The used class name
+- `file`:      The name of the file where the use is
+- `line`:      The line number
+- `token_key`: The index of the token where the used class name is into the source code
 
 Programming API usage
 ---------------------
 
 ### Installation
 
-To add this to your project :
+To add this to your project:
 
 ```bash
 composer require itrocks/class-use
@@ -109,7 +128,7 @@ composer require itrocks/class-use
 
 ### Update cache
 
-When your project need to update the cache, these are the update steps to follow :
+When your project need to update the cache, these are the update steps to follow:
 
 ```php
 use ITRocks\Class_Use\Index;
@@ -188,8 +207,6 @@ identifiers:
 - T_IMPLEMENTS: the class appears into an `implements` statement of another class declaration
 - T_INSTANCEOF: the class appears after an `instanceof` statement
 - T_INSTEADOF: the class appears after an `insteadof` statement
-- T_NAMESPACE: the class is used as a `namespace` name;
-  only namespaces that match a class will be set
 - T_NAMESPACE_USE: the class appears into a namespace `use` statement for import;
   only statements that match a class will be set
 - T_NEW: the class is used to instantiate an object
@@ -199,6 +216,10 @@ identifiers:
 - T_USE: the class appears into a class `use` statement
 - T_VARIABLE: the class is used into a class property type definition
 
+From command line calls: the type name is almost the same as the type list constant name: instead of
+passing `T_DECLARE_CLASS` in command line, pass `declare-class` or `declare_class`.
+All these variants will work, and the integer value matching the constant name too if you prefer.
+
 When it is a string, attribute names are used as types: every class use into an attribute will be
-referred with a type being the name of the attribute. Only ::class as an argument, or as a value
+referred with a type being the name of the attribute. Only `::class` as an argument, or as a value
 into an array argument, are taken in account.
