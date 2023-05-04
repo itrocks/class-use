@@ -170,6 +170,41 @@ abstract function f(A|(B&C&int)|string $a1, (A&B)|(A&C) &$a2) : (R&T)|(S&T)|int;
 , return,   S, 2
 , return,   T, 2
 
+<?php
+function f(A|(B&C&int)|string $a1, (A&B)|(A&C) &$a2) : (R&T)|(S&T)|int use($one, $two) { new C }
+?>
+, argument, A, 2
+, argument, B, 2
+, argument, C, 2
+, argument, A, 2
+, argument, B, 2
+, argument, A, 2
+, argument, C, 2
+, return,   R, 2
+, return,   T, 2
+, return,   S, 2
+, return,   T, 2
+, new,      C, 2
+
+<?php
+class C {
+	function f(A|(B&C&int)|string $a1, (A&B)|(A&C) &$a2) : (R&T)|(S&T)|int use($one, $two) { new C }
+}
+?>
+C, declare-class, C, 2
+C, argument,      A, 3
+C, argument,      B, 3
+C, argument,      C, 3
+C, argument,      A, 3
+C, argument,      B, 3
+C, argument,      A, 3
+C, argument,      C, 3
+C, return,        R, 3
+C, return,        T, 3
+C, return,        S, 3
+C, return,        T, 3
+C, new,           C, 3
+
 # ------------------------------------------------------------------------------------ T_IMPLEMENTS
 
 <?php
@@ -389,6 +424,12 @@ namespace N {
 N\C, declare-trait, N\C, 3
 
 # ------------------------------------------------------------------------------------------- T_USE
+
+<?php
+$var = true;
+(function() use($var) { throw new Exception; })();
+?>
+, new, Exception, 3
 
 <?php
 class C { use T, U; }
