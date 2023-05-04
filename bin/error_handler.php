@@ -22,7 +22,7 @@ function error_type(int $errno) : string
 	};
 }
 
-set_error_handler(function(int $errno, string $error, string $file, int $line) {
+set_error_handler(function(int $errno, string $error, string $file, int $line) : bool {
 	echo error_type($errno) . ': ' . $error . ' in ' . $file . ' on line ' . $line . "\n";
 	foreach (array_slice(debug_backtrace(), 1) as $key => $trace) {
 		echo '#' . $key . ' ' . $trace['file'] . '(' . $trace['line'] . '): ' . $trace['function'];
@@ -40,4 +40,5 @@ set_error_handler(function(int $errno, string $error, string $file, int $line) {
 		echo '(' . join(', ', $trace['args']) . ")\n";
 	}
 	echo "\n";
+	return true;
 });

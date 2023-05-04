@@ -1,0 +1,9 @@
+parameters:
+	ignoreErrors:
+		- '#^Cannot access offset int on array.*\.$#'
+	level: 7
+	paths:
+		- .
+		- ../examples
+		- ../src
+		- ../tests
