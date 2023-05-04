@@ -207,8 +207,6 @@ identifiers:
 - T_IMPLEMENTS: the class appears into an `implements` statement of another class declaration
 - T_INSTANCEOF: the class appears after an `instanceof` statement
 - T_INSTEADOF: the class appears after an `insteadof` statement
-- T_NAMESPACE_USE: the class appears into a namespace `use` statement for import;
-  only statements that match a class will be set
 - T_NEW: the class is used to instantiate an object
 - T_RETURN: the class is used into a function return type
 - T_STATIC: the class is used for a static call,

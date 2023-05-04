@@ -19,8 +19,6 @@ class Name
 		T_INSTANCEOF        => 'instanceof',
 		T_INSTEADOF         => 'insteadof',
 		T_LINE              => 'line',
-		T_NAMESPACE         => 'namespace',
-		T_NAMESPACE_USE     => 'namespace-use',
 		T_NEW               => 'new',
 		T_RETURN            => 'return',
 		T_STATIC            => 'static',
