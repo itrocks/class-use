@@ -67,9 +67,8 @@ class Scan_Test extends TestCase
 	public function setUp() : void
 	{
 		$this->scanner = new class extends Scanner {
-			public function scan(array $tokens) : void
-			{
-				$this->references = ['ok'];
+			public function scan(array $tokens) : void {
+				$this->references = [["A",318,"B",1,2]];
 			}
 		};
 		/** @noinspection PhpUnhandledExceptionInspection Should not throw exception */

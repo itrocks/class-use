@@ -8,8 +8,8 @@ trait Search
 	/**
 	 * @param $search      (int|string)[] int|string $value[int $type]
 	 * @param $associative boolean|integer Each returned record is an (int|string)[string $type] array
-	 * @return (int|string)[][]
-	 * [][string $class, int|string $type, string $use, string $file, int $line, int $token_key]
+	 * @return array< array{ string, int|string, string, string, int, int } >
+	 * [[string $class, int|string $type, string $use, string $file, int $line, int $token_key]]
 	 */
 	public function search(array $search, bool|int $associative = false) : array
 	{
@@ -51,7 +51,7 @@ trait Search
 		if (!isset($this->by[$cache][$name])) {
 			$cache_file_name         = $this->cacheFileName($name, $cache);
 			$this->by[$cache][$name] = file_exists($cache_file_name)
-				? json_decode(file_get_contents($cache_file_name), JSON_OBJECT_AS_ARRAY)
+				? json_decode(file_get_contents($cache_file_name), true)
 				: [];
 		}
 

@@ -9,6 +9,6 @@ class A
 
 	//----------------------------------------------------------------------------------- __construct
 	public function __construct(string $class_name)
-	{}
+	{ echo $class_name; }
 
 }

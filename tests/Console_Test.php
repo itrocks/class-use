@@ -137,10 +137,10 @@ class Console_Test extends TestCase
 		/** @noinspection PhpUnhandledExceptionInspection Valid call */
 		$scan->invoke($console, $arguments);
 		ob_end_clean();
-		/** @noinspection PhpPossiblePolymorphicInvocationInspection Sure it will get $call */
+		/** @noinspection PhpPossiblePolymorphicInvocationInspection defined by anonymous */
 		self::assertEquals(
 			['prepareHome' => 1, 'scanDirectory' => 2, 'classify' => 3, 'save' => 4],
-			$console->index->call,
+			$console->index->call, /** @phpstan-ignore-line defined by anonymous */
 			$key . ':call'
 		);
 		foreach ([Console::PRETTY, Console::RESET, Console::VENDOR] as $flag) {
@@ -159,8 +159,8 @@ class Console_Test extends TestCase
 	#[TestWith([2, ['class' => __CLASS__],       [T_CLASS => __CLASS__]])]
 	#[TestWith([3, ['use'   => __CLASS__],       [T_USE   => __CLASS__]])]
 	#[TestWith([4, ['class' => __CLASS__, 'use' => 'An\O'], [T_CLASS => __CLASS__, T_USE => 'An\O']])]
-	#[TestWith([5, [Console::ASSOCIATIVE], [], '[1,2]', T_STRING])]
-	#[TestWith([6, [Console::DATA], [], '[1,2]'])]
+	#[TestWith([5, [Console::ASSOCIATIVE], [], '[["A",318,"B","f.php",1,2]]', T_STRING])]
+	#[TestWith([6, [Console::DATA], [], '[["A",318,"B","f.php",1,2]]'])]
 	#[TestWith([7, [Console::TOTAL], []])]
 	#[TestWith([11, ['type' => 'declare-class'], [T_TYPE  => T_DECLARE_CLASS]])]
 	#[TestWith([12, ['type' => 'declare_trait'], [T_TYPE  => T_DECLARE_TRAIT]])]
@@ -169,32 +169,32 @@ class Console_Test extends TestCase
 	#[TestWith([15, ['type' => 'T_BAD'],         [T_TYPE  => 'T_BAD']])]
 	#[TestWith([16, ['type' => 'A\Class'],       [T_TYPE  => 'A\Class']])]
 	#[TestWith([16, ['type' => 9999],            [T_TYPE  => 9999]])]
-	#[TestWith([21, [Console::DATA, Console::TOTAL], [], "[1,2]\n2 results\n"])]
-	#[TestWith([22, [Console::PRETTY], [], "[\n    1,\n    2\n]"])]
-	#[TestWith([23, [Console::DATA, Console::PRETTY], [], "[\n    1,\n    2\n]"])]
-	#[TestWith([24, [Console::PRETTY, Console::TOTAL], [], "[\n    1,\n    2\n]\n2 results\n"])]
+	#[TestWith([21, [Console::DATA, Console::TOTAL], [], '[["A",318,"B","f.php",1,2]]\n1 results\n'])]
+	#[TestWith([22, [Console::PRETTY], [], '[\n    [\n        "A",\n        318,\n        "B",\n        "f.php",\n        1,\n        2\n    ]\n]'])]
+	#[TestWith([23, [Console::DATA, Console::PRETTY], [], '[\n    [\n        "A",\n        318,\n        "B",\n        "f.php",\n        1,\n        2\n    ]\n]'])]
+	#[TestWith([24, [Console::PRETTY, Console::TOTAL], [], '[\n    [\n        "A",\n        318,\n        "B",\n        "f.php",\n        1,\n        2\n    ]\n]\n1 results\n'])]
 	#[TestWith([31, [Console::DATA, Console::PRETTY, Console::TOTAL], [],
-		"[\n    1,\n    2\n]\n2 results\n"
+		'[\n    [\n        "A",\n        318,\n        "B",\n        "f.php",\n        1,\n        2\n    ]\n]\n1 results\n'
 	])]
 	#[TestWith([32, [Console::BENCHMARK], [],
-		"2 results\n(duration [2-7]? = [0-9]+(\.[0-9]+)? ms\n){7}memory = [0-9]+ Mo\n"
+		"1 results\n(duration [2-7]? = [0-9]+(\.[0-9]+)? ms\n){7}memory = [0-9]+ Mo\n"
 	])]
 	#[TestWith([33, [Console::BENCHMARK, Console::TOTAL], [],
-		"2 results\n(duration [2-7]? = [0-9]+(\.[0-9]+)? ms\n){7}memory = [0-9]+ Mo\n"
+		"1 results\n(duration [2-7]? = [0-9]+(\.[0-9]+)? ms\n){7}memory = [0-9]+ Mo\n"
 	])]
 	#[TestWith([34, [Console::BENCHMARK, Console::DATA], [],
-		"\[1,2]\n(duration [2-7]? = [0-9]+(\.[0-9]+)? ms\n){7}memory = [0-9]+ Mo\n"
+		'\[\["A",318,"B","f.php",1,2]]\n(duration [2-7]? = [0-9]+(\.[0-9]+)? ms\n){7}memory = [0-9]+ Mo\n'
 	])]
 	#[TestWith([35, [Console::BENCHMARK, Console::DATA, Console::TOTAL], [],
-		"\[1,2]\n2 results\n(duration [2-7]? = [0-9]+(\.[0-9]+)? ms\n){7}memory = [0-9]+ Mo\n"
+		'\[\["A",318,"B","f.php",1,2]]\n1 results\n(duration [2-7]? = [0-9]+(\.[0-9]+)? ms\n){7}memory = [0-9]+ Mo\n'
 	])]
 	#[TestWith([36, [Console::BENCHMARK, Console::DATA, Console::PRETTY, Console::TOTAL], [],
-		"\[\n    1,\n    2\n]\n2 results\n(duration [2-7]? = [0-9]+(\.[0-9]+)? ms\n){7}memory = [0-9]+ Mo\n"
+		'\[\n    \[\n        "A",\n        318,\n        "B",\n        "f.php",\n        1,\n        2\n    ]\n]\n1 results\n(duration [2-7]? = [0-9]+(\.[0-9]+)? ms\n){7}memory = [0-9]+ Mo\n'
 	])]
 	#[TestWith([37,
 		['class' => __CLASS__, 'type' => 'new', 'use' => 'An\O', Console::ASSOCIATIVE, Console::DATA],
 		[T_CLASS => __CLASS__, T_TYPE => T_NEW, T_USE => 'An\O'],
-		'[1,2]',
+		'[["A",318,"B","f.php",1,2]]',
 		T_STRING
 	])]
 	public function testSearch(
@@ -213,7 +213,7 @@ class Console_Test extends TestCase
 						$this->call[__FUNCTION__] = true;
 						$this->associative        = $associative;
 						$this->search             = $search;
-						return [1, 2];
+						return [['A', T_USE, 'B', 'f.php', 1, 2]];
 					}
 				};
 			}
@@ -225,19 +225,33 @@ class Console_Test extends TestCase
 		/** @noinspection PhpUnhandledExceptionInspection Valid call */
 		$search->invoke($console, $arguments);
 		ob_end_clean();
-		/** @noinspection PhpPossiblePolymorphicInvocationInspection Sure it will get $associative */
-		self::assertEquals($expected_associative, $console->index->associative, $key . ':associative');
-		/** @noinspection PhpPossiblePolymorphicInvocationInspection Sure it will get $call */
-		self::assertEquals(['search' => true], $console->index->call, $key . ':call');
-		/** @noinspection PhpPossiblePolymorphicInvocationInspection Sure it will get $search */
-		self::assertEquals($expected_search, $console->index->search, $key . ':search');
+		/** @noinspection PhpPossiblePolymorphicInvocationInspection defined by anonymous */
+		self::assertEquals(
+			$expected_associative,
+			$console->index->associative, /** @phpstan-ignore-line defined by anonymous */
+			$key . ':associative'
+		);
+		/** @noinspection PhpPossiblePolymorphicInvocationInspection defined by anonymous */
+		self::assertEquals(
+			['search' => true],
+			$console->index->call, /** @phpstan-ignore-line defined by anonymous */
+			$key . ':call'
+		);
+		/** @noinspection PhpPossiblePolymorphicInvocationInspection defined by anonymous */
+		self::assertEquals(
+			$expected_search,
+			$console->index->search, /** @phpstan-ignore-line defined by anonymous */
+			$key . ':search'
+		);
 		if ($expected_display && str_contains($expected_display, '+')) {
 			self::assertMatchesRegularExpression(
 				'/\G' . $expected_display . '\z/', $display, $key . ':display'
 			);
 		}
 		else {
-			self::assertEquals($expected_display ?? "2 results\n", $display, $key . ':display');
+			self::assertEquals(
+				str_replace('\n', "\n", $expected_display ?? "1 results\n"), $display, $key . ':display'
+			);
 		}
 	}
 

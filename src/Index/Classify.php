@@ -72,7 +72,7 @@ trait Classify
 			unset($this->by[T_FILE][$file_name]);
 		}
 		elseif (file_exists($cache_file_name = $this->cacheFileName($file_name, T_FILE))) {
-			$file_references = json_decode(file_get_contents($cache_file_name), JSON_OBJECT_AS_ARRAY);
+			$file_references = json_decode(file_get_contents($cache_file_name), true);
 		}
 		else {
 			return;
@@ -86,7 +86,7 @@ trait Classify
 						// The case of a reference into T_FILE to a non-existing cache file should never happen.
 						// It would throw an error you may solve with a reset of the index.
 						$this->by[$type][$value] = json_decode(
-							file_get_contents($this->cacheFileName($value, $type)), JSON_OBJECT_AS_ARRAY
+							file_get_contents($this->cacheFileName($value, $type)), true
 						);
 					}
 					// filter

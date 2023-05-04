@@ -17,6 +17,9 @@ class Save_Test extends TestCase
 	//---------------------------------------------------------------------------------------- $files
 	protected array $files;
 
+	//---------------------------------------------------------------------------------------- $reset
+	protected bool $reset = false;
+
 	//----------------------------------------------------------------------------- getCacheDirectory
 	public function getCacheDirectory() : string
 	{
