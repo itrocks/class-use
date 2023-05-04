@@ -49,6 +49,7 @@ class Index
 	//------------------------------------------------------------------------------------------- get
 	public static function get() : static
 	{
+		/** @phpstan-ignore-next-line */
 		return static::$singleton ?? (static::$singleton = new static);
 	}
 
