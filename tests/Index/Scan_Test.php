@@ -68,7 +68,7 @@ class Scan_Test extends TestCase
 	{
 		$this->scanner = new class extends Scanner {
 			public function scan(array $tokens) : void {
-				$this->references = [["A",318,"B",1,2]];
+				$this->references = [["A", 318, "B", 1, 2]];
 			}
 		};
 		/** @noinspection PhpUnhandledExceptionInspection Should not throw exception */
@@ -159,7 +159,7 @@ class Scan_Test extends TestCase
 		$this->mock['scanFile'] = false;
 		$this->scanFile(__FILE__);
 		$this->mock['scanFile'] = true;
-		$expected = ['ok'];
+		$expected = [["A", 318, "B", 1, 2]];
 		self::assertEquals($expected, $this->references[__FILE__] ?? []);
 	}
 
