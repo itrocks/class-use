@@ -85,7 +85,7 @@ class Console_Test extends TestCase
 		};
 		$console = clone $model;
 		$console->run($arguments);
-		self::assertEquals(['scan' => true, 'search' => false], $console->call, $index);
+		self::assertEquals(['scan' => true, 'search' => false], $console->call, strval($index));
 	}
 
 	//--------------------------------------------------------------------------------- testRunSearch

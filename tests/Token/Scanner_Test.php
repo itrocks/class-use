@@ -173,7 +173,7 @@ class Scanner_Test extends TestCase
 <?php
 class C { }
 ?>
-<html>
+<html lang="fr">
 	new C;
 </html>
 <?php
@@ -235,7 +235,7 @@ EOT;
 		/** @noinspection PhpUnhandledExceptionInspection Will be valid */
 		$reference->invokeArgs($scanner, $arguments);
 		$references = new ReflectionProperty(Scanner::class, 'references');
-		self::assertEquals($expected, $references->getValue($scanner)[0], $index);
+		self::assertEquals($expected, $references->getValue($scanner)[0], strval($index));
 	}
 
 	//----------------------------------------------------------------- testReferenceInvalidTokenType
