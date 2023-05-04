@@ -26,7 +26,7 @@ class Console
 	const VENDOR = 'vendor';
 
 	//--------------------------------------------------------------------------------- nameArguments
-	/** @var string[] $arguments */
+	/** @param $arguments string[] */
 	protected function nameArguments(array &$arguments) : void
 	{
 		foreach ($arguments as $key => &$argument) {

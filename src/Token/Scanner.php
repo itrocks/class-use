@@ -80,7 +80,7 @@ class Scanner
 	}
 
 	//-------------------------------------------------------------------------------------- phpBlock
-	/** @param array< array{ integer | array{ integer, string, integer } } > $tokens */
+	/** @param array< array{ integer, string, integer } | string > $tokens */
 	protected function phpBlock(array &$tokens) : void
 	{
 		while ($token = next($tokens)) switch ($token[0]) {
@@ -166,7 +166,7 @@ class Scanner
 					) {
 						$this->reference(T_ARGUMENT, $token, key($tokens));
 					}
-				} while ($depth && isset($token));
+				} while ($depth);
 				do $token = next($tokens); while (is_array($token) || !str_contains(':{;', $token));
 				while (is_array($token) || !str_contains('{;', $token)) {
 					$token = next($tokens);
@@ -375,7 +375,7 @@ class Scanner
 	}
 
 	//------------------------------------------------------------------------------------- reference
-	/** @param array{integer, string, integer} $token */
+	/** @param array{ integer, string, integer } $token */
 	protected function reference(int $type, array $token, int $token_key) : string
 	{
 		switch ($token[0]) {

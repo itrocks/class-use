@@ -8,6 +8,7 @@ use ITRocks\Class_Use\Index\Scan;
 use ITRocks\Class_Use\Index\Search;
 use ITRocks\Class_Use\Token\Scanner;
 
+/** @phpstan-consistent-constructor **/
 class Index
 {
 	use Cache_Directory, Classify, Save, Scan, Search;
@@ -21,23 +22,26 @@ class Index
 	protected array $files = [];
 
 	//----------------------------------------------------------------------------------- $references
-	/** @var (int|string)[][] [string $file][string $class, string $use, int $type, int $line] */
+	/**
+	 * @var array< string, array< array{ string, int|string, string, int, int } > >
+	 * [string $file => [string $class, int|string $type, string $use, int $line, int $token_key]]
+	 */
 	protected array $references = [];
 
 	//---------------------------------------------------------------------------------------- $reset
 	protected bool $reset;
 
 	//------------------------------------------------------------------------------------ $singleton
-	private static self $singleton;
+	protected static self $singleton;
 
 	//----------------------------------------------------------------------------------- __construct
 	public function __construct(int $flags = 0, string $home = '')
 	{
-		$this->pretty     = $flags & self::PRETTY;
-		$this->reset      = $flags & self::RESET;
+		$this->pretty     = boolval($flags & self::PRETTY);
+		$this->reset      = boolval($flags & self::RESET);
 		$this->start_time = time();
 		$this->scanner    = new Scanner;
-		$this->vendor     = $flags & self::VENDOR;
+		$this->vendor     = boolval($flags & self::VENDOR);
 		$this->setHome($home);
 		$this->prepareHome();
 	}
