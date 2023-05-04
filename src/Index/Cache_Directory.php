@@ -97,17 +97,17 @@ trait Cache_Directory
 			if (!is_dir($home)) {
 				throw new Exception("Directory $home does not exist");
 			}
-			$this->home        = realpath($home);
+			$this->home        = realpath($home) ?: '';
 			$this->home_length = strlen($this->home) + 1;
 			return;
 		}
-		$directory = $home = str_replace('\\', '/', getcwd());
+		$directory = $home = str_replace('\\', '/', getcwd() ?: '.');
 		while (
-			str_contains($home, '/')
+			(($slash = strrpos($home, '/')) !== false)
 			&& !file_exists("$home/composer.json")
 			&& !file_exists("$home/composer.lock")
 		) {
-			$home = substr($home, 0, strrpos($home, '/'));
+			$home = substr($home, 0, $slash);
 		}
 		if ($home === '') {
 			throw new Exception("Directory $directory does not contain a php project");

@@ -7,8 +7,8 @@ trait Search
 	//---------------------------------------------------------------------------------------- search
 	/**
 	 * @param array<int,int|string> $search
-	 * @param boolean|integer $associative Each returned record is an array<string $type, int|string>
-	 * @return array<array{string,int|string,string,string,int,int}>
+	 * @param bool|int<262,983> $associative Each returned record is an array<string $type, int|string>
+	 * @return array<array{string,int|string,string,string,int,int}>|array<array{333:string,983:int|string,318:string,344:string,343:int,982:int}>
 	 * <{string $class, int|string $type, string $use, string $file, int $line, int $token_key}>
 	 */
 	public function search(array $search, bool|int $associative = false) : array
