@@ -6,12 +6,12 @@ trait Search
 
 	//---------------------------------------------------------------------------------------- search
 	/**
-	 * @param $search      string[] string $value[string $type]
-	 * @param $associative boolean Each returned record is an int|string[string $type] array
+	 * @param $search      (int|string)[] int|string $value[int $type]
+	 * @param $associative boolean|integer Each returned record is an (int|string)[string $type] array
 	 * @return (int|string)[][]
 	 * [][string $class, int|string $type, string $use, string $file, int $line, int $token_key]
 	 */
-	public function search(array $search, bool $associative = false) : array
+	public function search(array $search, bool|int $associative = false) : array
 	{
 		$search1 = $search2 = null;
 		if (isset($search[T_TYPE])) {
@@ -72,26 +72,32 @@ trait Search
 				}
 				foreach ($array2 as $file => $lines) {
 					foreach ($lines as $token_key => $line) {
-						if ($associative) {
-							$references[] = [
+						$references[] = match($associative) {
+							T_TYPE, true => [
 								T_CLASS     => $names[$tree[T_CLASS]],
 								T_TYPE      => $names[$tree[T_TYPE]],
 								T_USE       => $names[$tree[T_USE]],
 								T_FILE      => $file,
 								T_LINE      => $line,
 								T_TOKEN_KEY => $token_key
-							];
-						}
-						else {
-							$references[] = [
+							],
+							T_STRING => [
+								'class'     => $names[$tree[T_CLASS]],
+								'type'      => $names[$tree[T_TYPE]],
+								'use'       => $names[$tree[T_USE]],
+								'file'      => $file,
+								'line'      => $line,
+								'token_key' => $token_key
+							],
+							default => [
 								$names[$tree[T_CLASS]],
 								$names[$tree[T_TYPE]],
 								$names[$tree[T_USE]],
 								$file,
 								$line,
 								$token_key
-							];
-						}
+							]
+						};
 					}
 				}
 			}
