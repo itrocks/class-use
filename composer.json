@@ -6,7 +6,13 @@
 	"license":           "LGPL-3.0-or-later",
 	"minimum-stability": "dev",
 	"name":              "itrocks/class-use",
-	"require":           { "ext-json": "*", "php": ">=8.2" },
-	"require-dev":       { "phpunit/phpunit": "^10.1" },
-	"type":              "library"
+	"require": {
+		"ext-json": "*",
+		"php":      ">=8.2"
+	},
+	"require-dev": {
+		"ext-xdebug":      "*",
+		"phpunit/phpunit": "^10.1"
+	},
+	"type": "library"
 }
