@@ -334,7 +334,7 @@ class Scanner
 									do $token = next($tokens); while ($token[0] !== T_PAAMAYIM_NEKUDOTAYIM);
 							}
 						} while ($depth || is_array($token) || !str_contains(',;}', $token));
-					} while (is_array($token) || !str_contains(';}', $token));
+					} while (!str_contains(';}', $token));
 					continue 2;
 				}
 
