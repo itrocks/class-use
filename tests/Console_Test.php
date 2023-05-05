@@ -83,7 +83,7 @@ class Console_Test extends TestCase
 
 	//----------------------------------------------------------------------------------- testRunScan
 	/**
-	 * @param string[] $arguments
+	 * @param array<int,string> $arguments
 	 * @throws Exception
 	 */
 	#[TestWith([0, []])]
@@ -122,7 +122,7 @@ class Console_Test extends TestCase
 		foreach ([T_CLASS, T_FILE, T_TYPE, T_USE] as $search) {
 			$search  = Name::OF[$search];
 			$console = clone $model;
-			$console->run([$search => __CLASS__]);
+			$console->run([$search, '=', __CLASS__]);
 			self::assertEquals(['scan' => false, 'search' => true], $console->call, $search);
 		}
 	}
