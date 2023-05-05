@@ -83,7 +83,7 @@ class Scanner
 	/** @param array<int,array{int,string,int}|string> $tokens */
 	protected function phpBlock(array &$tokens) : void
 	{
-		while ($token = next($tokens)) switch ($token[0]) {
+		while (($token = next($tokens)) !== false) switch ($token[0]) {
 
 			case '(':
 				$this->parentheses ++;
@@ -139,6 +139,7 @@ class Scanner
 					$token = next($tokens);
 					if ($token === false) return;
 				} while ($token[0] !== T_STRING);
+				/** @phpstan-ignore-next-line key($tokens) valid: last next($tokens) not false */
 				$this->class = $this->reference($type, $token, key($tokens));
 				if ($this->next_references) $this->appendNextReferences();
 				continue 2;
@@ -160,6 +161,7 @@ class Scanner
 					$token = next($tokens);
 					if ($token === false) return;
 				} while (!in_array($token[0], self::CLASS_TOKENS, true));
+				/** @phpstan-ignore-next-line key($tokens) valid: last next($tokens) not false */
 				$this->reference(T_EXTENDS, $token, key($tokens));
 				continue 2;
 
@@ -176,6 +178,7 @@ class Scanner
 						in_array($token[0], self::CLASS_TOKENS, true)
 						&& !in_array($token[1], self::BASIC_TYPES, true)
 					) {
+						/** @phpstan-ignore-next-line key($tokens) valid: last next($tokens) not false */
 						$this->reference(T_ARGUMENT, $token, key($tokens));
 					}
 				} while ($depth);
@@ -190,6 +193,7 @@ class Scanner
 						in_array($token[0], self::CLASS_TOKENS, true)
 						&& !in_array($token[1], self::BASIC_TYPES, true)
 					) {
+						/** @phpstan-ignore-next-line key($tokens) valid: last next($tokens) not false */
 						$this->reference(T_RETURN, $token, key($tokens));
 					}
 				}
@@ -203,6 +207,7 @@ class Scanner
 					$token = next($tokens);
 					if ($token === false) return;
 					if (in_array($token[0], self::CLASS_TOKENS, true)) {
+						/** @phpstan-ignore-next-line key($tokens) valid: last next($tokens) not false */
 						$this->reference(T_IMPLEMENTS, $token, key($tokens));
 					}
 				} while ($token[0] !== '{');
@@ -218,6 +223,7 @@ class Scanner
 					if ($token === false) return;
 				} while (in_array($token[0], self::IGNORE_TOKENS, true));
 				if (in_array($token[0], self::CLASS_TOKENS, true)) {
+					/** @phpstan-ignore-next-line key($tokens) valid: last next($tokens) not false */
 					$this->reference($type, $token, key($tokens));
 					continue 2;
 				}
@@ -233,6 +239,7 @@ class Scanner
 				if ($this->attribute_parentheses === $this->parentheses) {
 					$this->attribute = '';
 					/** @var array{int,string,int} $token */
+					/** @phpstan-ignore-next-line key($tokens) valid: last next($tokens) not false */
 					$this->attribute = $this->reference(T_ATTRIBUTE, $token, key($tokens));
 				}
 				continue 2;
@@ -260,6 +267,7 @@ class Scanner
 				} while (in_array($token[0], self::IGNORE_TOKENS, true));
 				$ignore = !in_array($token[0], self::CLASS_TOKENS, true)
 					|| in_array($token[1], self::IGNORE_CLASSES, true);
+				/** @var int $token_key key($tokens) valid: last prev($tokens) not false */
 				$token_key = key($tokens);
 				do {
 					$token = next($tokens);
@@ -284,6 +292,7 @@ class Scanner
 					$token = next($tokens);
 					if ($token === false) return;
 				} while ($token[0] !== T_STRING);
+				/** @phpstan-ignore-next-line key($tokens) valid: last next($tokens) not false */
 				$this->class = $this->reference(T_DECLARE_TRAIT, $token, key($tokens));
 				if ($this->next_references) $this->appendNextReferences();
 				continue 2;
@@ -305,6 +314,7 @@ class Scanner
 						in_array($token[0], self::CLASS_TOKENS, true)
 						&& !in_array($token[1], self::BASIC_TYPES, true)
 					) {
+						/** @phpstan-ignore-next-line key($tokens) valid: last next($tokens) not false */
 						$this->reference(T_VARIABLE, $token, key($tokens));
 					}
 					$token = next($tokens);
@@ -318,13 +328,14 @@ class Scanner
 					$back ++;
 				} while (!in_array($token[0], [T_DOC_COMMENT, '{', '}', ';'], true));
 				$doc_comment = ($token[0] === T_DOC_COMMENT) ? $token[1] : '';
-				$token_key   = key($tokens);
+				/** @var int $token_key The next/prev play/replay sequence is valid */
+				$token_key = key($tokens);
 				while ($back--) next($tokens);
 				$start = strpos($doc_comment, '* @var ');
 				if (!$start) {
 					continue 2;
 				}
-				/** @var array{int,string,int} $token Because $token[0] === T_DOC_COMMENT */
+				/** @var array{int,string,int} $token because $token[0] === T_DOC_COMMENT */
 				$start += 7;
 				$token  = [null, null, $token[2]];
 				while (str_contains("\t ", $doc_comment[$start])) $start ++;
@@ -355,6 +366,7 @@ class Scanner
 							$token = next($tokens);
 							if ($token === false) return;
 						} while (!in_array($token[0], self::CLASS_TOKENS, true));
+						/** @phpstan-ignore-next-line key($tokens) valid: last next($tokens) not false */
 						$this->reference(T_USE, $token, key($tokens));
 						$depth = 0;
 						do {
@@ -372,6 +384,7 @@ class Scanner
 										$token = next($tokens);
 										if ($token === false) return;
 									} while (!in_array($token[0], self::CLASS_TOKENS, true));
+									/** @phpstan-ignore-next-line key($tokens) valid: last next($tokens) not false */
 									$this->reference(T_INSTEADOF, $token, key($tokens));
 									$token = next($tokens);
 									if ($token === false) return;
@@ -381,6 +394,7 @@ class Scanner
 										$token = prev($tokens);
 										if ($token === false) return;
 									} while (!in_array($token[0], self::CLASS_TOKENS, true));
+									/** @phpstan-ignore-next-line key($tokens) valid: last prev($tokens) not false */
 									$this->reference(T_STATIC, $token, key($tokens));
 									do {
 										$token = next($tokens);

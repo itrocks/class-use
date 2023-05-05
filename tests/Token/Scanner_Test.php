@@ -150,7 +150,7 @@ class Scanner_Test extends TestCase
 				$counter = 0;
 				$name    = $match[1];
 			}
-			$buffer = trim(preg_replace('/\n#[^\[].*\n/', '', $buffer));
+			$buffer = trim(preg_replace('/\n#[^\[].*\n/', '', $buffer) ?? '');
 			if ($buffer === '') {
 				unset($data[$data_key]);
 				continue;
