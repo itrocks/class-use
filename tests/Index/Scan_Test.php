@@ -23,7 +23,7 @@ class Scan_Test extends TestCase
 
 	//---------------------------------------------------------------------------------------- $files
 	/** @var string[] */
-	protected array $files;
+	protected array $files = [];
 
 	//----------------------------------------------------------------------------------------- $mock
 	/** @var array<string,bool> */
@@ -34,10 +34,21 @@ class Scan_Test extends TestCase
 
 	//----------------------------------------------------------------------------------- $references
 	/** @var array<string,array<array{string,int|string,string,int,int}>> */
-	protected array $references;
+	protected array $references = [];
 
 	//---------------------------------------------------------------------------------------- $reset
 	protected bool $reset = false;
+
+	//----------------------------------------------------------------------------------- __construct
+	public function __construct(string $name)
+	{
+		parent::__construct($name);
+		$this->scanner = new class extends Scanner {
+			public function scan(array $tokens) : void {
+				$this->references = [["A", 318, "B", 1, 2]];
+			}
+		};
+	}
 
 	//--------------------------------------------------------------------------------- cacheFileName
 	protected function cacheFileName(string $name, int $type = null) : string
@@ -73,11 +84,6 @@ class Scan_Test extends TestCase
 	//----------------------------------------------------------------------------------------- setUp
 	public function setUp() : void
 	{
-		$this->scanner = new class extends Scanner {
-			public function scan(array $tokens) : void {
-				$this->references = [["A", 318, "B", 1, 2]];
-			}
-		};
 		/** @noinspection PhpUnhandledExceptionInspection Should not throw exception */
 		$this->setHome(__DIR__);
 	}
@@ -87,7 +93,7 @@ class Scan_Test extends TestCase
 	{
 		$this->keepFileTokens();
 		self::assertEquals([], $this->file_tokens);
-		unset($this->file_tokens);
+		$this->file_tokens = null;
 	}
 
 	//--------------------------------------------------------------------- testKeepFileTokensAlready
@@ -96,7 +102,7 @@ class Scan_Test extends TestCase
 		$this->file_tokens = [__FILE__ => ['ok']];
 		$this->keepFileTokens();
 		self::assertEquals([__FILE__ => ['ok']], $this->file_tokens);
-		unset($this->file_tokens);
+		$this->file_tokens = null;
 	}
 
 	//----------------------------------------------------------------------------- testScanDirectory
@@ -180,7 +186,7 @@ class Scan_Test extends TestCase
 		$this->mock['scanFile'] = true;
 		self::assertEquals(1, $this->files_count);
 		self::assertIsArray($this->file_tokens[substr(__FILE__, strlen(__DIR__) + 1)] ?? null);
-		unset($this->file_tokens);
+		$this->file_tokens = null;
 	}
 
 }

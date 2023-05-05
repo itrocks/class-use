@@ -141,7 +141,7 @@ class Console_Test extends TestCase
 	public function testScan(int $key, array $arguments, array $expected_flags) : void
 	{
 		$console = new class extends Console {
-			public Index $index;
+			public ?Index $index = null;
 			protected function newIndex(int $flags = 0, string $home = '') : Index {
 				return $this->index = new class($flags, $home) extends Index {
 					/** @var array<string,int> */
@@ -241,7 +241,7 @@ class Console_Test extends TestCase
 	) : void
 	{
 		$console = new class extends Console {
-			public Index $index;
+			public ?Index $index = null;
 			protected function newIndex(int $flags = 0, string $home = '') : Index {
 				return $this->index = new class($flags, $home) extends Index {
 					public bool|int|null $associative = null;

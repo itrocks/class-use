@@ -13,14 +13,21 @@ class Save_Test extends TestCase
 
 	//------------------------------------------------------------------------------------------- $by
 	/** @var array<int,array<int|string,array<int|string,array<int|string,array<int|string,array<int,int>|int>>>>> */
-	protected array $by;
+	protected array $by = [];
 
 	//---------------------------------------------------------------------------------------- $files
 	/** @var string[] */
-	protected array $files;
+	protected array $files = [];
 
 	//---------------------------------------------------------------------------------------- $reset
 	protected bool $reset = false;
+
+	//----------------------------------------------------------------------------------- __construct
+	public function __construct(string $name)
+	{
+		parent::__construct($name);
+		$this->start_time = time();
+	}
 
 	//----------------------------------------------------------------------------- getCacheDirectory
 	public function getCacheDirectory() : string

@@ -18,53 +18,53 @@ class Scanner
 	protected const IGNORE_CLASSES = ['__CLASS__', '__TRAIT__', 'parent', 'self', 'static'];
 
 	//------------------------------------------------------------------------------------ $attribute
-	protected string $attribute;
+	protected string $attribute = '';
 
 	//--------------------------------------------------------------------------- $attribute_brackets
-	protected int $attribute_brackets;
+	protected int $attribute_brackets = -1;
 
 	//------------------------------------------------------------------------ $attribute_parentheses
-	protected int $attribute_parentheses;
+	protected int $attribute_parentheses = -1;
 
 	//--------------------------------------------------------------------------------------- $braces
-	protected int $braces;
+	protected int $braces = 0;
 
 	//------------------------------------------------------------------------------------- $brackets
-	protected int $brackets;
+	protected int $brackets = 0;
 
 	//---------------------------------------------------------------------------------------- $class
-	protected string $class;
+	protected string $class = '';
 
 	//--------------------------------------------------------------------------------- $class_braces
 	/** @var int[] */
-	protected array $class_braces;
+	protected array $class_braces = [];
 
 	//------------------------------------------------------------------------------------ $namespace
-	protected string $namespace;
+	protected string $namespace = '';
 
 	//----------------------------------------------------------------------------- $namespace_braces
-	protected int $namespace_braces;
+	protected int $namespace_braces = -1;
 
 	//-------------------------------------------------------------------------------- $namespace_use
 	/** @var string[] */
-	protected array $namespace_use;
+	protected array $namespace_use = [];
 
 	//------------------------------------------------------------------------------ $next_references
 	/**
 	 * @var array< array{ string, int|string, string, int, int } >
 	 * [[string $class, int|string $type, string $use, int $line, int $token_key]]
 	 */
-	public array $next_references;
+	public array $next_references = [];
 
 	//---------------------------------------------------------------------------------- $parentheses
-	protected int $parentheses;
+	protected int $parentheses = 0;
 
 	//----------------------------------------------------------------------------------- $references
 	/**
 	 * @var array<array{string,int|string,string,int,int}>
 	 * [[string $class, int|string $type, string $use, int $line, int $token_key]]
 	 */
-	public array $references;
+	public array $references = [];
 
 	//-------------------------------------------------------------------------- appendNextReferences
 	protected function appendNextReferences() : void

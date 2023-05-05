@@ -20,7 +20,7 @@ class Classify_Test extends TestCase
 
 	//---------------------------------------------------------------------------------------- $files
 	/** @var string[] */
-	protected array $files;
+	protected array $files = [];
 
 	//----------------------------------------------------------------------------------------- $mock
 	/** @var array<string,bool> */
@@ -31,10 +31,18 @@ class Classify_Test extends TestCase
 
 	//----------------------------------------------------------------------------------- $references
 	/** @var array<string,array<array{string,int|string,string,int,int}>> */
-	protected array $references;
+	protected array $references = [];
 
 	//---------------------------------------------------------------------------------------- $reset
 	protected bool $reset = false;
+
+	//----------------------------------------------------------------------------------- __construct
+	public function __construct(string $name)
+	{
+		parent::__construct($name);
+		$this->scanner    = new Scanner;
+		$this->start_time = time();
+	}
 
 	//--------------------------------------------------------------------------------- cacheFileName
 	protected function cacheFileName(int|string $name, int $type = null) : string

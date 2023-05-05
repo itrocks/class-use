@@ -30,7 +30,7 @@ class Index
 	protected array $references = [];
 
 	//---------------------------------------------------------------------------------------- $reset
-	protected bool $reset;
+	protected bool $reset = false;
 
 	//------------------------------------------------------------------------------------ $singleton
 	protected static self $singleton;

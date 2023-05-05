@@ -14,10 +14,10 @@ trait Save
 	const SAVE = [T_CLASS, T_CLASS_TYPE, T_FILE, T_TYPE_CLASS, T_TYPE_USE, T_USE, T_USE_TYPE];
 
 	//--------------------------------------------------------------------------------------- $pretty
-	protected bool $pretty;
+	protected bool $pretty = false;
 
 	//---------------------------------------------------------------------------- $saved_files_count
-	public int $saved_files_count;
+	public int $saved_files_count = 0;
 
 	//----------------------------------------------------------------------------------- $start_time
 	public int $start_time;

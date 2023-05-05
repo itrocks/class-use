@@ -2,7 +2,10 @@ includes:
 	- phar://phpstan.phar/conf/bleedingEdge.neon
 	- ../../../phpstan/phpstan-strict-rules/rules.neon
 parameters:
+	checkBenevolentUnionTypes: true
 	checkImplicitMixed: true
+	checkTooWideReturnTypesInProtectedAndPublicMethods: true
+	checkUninitializedProperties: true
 	ignoreErrors:
 		- '#^Cannot access offset int on array<int, int>\|int.$#'
 		- '#^Short ternary operator is not allowed\. Use null coalesce operator if applicable or consider using long ternary.#'

@@ -12,13 +12,13 @@ trait Cache_Directory
 
 	//----------------------------------------------------------------------------------------- $home
 	/** Home directory, without right '/' */
-	protected string $home;
+	protected string $home = '';
 
 	//---------------------------------------------------------------------------------- $home_length
-	protected int $home_length;
+	protected int $home_length = 0;
 
 	//--------------------------------------------------------------------------------------- $vendor
-	protected bool $vendor;
+	protected bool $vendor = false;
 
 	//--------------------------------------------------------------------------------- cacheFileName
 	/**

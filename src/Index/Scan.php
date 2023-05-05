@@ -16,7 +16,7 @@ trait Scan
 	 * @var array<string,array<int,array{int,string,int}|string>>
 	 * <string $file_path_relative_to_project, array $file_tokens>
 	 */
-	public array $file_tokens;
+	public ?array $file_tokens = null;
 
 	//---------------------------------------------------------------------------------- $files_count
 	public int $files_count = 0;

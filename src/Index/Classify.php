@@ -29,21 +29,19 @@ trait Classify
 	 * <int=T_USE_TYPE,   <string $use, <int|string $type, <string $class, <string $file, <int
 	 * $token, int $line>>>>>>
 	 */
-	protected array $by;
+	protected array $by = [
+		T_CLASS      => [],
+		T_CLASS_TYPE => [],
+		T_FILE       => [],
+		T_TYPE_CLASS => [],
+		T_TYPE_USE   => [],
+		T_USE        => [],
+		T_USE_TYPE   => []
+	];
 
 	//-------------------------------------------------------------------------------------- classify
 	public function classify() : void
 	{
-		$this->by = [
-			T_CLASS      => [],
-			T_CLASS_TYPE => [],
-			T_FILE       => [],
-			T_TYPE_CLASS => [],
-			T_TYPE_USE   => [],
-			T_USE        => [],
-			T_USE_TYPE   => []
-		];
-
 		foreach ($this->references as $file_name => $references) {
 			$file_name = substr($file_name, $this->home_length);
 			if (!$this->reset) {
