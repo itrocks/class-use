@@ -12,6 +12,7 @@
 	},
 	"require-dev": {
 		"ext-xdebug":                   "*",
+		"itrocks/coding-standard":      "dev-master",
 		"phpstan/phpstan":              "^1.10",
 		"phpunit/phpunit":              "^10.1",
 		"phpstan/phpstan-strict-rules": "^1.5"

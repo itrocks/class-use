@@ -1,0 +1,7 @@
+#!/bin/bash
+cd "$(dirname "${BASH_SOURCE[0]}")" || return
+if test -f ../vendor/bin/phpcs; then
+  ../vendor/bin/phpcs
+else
+  ../../../bin/phpcs ../src --standard=ITRocks
+fi
