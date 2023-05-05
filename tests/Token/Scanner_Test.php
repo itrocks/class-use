@@ -23,9 +23,6 @@ class Scanner_Test extends TestCase
 		'parentheses'           => 0
 	];
 
-	//------------------------------------------------------------------------------------ REFERENCES
-	protected const REFERENCES = [T_CLASS, T_USE, T_TYPE, T_LINE];
-
 	//-------------------------------------------------------------------------------- assertComplete
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
@@ -140,11 +137,11 @@ class Scanner_Test extends TestCase
 	}
 
 	//----------------------------------------------------------------------------- provideReferences
-	/** @return array<string,array{string,array{string,string,string,string}}> */
+	/** @return array<string,array{string,array{string,string,string,int}}> */
 	public static function provideReferences() : array
 	{
 		$counter = 0;
-		$data    = explode("\n\n", file_get_contents(__DIR__ . '/scanner.references.provider'));
+		$data    = explode("\n\n", file_get_contents(__DIR__ . '/scanner.references.provider') ?: '');
 		$name    = '';
 		$provide = [];
 		foreach ($data as $data_key => $buffer) {
@@ -166,7 +163,12 @@ class Scanner_Test extends TestCase
 					function(string $value) : string { return trim($value); },
 					explode(',', $reference)
 				);
+				if (count($reference) !== 4) {
+					trigger_error('scanner.references.provider bad reference ' . join(', ', $reference));
+				}
+				$reference[3] = intval($reference[3]);
 			}
+			/** @var array{string,string,string,int} $references */
 			$provide[$name . ':' . ++$counter] = [$code, $references];
 		}
 		return $provide;

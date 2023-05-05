@@ -43,7 +43,7 @@ trait Scan
 			$directory = $this->home;
 		}
 		$this->directories_count ++;
-		foreach (scandir($directory) as $file) {
+		foreach (scandir($directory) ?: [] as $file) {
 			if (str_starts_with($file, '.')) {
 				continue;
 			}
@@ -72,12 +72,12 @@ trait Scan
 		if (isset($this->file_tokens)) {
 			$tokens = $this->file_tokens[substr($file, $this->home_length)] ?? null;
 			if (!isset($tokens)) {
-				$tokens = token_get_all(file_get_contents($file));
+				$tokens = token_get_all(file_get_contents($file) ?: '');
 				$this->file_tokens[substr($file, $this->home_length)] = $tokens;
 			}
 		}
 		else {
-			$tokens = token_get_all(file_get_contents($file));
+			$tokens = token_get_all(file_get_contents($file) ?: '');
 		}
 		$this->scanner->scan($tokens);
 		$this->references[$file] = $this->scanner->references;

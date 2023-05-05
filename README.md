@@ -108,12 +108,12 @@ the `total` option will be applied by default.
 
 Associative result keys are:
 
-- `class`:     The name of the class context where the use is
-- `type`:      The use type (type lists below)
-- `use`:       The used class name
-- `file`:      The name of the file where the use is
-- `line`:      The line number
-- `token_key`: The index of the token where the used class name is into the source code
+- `class`: The name of the class context where the use is
+- `type`:  The use type (type lists below)
+- `use`:   The used class name
+- `file`:  The name of the file where the use is
+- `line`:  The line number
+- `token`: The index of the token where the used class name is into the source code
 
 Programming API usage
 ---------------------
@@ -164,10 +164,10 @@ use ITRocks\Class_Use\Index;
 echo "These are where the Index class is used:\n";
 $index = new Index();
 foreach ($index->search([T_USE => Index::class]) as $reference) {
-  [$class, $type, $use, $file, $line, $token_key] = $reference;
+  [$class, $type, $use, $file, $line, $token] = $reference;
 	echo "#$key. $type into $file";
 	if ($class) echo " class $class";
-	echo " token $token_key line $line";
+	echo " token $token line $line";
 	echo "\n";
 }
 ```

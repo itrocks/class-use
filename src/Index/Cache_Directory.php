@@ -22,14 +22,14 @@ trait Cache_Directory
 
 	//--------------------------------------------------------------------------------- cacheFileName
 	/**
-	 * @param $name string   The name of the php file, relative to the home directory
-	 * @param $type int|null The type of the cache file
+	 * @param int|string $name The name of the php file, relative to the home directory
+	 * @param int|null   $type The type of the cache file
 	 * @return string The json cache filename, absolute
 	 */
-	protected function cacheFileName(string $name, int $type = null) : string
+	protected function cacheFileName(int|string $name, int $type = null) : string
 	{
 		$directory = $this->getCacheDirectory();
-		$file_name = str_replace(['/', '\\'], '-', $name);
+		$file_name = str_replace(['/', '\\'], '-', strval($name));
 		$file_name = (str_ends_with($file_name, '.php') ? substr($file_name, 0, -4) : $file_name)
 			. '.json';
 		return isset($type)

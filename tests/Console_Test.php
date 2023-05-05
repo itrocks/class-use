@@ -2,6 +2,7 @@
 namespace ITRocks\Class_Use;
 // phpcs:ignoreFile
 
+use Exception;
 use ITRocks\Class_Use\Token\Name;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
@@ -81,7 +82,10 @@ class Console_Test extends TestCase
 	}
 
 	//----------------------------------------------------------------------------------- testRunScan
-	/** @param string[] $arguments */
+	/**
+	 * @param string[] $arguments
+	 * @throws Exception
+	 */
 	#[TestWith([0, []])]
 	#[TestWith([1, ['anything']])]
 	#[TestWith([2, ['pretty']])]
@@ -104,6 +108,7 @@ class Console_Test extends TestCase
 	}
 
 	//--------------------------------------------------------------------------------- testRunSearch
+	/** @throws Exception */
 	public function testRunSearch() : void
 	{
 		$model = new class extends Console {

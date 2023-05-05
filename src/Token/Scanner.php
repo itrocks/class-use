@@ -80,7 +80,7 @@ class Scanner
 	}
 
 	//-------------------------------------------------------------------------------------- phpBlock
-	/** @param array< array{ integer, string, integer } | string > $tokens */
+	/** @param array<int,array{int,string,int}|string> $tokens */
 	protected function phpBlock(array &$tokens) : void
 	{
 		while ($token = next($tokens)) switch ($token[0]) {
@@ -132,9 +132,14 @@ class Scanner
 				continue 2;
 
 			case T_CLASS:
+			case T_INTERFACE:
 				$this->class_braces[] = $this->braces;
-				do $token = next($tokens); while ($token[0] !== T_STRING);
-				$this->class = $this->reference(T_DECLARE_CLASS, $token, key($tokens));
+				$type = ($token[0] === T_CLASS) ? T_DECLARE_CLASS : T_DECLARE_INTERFACE;
+				do {
+					$token = next($tokens);
+					if ($token === false) return;
+				} while ($token[0] !== T_STRING);
+				$this->class = $this->reference($type, $token, key($tokens));
 				if ($this->next_references) $this->appendNextReferences();
 				continue 2;
 
@@ -144,11 +149,17 @@ class Scanner
 
 			case T_CONST:
 				// skip constant name as it may be a reserved word token (e.g. T_USE for constant USE)
-				do $token = next($tokens); while ($token[0] !== '=');
+				do {
+					$token = next($tokens);
+					if ($token === false) return;
+				} while ($token[0] !== '=');
 				continue 2;
 
 			case T_EXTENDS:
-				do $token = next($tokens); while (!in_array($token[0], self::CLASS_TOKENS, true));
+				do {
+					$token = next($tokens);
+					if ($token === false) return;
+				} while (!in_array($token[0], self::CLASS_TOKENS, true));
 				$this->reference(T_EXTENDS, $token, key($tokens));
 				continue 2;
 
@@ -158,7 +169,8 @@ class Scanner
 				$depth = 1;
 				do {
 					$token = next($tokens);
-					if     ($token === '(') $depth ++;
+					if   ($token === false) return;
+					elseif ($token === '(') $depth ++;
 					elseif ($token === ')') $depth --;
 					elseif (
 						in_array($token[0], self::CLASS_TOKENS, true)
@@ -167,9 +179,13 @@ class Scanner
 						$this->reference(T_ARGUMENT, $token, key($tokens));
 					}
 				} while ($depth);
-				do $token = next($tokens); while (is_array($token) || !str_contains(':{;', $token));
+				do {
+					$token = next($tokens);
+					if ($token === false) return;
+				} while (is_array($token) || !str_contains(':{;', $token));
 				while (is_array($token) || !str_contains('{;', $token)) {
 					$token = next($tokens);
+					if ($token === false) return;
 					if (
 						in_array($token[0], self::CLASS_TOKENS, true)
 						&& !in_array($token[1], self::BASIC_TYPES, true)
@@ -185,6 +201,7 @@ class Scanner
 			case T_IMPLEMENTS:
 				do {
 					$token = next($tokens);
+					if ($token === false) return;
 					if (in_array($token[0], self::CLASS_TOKENS, true)) {
 						$this->reference(T_IMPLEMENTS, $token, key($tokens));
 					}
@@ -192,17 +209,14 @@ class Scanner
 				$this->braces ++;
 				continue 2;
 
-			case T_INTERFACE:
-				$this->class_braces[] = $this->braces;
-				do $token = next($tokens); while ($token[0] !== T_STRING);
-				$this->class = $this->reference(T_DECLARE_INTERFACE, $token, key($tokens));
-				if ($this->next_references) $this->appendNextReferences();
-				continue 2;
-
 			case T_INSTANCEOF:
 			case T_NEW:
+				/** @var int<283,284> $type */
 				$type = $token[0];
-				do $token = next($tokens); while (in_array($token[0], self::IGNORE_TOKENS, true));
+				do {
+					$token = next($tokens);
+					if ($token === false) return;
+				} while (in_array($token[0], self::IGNORE_TOKENS, true));
 				if (in_array($token[0], self::CLASS_TOKENS, true)) {
 					$this->reference($type, $token, key($tokens));
 					continue 2;
@@ -218,14 +232,21 @@ class Scanner
 			case T_STRING:
 				if ($this->attribute_parentheses === $this->parentheses) {
 					$this->attribute = '';
+					/** @var array{int,string,int} $token */
 					$this->attribute = $this->reference(T_ATTRIBUTE, $token, key($tokens));
 				}
 				continue 2;
 
 			case T_NAMESPACE:
-				do $token = next($tokens); while (in_array($token[0], self::IGNORE_TOKENS, true));
+				do {
+					$token = next($tokens);
+					if ($token === false) return;
+				} while (in_array($token[0], self::IGNORE_TOKENS, true));
 				$this->namespace = $token[1];
-				do $token = next($tokens); while (is_array($token) || !str_contains(';{', $token));
+				do {
+					$token = next($tokens);
+					if ($token === false) return;
+				} while (is_array($token) || !str_contains(';{', $token));
 				if ($token === '{') {
 					$this->namespace_braces = $this->braces;
 					$this->braces ++;
@@ -233,23 +254,36 @@ class Scanner
 				continue 2;
 
 			case T_PAAMAYIM_NEKUDOTAYIM:
-				do $token = prev($tokens); while (in_array($token[0], self::IGNORE_TOKENS, true));
+				do {
+					$token = prev($tokens);
+					if ($token === false) return;
+				} while (in_array($token[0], self::IGNORE_TOKENS, true));
 				$ignore = !in_array($token[0], self::CLASS_TOKENS, true)
 					|| in_array($token[1], self::IGNORE_CLASSES, true);
 				$token_key = key($tokens);
-				do $token = next($tokens); while ($token[0] !== T_PAAMAYIM_NEKUDOTAYIM);
-				do $token = next($tokens); while (in_array($token[0], self::IGNORE_TOKENS, true));
+				do {
+					$token = next($tokens);
+					if ($token === false) return;
+				} while ($token[0] !== T_PAAMAYIM_NEKUDOTAYIM);
+				do {
+					$token = next($tokens);
+					if ($token === false) return;
+				} while (in_array($token[0], self::IGNORE_TOKENS, true));
 				if ($ignore) {
 					continue 2;
 				}
 				$type  = ($token[0] === T_CLASS) ? T_CLASS : T_STATIC;
+				/** @var array{int,string,int} $token */
 				$token = $tokens[$token_key];
 				$this->reference($type, $token, $token_key);
 				continue 2;
 
 			case T_TRAIT:
 				$this->class_braces[] = $this->braces;
-				do $token = next($tokens); while ($token[0] !== T_STRING);
+				do {
+					$token = next($tokens);
+					if ($token === false) return;
+				} while ($token[0] !== T_STRING);
 				$this->class = $this->reference(T_DECLARE_TRAIT, $token, key($tokens));
 				if ($this->next_references) $this->appendNextReferences();
 				continue 2;
@@ -258,7 +292,10 @@ class Scanner
 			case T_PROTECTED:
 			case T_PUBLIC:
 			case T_VAR:
-				do $token = next($tokens); while (!in_array($token[0], self::VARIABLE_TOKENS, true));
+				do {
+					$token = next($tokens);
+					if ($token === false) return;
+				} while (!in_array($token[0], self::VARIABLE_TOKENS, true));
 				if (in_array($token[0], [T_CONST, T_FUNCTION], true)) {
 					prev($tokens);
 					continue 2;
@@ -271,20 +308,23 @@ class Scanner
 						$this->reference(T_VARIABLE, $token, key($tokens));
 					}
 					$token = next($tokens);
+					if ($token === false) return;
 				}
 
 				$back = 0;
 				do {
 					$token = prev($tokens);
+					if ($token === false) return;
 					$back ++;
 				} while (!in_array($token[0], [T_DOC_COMMENT, '{', '}', ';'], true));
 				$doc_comment = ($token[0] === T_DOC_COMMENT) ? $token[1] : '';
 				$token_key   = key($tokens);
-				while ($back --) next($tokens);
+				while ($back--) next($tokens);
 				$start = strpos($doc_comment, '* @var ');
 				if (!$start) {
 					continue 2;
 				}
+				/** @var array{int,string,int} $token Because $token[0] === T_DOC_COMMENT */
 				$start += 7;
 				$token  = [null, null, $token[2]];
 				while (str_contains("\t ", $doc_comment[$start])) $start ++;
@@ -311,11 +351,15 @@ class Scanner
 				// class|trait T_USE
 				if ($this->class_braces) {
 					do {
-						do $token = next($tokens); while (!in_array($token[0], self::CLASS_TOKENS, true));
+						do {
+							$token = next($tokens);
+							if ($token === false) return;
+						} while (!in_array($token[0], self::CLASS_TOKENS, true));
 						$this->reference(T_USE, $token, key($tokens));
 						$depth = 0;
 						do {
 							$token = next($tokens);
+							if ($token === false) return;
 							switch ($token[0]) {
 								case '{':
 									$depth ++;
@@ -324,14 +368,24 @@ class Scanner
 									$depth --;
 									break;
 								case T_INSTEADOF:
-									do $token = next($tokens); while (!in_array($token[0], self::CLASS_TOKENS, true));
+									do {
+										$token = next($tokens);
+										if ($token === false) return;
+									} while (!in_array($token[0], self::CLASS_TOKENS, true));
 									$this->reference(T_INSTEADOF, $token, key($tokens));
 									$token = next($tokens);
+									if ($token === false) return;
 									break;
 								case T_PAAMAYIM_NEKUDOTAYIM:
-									do $token = prev($tokens); while (!in_array($token[0], self::CLASS_TOKENS, true));
+									do {
+										$token = prev($tokens);
+										if ($token === false) return;
+									} while (!in_array($token[0], self::CLASS_TOKENS, true));
 									$this->reference(T_STATIC, $token, key($tokens));
-									do $token = next($tokens); while ($token[0] !== T_PAAMAYIM_NEKUDOTAYIM);
+									do {
+										$token = next($tokens);
+										if ($token === false) return;
+									} while ($token[0] !== T_PAAMAYIM_NEKUDOTAYIM);
 							}
 						} while ($depth || is_array($token) || !str_contains(',;}', $token));
 					} while (!str_contains(';}', $token));
@@ -342,12 +396,16 @@ class Scanner
 				$prefix = $use = '';
 				do {
 					$token = next($tokens);
+					if ($token === false) return;
 					if (in_array($token[0], self::CLASS_TOKENS, true)) {
 						$use = ltrim($token[1], '\\');
 					}
 					else switch ($token[0]) {
 						case T_AS:
-							do $token = next($tokens); while ($token[0] !== T_STRING);
+							do {
+								$token = next($tokens);
+								if ($token === false) return;
+							} while ($token[0] !== T_STRING);
 							$this->namespace_use[$token[1]] = $prefix . $use;
 							$use = '';
 							break;
@@ -375,7 +433,7 @@ class Scanner
 	}
 
 	//------------------------------------------------------------------------------------- reference
-	/** @param array{ integer, string, integer } $token */
+	/** @param array{int,string,int} $token */
 	protected function reference(int $type, array $token, int $token_key) : string
 	{
 		switch ($token[0]) {
@@ -383,8 +441,9 @@ class Scanner
 				$name = ltrim($token[1], '\\');
 				break;
 			case T_NAME_QUALIFIED:
-				$use  = $this->namespace_use[substr($token[1], 0, $slash = strpos($token[1], '\\'))] ?? '';
-				$name = $use
+				$slash = strpos($token[1], '\\') ?: 0;
+				$use   = $this->namespace_use[substr($token[1], 0, $slash)] ?? '';
+				$name  = $use
 					? ($use . substr($token[1], $slash))
 					: ltrim($this->namespace . '\\' . $token[1], '\\');
 				break;

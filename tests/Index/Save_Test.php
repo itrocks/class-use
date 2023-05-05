@@ -12,7 +12,7 @@ class Save_Test extends TestCase
 	use Test_Common;
 
 	//------------------------------------------------------------------------------------------- $by
-	/** @var array<int,array<int|string,array<int|string,array<int|string,array<string,array<int,int>>|int>>>> */
+	/** @var array<int,array<int|string,array<int|string,array<int|string,array<int|string,array<int,int>|int>>>>> */
 	protected array $by;
 
 	//---------------------------------------------------------------------------------------- $files
@@ -76,17 +76,17 @@ class Save_Test extends TestCase
 		}
 		ksort($actual);
 		$expected = [
-			'/class-type/C.json'   => '{"993":{"C":{"C.php":{"3":2}}}}',
-			'/class/C.json'        => '{"C":{"993":{"C.php":{"3":2}}}}',
+			'/class-type/C.json'   => '{"992":{"C":{"C.php":{"3":2}}}}',
+			'/class/C.json'        => '{"C":{"992":{"C.php":{"3":2}}}}',
 			'/file/C.json'         =>
-				'{"333":{"C":{"3":2}},"983":{"993":{"3":2},"284":{"10":3}},"318":{"C":{"3":2,"10":3}}}',
+				'{"333":{"C":{"3":2}},"983":{"992":{"3":2},"284":{"10":3}},"318":{"C":{"3":2,"10":3}}}',
 			'/files.json'          => '["C.php"]',
 			'/type-class/284.json' => '{"":{"C":{"C.php":{"10":3}}}}',
-			'/type-class/993.json' => '{"C":{"C":{"C.php":{"3":2}}}}',
+			'/type-class/992.json' => '{"C":{"C":{"C.php":{"3":2}}}}',
 			'/type-use/284.json'   => '{"C":{"":{"C.php":{"10":3}}}}',
-			'/type-use/993.json'   => '{"C":{"C":{"C.php":{"3":2}}}}',
-			'/use-type/C.json'     => '{"993":{"C":{"C.php":{"3":2}}},"284":{"":{"C.php":{"10":3}}}}',
-			'/use/C.json'          => '{"C":{"993":{"C.php":{"3":2}}},"":{"284":{"C.php":{"10":3}}}}'
+			'/type-use/992.json'   => '{"C":{"C":{"C.php":{"3":2}}}}',
+			'/use-type/C.json'     => '{"992":{"C":{"C.php":{"3":2}}},"284":{"":{"C.php":{"10":3}}}}',
+			'/use/C.json'          => '{"C":{"992":{"C.php":{"3":2}}},"":{"284":{"C.php":{"10":3}}}}'
 		];
 		exec('rm -rf "' . $cache_directory . '"');
 		self::assertEquals($expected, $actual);

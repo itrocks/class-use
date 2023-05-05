@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Class_Use;
 
+use Exception;
 use ITRocks\Class_Use\Index\Cache_Directory;
 use ITRocks\Class_Use\Index\Classify;
 use ITRocks\Class_Use\Index\Save;
@@ -35,6 +36,7 @@ class Index
 	protected static self $singleton;
 
 	//----------------------------------------------------------------------------------- __construct
+	/** @throws Exception */
 	public function __construct(int $flags = 0, string $home = '')
 	{
 		$this->pretty     = boolval($flags & self::PRETTY);

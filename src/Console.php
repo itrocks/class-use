@@ -2,6 +2,7 @@
 namespace ITRocks\Class_Use;
 
 use Error;
+use Exception;
 use ITRocks\Class_Use\Token\Name;
 
 class Console
@@ -55,6 +56,7 @@ class Console
 	}
 
 	//-------------------------------------------------------------------------------------- newIndex
+	/** @throws Exception */
 	protected function newIndex(int $flags = 0, string $home = '') : Index
 	{
 		return new Index($flags, $home);
@@ -78,7 +80,10 @@ class Console
 	}
 
 	//------------------------------------------------------------------------------------------- run
-	/** @param array<int|string,string> $arguments */
+	/**
+	 * @param array<int|string,string> $arguments
+	 * @throws Exception
+	 */
 	public function run(array $arguments) : void
 	{
 		$this->nameArguments($arguments);
@@ -92,7 +97,10 @@ class Console
 	}
 
 	//------------------------------------------------------------------------------------------ scan
-	/** @param array<int|string,string> $arguments */
+	/**
+	 * @param array<int|string,string> $arguments
+	 * @throws Exception
+	 */
 	protected function scan(array $arguments) : void
 	{
 		$flags = 0;
@@ -143,7 +151,10 @@ class Console
 	}
 
 	//---------------------------------------------------------------------------------------- search
-	/** @param array<int|string,string> $arguments <int $type, string $name> */
+	/**
+	 * @param array<int|string,string> $arguments <int $type, string $name>
+	 * @throws Exception
+	 */
 	protected function search(array $arguments) : void
 	{
 		$of_name = array_flip(Name::OF);

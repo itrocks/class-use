@@ -8,7 +8,7 @@ trait Search
 	/**
 	 * @param array<int,int|string> $search
 	 * @param bool|int<262,983> $associative Each returned record is an array<string $type, int|string>
-	 * @return array<array{string,int|string,string,string,int,int}>|array<array{333:string,983:int|string,318:string,344:string,343:int,982:int}>
+	 * @return array<($associative is 262 ? array{'class':string,'type':int|string,'use':string,'file':string,'line':int,'token':int} : ($associative is false ? array{string,int|string,string,string,int,int} : array{333:string,983:int|string,318:string,344:string,343:int,982:int}))>
 	 * <{string $class, int|string $type, string $use, string $file, int $line, int $token_key}>
 	 */
 	public function search(array $search, bool|int $associative = false) : array
@@ -51,7 +51,7 @@ trait Search
 		if (!isset($this->by[$cache][$name])) {
 			$cache_file_name         = $this->cacheFileName($name, $cache);
 			$this->by[$cache][$name] = file_exists($cache_file_name)
-				? json_decode(file_get_contents($cache_file_name), true)
+				? json_decode(file_get_contents($cache_file_name) ?: '', true)
 				: [];
 		}
 
@@ -71,7 +71,7 @@ trait Search
 					$array2 = [$search3 => $array2[$search3] ?? []];
 				}
 				foreach ($array2 as $file => $lines) {
-					foreach ($lines as $token_key => $line) {
+					foreach ($lines as $token => $line) {
 						$references[] = match($associative) {
 							T_TYPE, true => [
 								T_CLASS     => $names[$tree[T_CLASS]],
@@ -79,15 +79,15 @@ trait Search
 								T_USE       => $names[$tree[T_USE]],
 								T_FILE      => $file,
 								T_LINE      => $line,
-								T_TOKEN_KEY => $token_key
+								T_TOKEN_KEY => $token
 							],
 							T_STRING => [
-								'class'     => $names[$tree[T_CLASS]],
-								'type'      => $names[$tree[T_TYPE]],
-								'use'       => $names[$tree[T_USE]],
-								'file'      => $file,
-								'line'      => $line,
-								'token_key' => $token_key
+								'class' => $names[$tree[T_CLASS]],
+								'type'  => $names[$tree[T_TYPE]],
+								'use'   => $names[$tree[T_USE]],
+								'file'  => $file,
+								'line'  => $line,
+								'token' => $token
 							],
 							default => [
 								$names[$tree[T_CLASS]],
@@ -95,7 +95,7 @@ trait Search
 								$names[$tree[T_USE]],
 								$file,
 								$line,
-								$token_key
+								$token
 							]
 						};
 					}

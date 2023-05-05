@@ -37,7 +37,7 @@ class Classify_Test extends TestCase
 	protected bool $reset = false;
 
 	//--------------------------------------------------------------------------------- cacheFileName
-	protected function cacheFileName(string $name, int $type = null) : string
+	protected function cacheFileName(int|string $name, int $type = null) : string
 	{
 		if (!$this->mock[__FUNCTION__]) {
 			return $this->originalCacheFileName($name, $type);

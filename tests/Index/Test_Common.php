@@ -9,7 +9,7 @@ trait Test_Common
 	private function recurseScanDir(string $directory, string $parent = '') : array
 	{
 		$files = [];
-		foreach (scandir($directory) as $file) {
+		foreach (scandir($directory) ?: [] as $file) {
 			if (str_starts_with($file, '.')) {
 				continue;
 			}

@@ -5,6 +5,7 @@ trait Classify
 {
 
 	//--------------------------------------------------------------------------------------- EXTENDS
+	/** @var array<int,array<int>> */
 	const EXTENDS = [
 		T_CLASS => [T_CLASS,      T_CLASS_TYPE],
 		T_USE   => [T_USE,        T_USE_TYPE],
@@ -13,14 +14,20 @@ trait Classify
 
 	//------------------------------------------------------------------------------------------- $by
 	/**
-	 * @var array<int,array<int|string,array<int|string,array<int|string,array<string,array<int,int>>|int>>>>
-	 * <int=T_CLASS,      <string $class, <string $use, <int|string $type, <string $file, <int $token, int $line>>>>>>
-	 * <int=T_CLASS_TYPE, <string $class, <int|string $type, <string $use, <string $file, <int $token, int $line>>>>>>
+	 * @var array<int,array<int|string,array<int|string,array<int|string,array<int|string,array<int,int>|int>>>>>
+	 * <int=T_CLASS,      <string $class, <string $use, <int|string $type, <string $file, <int
+	 * $token, int $line>>>>>>
+	 * <int=T_CLASS_TYPE, <string $class, <int|string $type, <string $use, <string $file, <int
+	 * $token, int $line>>>>>>
 	 * <int=T_FILE,       <string $file_name, <int $reference_type, <int $token_key, int $line>>>>
-	 * <int=T_TYPE_CLASS, <int|string $type, <string $class, <string $use, <string $file, <int $token, int $line>>>>>>
-	 * <int=T_TYPE_USE,   <int|string $type, <string $use, <string $class, <string $file, <int $token, int $line>>>>>>
-	 * <int=T_USE,        <string $use, <string $class, <int|string $type, <string $file, <int $token, int $line>>>>>>
-	 * <int=T_USE_TYPE,   <string $use, <int|string $type, <string $class, <string $file, <int $token, int $line>>>>>>
+	 * <int=T_TYPE_CLASS, <int|string $type, <string $class, <string $use, <string $file, <int
+	 * $token, int $line>>>>>>
+	 * <int=T_TYPE_USE,   <int|string $type, <string $use, <string $class, <string $file, <int
+	 * $token, int $line>>>>>>
+	 * <int=T_USE,        <string $use, <string $class, <int|string $type, <string $file, <int
+	 * $token, int $line>>>>>>
+	 * <int=T_USE_TYPE,   <string $use, <int|string $type, <string $class, <string $file, <int
+	 * $token, int $line>>>>>>
 	 */
 	protected array $by;
 
@@ -73,11 +80,12 @@ trait Classify
 			unset($this->by[T_FILE][$file_name]);
 		}
 		elseif (file_exists($cache_file_name = $this->cacheFileName($file_name, T_FILE))) {
-			$file_references = json_decode(file_get_contents($cache_file_name), true);
+			$file_references = json_decode(file_get_contents($cache_file_name) ?: '', true);
 		}
 		else {
 			return;
 		}
+		/** @var array<int,array<int|string,array<int,int>>> $file_references */
 		// load and filter all referencing files
 		foreach ($file_references as $type => $values) {
 			foreach (static::EXTENDS[$type] as $type) {
@@ -87,7 +95,7 @@ trait Classify
 						// The case of a reference into T_FILE to a non-existing cache file should never happen.
 						// It would throw an error you may solve with a reset of the index.
 						$this->by[$type][$value] = json_decode(
-							file_get_contents($this->cacheFileName($value, $type)), true
+							file_get_contents($this->cacheFileName($value, $type)) ?: '', true
 						);
 					}
 					// filter

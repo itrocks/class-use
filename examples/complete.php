@@ -8,6 +8,7 @@ include __DIR__ . '/../bin/autoload.php';
 //=================================================================================================
 // Calculate cache
 
+/** @noinspection PhpUnhandledExceptionInspection Valid directory */
 $index = new Index(Index::VENDOR, __DIR__ . '/..');
 $index->scanDirectory();
 $index->classify();
@@ -71,7 +72,6 @@ foreach ($found as $key => $use) {
 // Associative results : per type constant (accepted $associative value: true or T_TYPE)
 
 $class = Index::class;
-$file  = 'src/Console.php';
 echo "\nThese are all the static class $class uses into the file $file (associative)\n";
 $found = $index->search([T_TYPE => T_STATIC, T_USE => Index::class, T_FILE => $file], true);
 foreach ($found as $key => $use) {
@@ -87,7 +87,6 @@ foreach ($found as $key => $use) {
 // Associative results : per type string name
 
 $class = Index::class;
-$file  = 'src/Console.php';
 echo "\nThese are all the static class $class uses into the file $file (string associative)\n";
 $found = $index->search([T_TYPE => T_STATIC, T_USE => Index::class, T_FILE => $file], T_STRING);
 print_r($found);

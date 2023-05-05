@@ -9,8 +9,7 @@ const T_TYPE_USE   = 985;
 const T_USE_TYPE   = 986;
 
 // additional virtual class use token
-const T_ANNOTATION        = 991;
-const T_ARGUMENT          = 992;
-const T_DECLARE_CLASS     = 993;
-const T_DECLARE_INTERFACE = 994;
-const T_DECLARE_TRAIT     = 995;
+const T_ARGUMENT          = 991;
+const T_DECLARE_CLASS     = 992;
+const T_DECLARE_INTERFACE = 993;
+const T_DECLARE_TRAIT     = 994;

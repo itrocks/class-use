@@ -8,7 +8,7 @@ class Search_Test extends TestCase
 	use Search;
 
 	//------------------------------------------------------------------------------------------- $by
-	/** @var array<int,array<int|string,array<int|string,array<int|string,array<string,array<int,int>>|int>>>> */
+	/** @var array<int,array<int|string,array<int|string,array<int|string,array<int|string,array<int,int>|int>>>>> */
 	protected array $by = [
 		T_CLASS => [
 			'C' => ['C' => [T_DECLARE_CLASS => ['C.php' => [3 => 2]]]],
@@ -37,7 +37,8 @@ class Search_Test extends TestCase
 	];
 
 	//--------------------------------------------------------------------------------- cacheFileName
-	protected function cacheFileName(string $name, int $type = null) : string
+	/** @noinspection PhpUnusedParameterInspection Mock of Cache_Directory::cacheFileName */
+	protected function cacheFileName(int|string $name, int $type = null) : string
 	{
 		return __DIR__ . '/cache/cached.json';
 	}
@@ -47,12 +48,12 @@ class Search_Test extends TestCase
 	{
 		$actual   = $this->search([T_CLASS => 'C'], T_STRING);
 		$expected = [[
-			'class'     => 'C',
-			'type'      => T_DECLARE_CLASS,
-			'use'       => 'C',
-			'file'      => 'C.php',
-			'line'      => 2,
-			'token_key' => 3
+			'class' => 'C',
+			'type'  => T_DECLARE_CLASS,
+			'use'   => 'C',
+			'file'  => 'C.php',
+			'line'  => 2,
+			'token' => 3
 		]];
 		self::assertEquals($expected, $actual);
 	}

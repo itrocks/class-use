@@ -147,11 +147,12 @@ class Index_Test extends TestCase
 	public function testConstructorDoesNotExist() : void
 	{
 		$this->expectException(Exception::class);
-		$this->expectExceptionMessage('Directory /invalid-aafe42 does not exist');
-		new Index(0, '/invalid-aafe42');
+		$this->expectExceptionMessage('Directory /invalid-foo-file does not exist');
+		new Index(0, '/invalid-foo-file');
 	}
 
 	//-------------------------------------------------------------------------- testConstructorFlags
+	/** @throws Exception */
 	#[TestWith([1, 0, false, false, false])]
 	#[TestWith([2, Index::PRETTY, true, false, false])]
 	#[TestWith([3, Index::RESET,  false, true, false])]
@@ -176,7 +177,7 @@ class Index_Test extends TestCase
 	//---------------------------------------------------------------------- testConstructorNoProject
 	public function testConstructorNoProject() : void
 	{
-		$cwd = getcwd();
+		$cwd = getcwd() ?: '.';
 		chdir('/home');
 		$this->expectException(Exception::class);
 		$this->expectExceptionMessage('Directory /home does not contain a php project');
@@ -197,6 +198,7 @@ class Index_Test extends TestCase
 	}
 
 	//------------------------------------------------------------------------------------- testIndex
+	/** @throws Exception */
 	public function testIndex() : void
 	{
 		if (is_dir(__DIR__ . '/Index/Load_And_Filter/cache')) {
@@ -207,7 +209,7 @@ class Index_Test extends TestCase
 		$actual = [];
 		$cache_directory = $index->getCacheDirectory();
 		foreach ($this->recurseScanDir($index->getCacheDirectory()) as $file) {
-			$actual[$file] = json_decode(file_get_contents($cache_directory . $file), true);
+			$actual[$file] = json_decode(file_get_contents($cache_directory . $file) ?: '', true);
 		}
 		$expected = self::COMPLETE_EXPECTATION;
 		self::assertEquals($expected, $actual);
