@@ -1,7 +1,9 @@
 #!/bin/bash
 cd "$(dirname "${BASH_SOURCE[0]}")" || return
 if test -f ../vendor/bin/phpcs; then
-  ../vendor/bin/phpcs .. --standard=ITRocks
+  ../vendor/bin/phpcs --config-set installed_paths "`realpath ITRocks`"
+  ../vendor/bin/phpcs .. --standard=ITRocks --ignore=*/coverage/*
 else
-  ../../../bin/phpcs .. --standard=ITRocks
+  ../../../bin/phpcs --config-set installed_paths "`realpath ITRocks`"
+  ../../../bin/phpcs .. --standard=ITRocks --ignore=*/coverage/*
 fi
