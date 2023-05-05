@@ -15,6 +15,7 @@ class Console
 	const TOTAL       = 'total';
 
 	//------------------------------------------------------------------------------- CLASS_ARGUMENTS
+	/** @var string[] */
 	const CLASS_ARGUMENTS = ['class', 'type', 'use'];
 
 	//------------------------------------------------------------------------------------------ HOME
@@ -27,6 +28,7 @@ class Console
 	const VENDOR = 'vendor';
 
 	//-------------------------------------------------------------------------------- TYPE_CONSTANTS
+	/** @var string[] */
 	const TYPE_CONSTANTS = [
 		'T_ARGUMENT', 'T_ATTRIBUTE', 'T_CLASS', 'T_DECLARE_CLASS', 'T_DECLARE_INTERFACE',
 		'T_DECLARE_TRAIT', 'T_EXTENDS', 'T_IMPLEMENTS', 'T_INSTANCEOF', 'T_INSTEADOF', 'T_NEW',
@@ -34,7 +36,10 @@ class Console
 	];
 
 	//--------------------------------------------------------------------------------- nameArguments
-	/** @param array<int|string,string> $arguments */
+	/**
+	 * @param     array<int,string>        $arguments
+	 * @param-out array<int|string,string> $arguments
+	 */
 	protected function nameArguments(array &$arguments) : void
 	{
 		foreach ($arguments as $key => &$argument) {
@@ -88,7 +93,7 @@ class Console
 
 	//------------------------------------------------------------------------------------------- run
 	/**
-	 * @param array<string> $arguments
+	 * @param array<int,string> $arguments
 	 * @throws Exception
 	 */
 	public function run(array $arguments) : void

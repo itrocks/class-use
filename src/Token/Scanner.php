@@ -517,12 +517,17 @@ class Scanner
 		$this->references            = [];
 
 		$token = reset($tokens);
-		while (current($tokens)) {
-			while ($token && ($token[0] !== T_OPEN_TAG)) {
-				$token = next($tokens);
-			}
-			$this->phpBlock($tokens);
+		if ($token === false) {
+			return;
 		}
+		do {
+			/** @phpstan-ignore-next-line bug "Cannot access offset 0 on mixed" */
+			if ($token[0] === T_OPEN_TAG) {
+				$this->phpBlock($tokens);
+			}
+			/** @phpstan-ignore-next-line bug "Parameter #1 $array of function next expects array|object, mixed given" */
+			$token = next($tokens);
+		} while ($token !== false);
 		if ($this->next_references !== []) {
 			$this->appendNextReferences();
 		}

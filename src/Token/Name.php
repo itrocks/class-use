@@ -5,6 +5,7 @@ class Name
 {
 
 	//-------------------------------------------------------------------------------------------- OF
+	/** @var array<int,string> */
 	const OF = [
 		T_ARGUMENT          => 'argument',
 		T_ATTRIBUTE         => 'attribute',

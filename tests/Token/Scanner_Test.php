@@ -10,6 +10,7 @@ class Scanner_Test extends TestCase
 {
 
 	//----------------------------------------------------------------------- DEFAULT_EXPECTED_VALUES
+	/** @var array<string,array<empty>|int|string> */
 	protected const DEFAULT_EXPECTED_VALUES = [
 		'attribute'             => '',
 		'attribute_brackets'    => -1,

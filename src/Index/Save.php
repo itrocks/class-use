@@ -10,6 +10,7 @@ trait Save
 	public const PRETTY = 4;
 
 	//------------------------------------------------------------------------------------------ SAVE
+	/** @var int[] */
 	const SAVE = [T_CLASS, T_CLASS_TYPE, T_FILE, T_TYPE_CLASS, T_TYPE_USE, T_USE, T_USE_TYPE];
 
 	//--------------------------------------------------------------------------------------- $pretty
