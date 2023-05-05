@@ -3,7 +3,7 @@ parameters:
 		- '#^Cannot access offset int on array.*\.$#'
 	level: 7
 	paths:
-		- .
+		- ../bin
 		- ../examples
 		- ../src
 		- ../tests

@@ -20,6 +20,6 @@
 		</exclude>
 	</source>
 	<testsuite name="itrocks/class-use">
-		<directory>.</directory>
+		<directory>../tests</directory>
 	</testsuite>
 </phpunit>
