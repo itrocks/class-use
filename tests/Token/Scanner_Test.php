@@ -250,8 +250,9 @@ EOT;
 		$reference = new ReflectionMethod(Scanner::class, 'reference');
 		/** @noinspection PhpUnhandledExceptionInspection Will be valid */
 		$reference->invokeArgs($scanner, $arguments);
-		$references = new ReflectionProperty(Scanner::class, 'references');
-		self::assertEquals($expected, $references->getValue($scanner)[0], strval($index));
+		/** @var array<array{string,int|string,string,int,int}> $references Scanner::$reference */
+		$references = (new ReflectionProperty(Scanner::class, 'references'))->getValue($scanner);
+		self::assertEquals($expected, $references[0], strval($index));
 	}
 
 	//----------------------------------------------------------------- testReferenceInvalidTokenType

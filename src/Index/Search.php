@@ -7,8 +7,14 @@ trait Search
 	//---------------------------------------------------------------------------------------- search
 	/**
 	 * @param array<int,int|string> $search
-	 * @param bool|int<262,983> $associative Each returned record is an array<string $type, int|string>
-	 * @return array<($associative is 262 ? array{'class':string,'type':int|string,'use':string,'file':string,'line':int,'token':int} : ($associative is false ? array{string,int|string,string,string,int,int} : array{333:string,983:int|string,318:string,344:string,343:int,982:int}))>
+	 * @param bool|int<262,983> $associative Each returned record is an array<string $type,int|string>
+	 * @return array<(
+	 *   $associative is 262
+	 *   ? array{'class':string,'type':int|string,'use':string,'file':string,'line':int,'token':int}
+	 *   : (
+	 *     $associative is 983|true
+	 *     ? array{333:string,983:int|string,318:string,344:string,343:int,982:int}
+	 *     : array{string,int|string,string,string,int,int}))>
 	 * <{string $class, int|string $type, string $use, string $file, int $line, int $token_key}>
 	 */
 	public function search(array $search, bool|int $associative = false) : array
@@ -50,16 +56,20 @@ trait Search
 		$name = $search[$type];
 		if (!isset($this->by[$cache][$name])) {
 			$cache_file_name         = $this->cacheFileName($name, $cache);
+			/** @phpstan-ignore-next-line The cache file has been written from the same structure */
 			$this->by[$cache][$name] = file_exists($cache_file_name)
 				? json_decode(file_get_contents($cache_file_name) ?: '', true)
 				: [];
 		}
 
+		/** @var array<int|string> $names */
 		$names      = [$name];
 		$references = [];
 
+		/** @var array<int|string,array<int|string,array<string,array<int,int>>>> $array0 */
 		$array0 = $this->by[$cache][$name];
 		if ($search1) {
+			/** @var array<int|string,array<int|string,array<string,array<int,int>>>> $array0 */
 			$array0 = [$search1 => $array0[$search1] ?? []];
 		}
 		foreach ($array0 as $names[1] => $array1) {
@@ -70,32 +80,33 @@ trait Search
 				if ($search3) {
 					$array2 = [$search3 => $array2[$search3] ?? []];
 				}
+				/** @var string $file */
 				foreach ($array2 as $file => $lines) {
 					foreach ($lines as $token => $line) {
 						$references[] = match($associative) {
 							T_TYPE, true => [
-								T_CLASS     => $names[$tree[T_CLASS]],
-								T_TYPE      => $names[$tree[T_TYPE]],
-								T_USE       => $names[$tree[T_USE]],
+								T_CLASS     => strval($names[$tree[T_CLASS]]),
+								T_TYPE      => intval($names[$tree[T_TYPE]]),
+								T_USE       => strval($names[$tree[T_USE]]),
 								T_FILE      => $file,
-								T_LINE      => $line,
-								T_TOKEN_KEY => $token
+								T_LINE      => intval($line),
+								T_TOKEN_KEY => intval($token)
 							],
 							T_STRING => [
-								'class' => $names[$tree[T_CLASS]],
-								'type'  => $names[$tree[T_TYPE]],
-								'use'   => $names[$tree[T_USE]],
+								'class' => strval($names[$tree[T_CLASS]]),
+								'type'  => intval($names[$tree[T_TYPE]]),
+								'use'   => strval($names[$tree[T_USE]]),
 								'file'  => $file,
-								'line'  => $line,
-								'token' => $token
+								'line'  => intval($line),
+								'token' => intval($token)
 							],
 							default => [
-								$names[$tree[T_CLASS]],
-								$names[$tree[T_TYPE]],
-								$names[$tree[T_USE]],
+								strval($names[$tree[T_CLASS]]),
+								intval($names[$tree[T_TYPE]]),
+								strval($names[$tree[T_USE]]),
 								$file,
-								$line,
-								$token
+								intval($line),
+								intval($token)
 							]
 						};
 					}

@@ -61,7 +61,7 @@ class Scanner
 
 	//----------------------------------------------------------------------------------- $references
 	/**
-	 * @var array< array{ string, int|string, string, int, int } >
+	 * @var array<array{string,int|string,string,int,int}>
 	 * [[string $class, int|string $type, string $use, int $line, int $token_key]]
 	 */
 	public array $references;

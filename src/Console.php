@@ -26,6 +26,13 @@ class Console
 	const UPDATE = 'update';
 	const VENDOR = 'vendor';
 
+	//-------------------------------------------------------------------------------- TYPE_CONSTANTS
+	const TYPE_CONSTANTS = [
+		'T_ARGUMENT', 'T_ATTRIBUTE', 'T_CLASS', 'T_DECLARE_CLASS', 'T_DECLARE_INTERFACE',
+		'T_DECLARE_TRAIT', 'T_EXTENDS', 'T_IMPLEMENTS', 'T_INSTANCEOF', 'T_INSTEADOF', 'T_NEW',
+		'T_RETURN', 'T_STATIC', 'T_USE', 'T_VARIABLE'
+	];
+
 	//--------------------------------------------------------------------------------- nameArguments
 	/** @param array<int|string,string> $arguments */
 	protected function nameArguments(array &$arguments) : void
@@ -172,9 +179,9 @@ class Console
 			}
 		}
 		if ($value = ($search[T_TYPE] ?? false)) {
-			if (str_starts_with($value, 't_') || str_starts_with($value, 'T_')) {
+			if (in_array(strtoupper($value), static::TYPE_CONSTANTS, true)) {
 				try {
-					$search[T_TYPE] = constant(strtoupper($value));
+					$search[T_TYPE] = intval(constant(strtoupper($value)));
 				}
 				catch (Error) {
 				}

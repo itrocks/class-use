@@ -94,11 +94,14 @@ trait Classify
 					if (!isset($this->by[$type][$value])) {
 						// The case of a reference into T_FILE to a non-existing cache file should never happen.
 						// It would throw an error you may solve with a reset of the index.
+						/** @phpstan-ignore-next-line The cache file has been written using a valid structure */
 						$this->by[$type][$value] = json_decode(
 							file_get_contents($this->cacheFileName($value, $type)) ?: '', true
 						);
 					}
 					// filter
+					/** @var array<int|string,array<int|string,array<string,array<int,int>>>> $references
+					 * May have been decoded from the json file content written using a valid structure */
 					$references =& $this->by[$type][$value];
 					foreach ($references as $key => &$references1) {
 						foreach ($references1 as $key1 => &$references2) {

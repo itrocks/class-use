@@ -1,7 +1,7 @@
 parameters:
 	ignoreErrors:
 		- '#^Cannot access offset int on array.*\.$#'
-	level: 8
+	level: 9
 	paths:
 		- ../bin
 		- ../examples
