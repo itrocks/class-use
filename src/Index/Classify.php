@@ -87,8 +87,8 @@ trait Classify
 		}
 		/** @var array<int,array<int|string,array<int,int>>> $file_references */
 		// load and filter all referencing files
-		foreach ($file_references as $type => $values) {
-			foreach (static::EXTENDS[$type] as $type) {
+		foreach ($file_references as $main_type => $values) {
+			foreach (static::EXTENDS[$main_type] as $type) {
 				foreach (array_keys($values) as $value) {
 					// load
 					if (!isset($this->by[$type][$value])) {
@@ -106,11 +106,11 @@ trait Classify
 					foreach ($references as $key => &$references1) {
 						foreach ($references1 as $key1 => &$references2) {
 							unset($references2[$file_name]);
-							if (!$references2) {
+							if ($references2 === []) {
 								unset($references1[$key1]);
 							}
 						}
-						if (!$references1) {
+						if ($references1 === []) {
 							unset($references[$key]);
 						}
 					}

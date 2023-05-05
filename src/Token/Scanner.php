@@ -69,7 +69,7 @@ class Scanner
 	//-------------------------------------------------------------------------- appendNextReferences
 	protected function appendNextReferences() : void
 	{
-		if (!$this->class) {
+		if ($this->class === '') {
 			$this->references = array_merge($this->references, $this->next_references);
 		}
 		else foreach ($this->next_references as $reference) {
@@ -141,7 +141,7 @@ class Scanner
 				} while ($token[0] !== T_STRING);
 				/** @phpstan-ignore-next-line key($tokens) valid: last next($tokens) not false */
 				$this->class = $this->reference($type, $token, key($tokens));
-				if ($this->next_references) $this->appendNextReferences();
+				if ($this->next_references !== []) $this->appendNextReferences();
 				continue 2;
 
 			case T_CLOSE_TAG:
@@ -166,7 +166,7 @@ class Scanner
 				continue 2;
 
 			case T_FUNCTION:
-				if ($this->next_references) $this->appendNextReferences();
+				if ($this->next_references !== []) $this->appendNextReferences();
 				do $token = next($tokens); while ($token !== '(');
 				$depth = 1;
 				do {
@@ -294,7 +294,7 @@ class Scanner
 				} while ($token[0] !== T_STRING);
 				/** @phpstan-ignore-next-line key($tokens) valid: last next($tokens) not false */
 				$this->class = $this->reference(T_DECLARE_TRAIT, $token, key($tokens));
-				if ($this->next_references) $this->appendNextReferences();
+				if ($this->next_references !== []) $this->appendNextReferences();
 				continue 2;
 
 			case T_PRIVATE:
@@ -327,17 +327,18 @@ class Scanner
 					if ($token === false) return;
 					$back ++;
 				} while (!in_array($token[0], [T_DOC_COMMENT, '{', '}', ';'], true));
-				$doc_comment = ($token[0] === T_DOC_COMMENT) ? $token[1] : '';
 				/** @var int $token_key The next/prev play/replay sequence is valid */
 				$token_key = key($tokens);
 				while ($back--) next($tokens);
-				$start = strpos($doc_comment, '* @var ');
-				if (!$start) {
+				if ($token[0] !== T_DOC_COMMENT) {
 					continue 2;
 				}
-				/** @var array{int,string,int} $token because $token[0] === T_DOC_COMMENT */
+				$doc_comment = $token[1];
+				$start       = strpos($doc_comment, '* @var ');
+				if ($start === false) {
+					continue 2;
+				}
 				$start += 7;
-				$token  = [null, null, $token[2]];
 				while (str_contains("\t ", $doc_comment[$start])) $start ++;
 				$stop = $start;
 				while (!str_contains("\n\r\t ", $doc_comment[$stop])) {
@@ -347,7 +348,7 @@ class Scanner
 					}
 					$token[1] = rtrim(substr($doc_comment, $start, $stop - $start), '[]');
 					$start = $stop + 1;
-					if (($token[1] === '') || in_array($token[1], self::BASIC_TYPES)) {
+					if (($token[1] === '') || in_array($token[1], self::BASIC_TYPES, true)) {
 						continue;
 					}
 					if     (str_starts_with($token[1], '\\')) $token[0] = T_NAME_FULLY_QUALIFIED;
@@ -360,7 +361,7 @@ class Scanner
 			case T_USE:
 
 				// class|trait T_USE
-				if ($this->class_braces) {
+				if ($this->class_braces !== []) {
 					do {
 						do {
 							$token = next($tokens);
@@ -401,7 +402,7 @@ class Scanner
 										if ($token === false) return;
 									} while ($token[0] !== T_PAAMAYIM_NEKUDOTAYIM);
 							}
-						} while ($depth || is_array($token) || !str_contains(',;}', $token));
+						} while (($depth > 0) || is_array($token) || !str_contains(',;}', $token));
 					} while (!str_contains(';}', $token));
 					continue 2;
 				}
@@ -433,7 +434,7 @@ class Scanner
 						case ',':
 						case ';':
 							if ($use !== '') {
-								$key = str_contains($use, '\\') ? substr($use, strrpos($use, '\\') + 1) : $use;
+								$key = (($i = strrpos($use, '\\')) !== false) ? substr($use, $i + 1) : $use;
 								$this->namespace_use[$key] = $prefix . $use;
 							}
 							if ($token[0] === '}') {
@@ -456,8 +457,8 @@ class Scanner
 				break;
 			case T_NAME_QUALIFIED:
 				$slash = strpos($token[1], '\\') ?: 0;
-				$use   = $this->namespace_use[substr($token[1], 0, $slash)] ?? '';
-				$name  = $use
+				$use   = $this->namespace_use[substr($token[1], 0, $slash)] ?? null;
+				$name  = isset($use)
 					? ($use . substr($token[1], $slash))
 					: ltrim($this->namespace . '\\' . $token[1], '\\');
 				break;
@@ -480,7 +481,7 @@ class Scanner
 			$reference[1] = $this->attribute;
 		}
 		if (
-			!$this->class
+			($this->class === '')
 			&& (
 				($this->attribute_brackets >= 0)
 				|| in_array($type, [T_DECLARE_CLASS, T_DECLARE_INTERFACE, T_DECLARE_TRAIT], true)
@@ -522,7 +523,7 @@ class Scanner
 			}
 			$this->phpBlock($tokens);
 		}
-		if ($this->next_references) {
+		if ($this->next_references !== []) {
 			$this->appendNextReferences();
 		}
 	}

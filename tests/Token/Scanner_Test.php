@@ -146,7 +146,7 @@ class Scanner_Test extends TestCase
 		$provide = [];
 		foreach ($data as $data_key => $buffer) {
 			$buffer = "\n" . $buffer . "\n";
-			if (preg_match('/\n#\s*-+\s+([\w-]+)\s*\n/', $buffer, $match)) {
+			if (preg_match('/\n#\s*-+\s+([\w-]+)\s*\n/', $buffer, $match) > 0) {
 				$counter = 0;
 				$name    = $match[1];
 			}

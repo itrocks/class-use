@@ -68,16 +68,16 @@ trait Search
 
 		/** @var array<int|string,array<int|string,array<string,array<int,int>>>> $array0 */
 		$array0 = $this->by[$cache][$name];
-		if ($search1) {
+		if (isset($search1)) {
 			/** @var array<int|string,array<int|string,array<string,array<int,int>>>> $array0 */
 			$array0 = [$search1 => $array0[$search1] ?? []];
 		}
 		foreach ($array0 as $names[1] => $array1) {
-			if ($search2) {
+			if (isset($search2)) {
 				$array1 = [$search2 => $array1[$search2] ?? []];
 			}
 			foreach ($array1 as $names[2] => $array2) {
-				if ($search3) {
+				if (isset($search3)) {
 					$array2 = [$search3 => $array2[$search3] ?? []];
 				}
 				/** @var string $file */

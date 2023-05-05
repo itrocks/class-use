@@ -283,7 +283,7 @@ class Console_Test extends TestCase
 			$console->index->search, /** @phpstan-ignore-line defined by anonymous */
 			$key . ':search'
 		);
-		if ($expected_display && str_contains($expected_display, '+')) {
+		if (isset($expected_display) && str_contains($expected_display, '+')) {
 			self::assertMatchesRegularExpression(
 				'/\G' . $expected_display . '\z/', $display, $key . ':display'
 			);

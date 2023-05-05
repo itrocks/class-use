@@ -34,7 +34,9 @@ set_error_handler(function(int $errno, string $error, string $file, int $line) :
 				'resource (closed)' => 'Resource',
 				'double', 'integer' => $arg,
 				'boolean' => $arg ? 'true' : 'false',
-				'string'  => "'" . (($i = strpos($arg, "\n")) ? (substr($arg, $i) . '...') : $arg) . "'",
+				'string'  => "'"
+					. ((($i = strpos($arg, "\n")) !== false) ? (substr($arg, 0, $i) . '...') : $arg)
+					. "'",
 				'NULL'    => 'null',
 				default   => 'Unknown'
 			};

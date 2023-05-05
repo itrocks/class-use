@@ -11,9 +11,10 @@
 		"php":      ">=8.2"
 	},
 	"require-dev": {
-		"ext-xdebug":      "*",
-		"phpstan/phpstan": "^1.10",
-		"phpunit/phpunit": "^10.1"
+		"ext-xdebug":                   "*",
+		"phpstan/phpstan":              "^1.10",
+		"phpunit/phpunit":              "^10.1",
+		"phpstan/phpstan-strict-rules": "^1.5"
 	},
 	"type": "library"
 }

@@ -535,6 +535,8 @@ C, variable,      C, 5
 class C {
 	/** @var C[] */
 	public array $v;
+	/** Comment, no type */
+	public array $w;
 }
 ?>
 C, declare-class, C, 2

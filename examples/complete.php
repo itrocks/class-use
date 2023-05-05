@@ -22,7 +22,7 @@ $found = $index->search([T_CLASS => Index::class]);
 foreach ($found as $key => $use) {
 	[, $type, $use, $file, $line, $token_key] = $use;
 	$type = Name::OF[$type];
-	if (!$key) {
+	if ($key === 0) {
 		echo "    the class is into file $file\n";
 	}
 	echo "#$key. token $token_key line $line refers to $type $use\n";
@@ -37,7 +37,7 @@ foreach ($found as $key => $use) {
 	[$class, $type,, $file, $line, $token_key] = $use;
 	$type = Name::OF[$type];
 	echo "#$key. $type into $file";
-	if ($class) echo " class $class";
+	if ($class !== '') echo " class $class";
 	echo " token $token_key line $line";
 	echo "\n";
 }
@@ -50,7 +50,7 @@ $found = $index->search([T_TYPE => T_NEW, T_USE => Index::class]);
 foreach ($found as $key => $use) {
 	[$class,,, $file, $line, $token_key] = $use;
 	echo "#$key. into $file";
-	if ($class) echo " class $class";
+	if ($class !== '') echo " class $class";
 	echo " token $token_key line $line";
 	echo "\n";
 }
@@ -64,7 +64,7 @@ $found = $index->search([T_TYPE => T_STATIC, T_USE => Index::class, T_FILE => $f
 foreach ($found as $key => $use) {
 	[$class,,,, $line, $token_key] = $use;
 	echo "#$key. in";
-	if ($class) echo " class $class";
+	if ($class !== '') echo " class $class";
 	echo " token $token_key line $line";
 	echo "\n";
 }
@@ -79,7 +79,7 @@ foreach ($found as $key => $use) {
 		$use[T_CLASS], $use[T_TYPE], $use[T_USE], $use[T_FILE], $use[T_LINE], $use[T_TOKEN_KEY]
 	];
 	echo "#$key. in";
-	if ($class) echo " class $class";
+	if ($class !== '') echo " class $class";
 	echo " token $token_key line $line";
 	echo "\n";
 }

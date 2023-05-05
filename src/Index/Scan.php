@@ -48,7 +48,7 @@ trait Scan
 				continue;
 			}
 			$file = "$directory/$file";
-			if (is_dir($file) && ($depth || $this->vendor || !str_ends_with($file, '/vendor'))) {
+			if (is_dir($file) && (($depth > 0) || $this->vendor || !str_ends_with($file, '/vendor'))) {
 				$this->scanDirectory($file, $depth + 1);
 			}
 			elseif (str_ends_with($file, '.php')) {

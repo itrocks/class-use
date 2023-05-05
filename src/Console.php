@@ -126,8 +126,8 @@ class Console
 		}
 
 		$index = $this->newIndex($flags, $arguments[self::HOME] ?? '');
-		echo ($flags & Index::RESET) ? self::RESET : self::UPDATE;
-		if ($flags & Index::VENDOR) {
+		echo (($flags & Index::RESET) > 0) ? self::RESET : self::UPDATE;
+		if (($flags & Index::VENDOR) > 0) {
 			echo ' with vendor';
 		}
 		echo ' from project directory ' . $index->getHome();
@@ -178,7 +178,7 @@ class Console
 				$options[$value] = true;
 			}
 		}
-		if ($value = ($search[T_TYPE] ?? false)) {
+		if (!is_null($value = ($search[T_TYPE] ?? null))) {
 			if (in_array(strtoupper($value), static::TYPE_CONSTANTS, true)) {
 				try {
 					$search[T_TYPE] = intval(constant(strtoupper($value)));
@@ -190,7 +190,7 @@ class Console
 				$search[T_TYPE] = $of_name[str_replace('_', '-', $value)] ?? $value;
 			}
 		}
-		if ($options[self::ASSOCIATIVE] ?? $options[self::PRETTY] ?? false) {
+		if (!is_null($options[self::ASSOCIATIVE] ?? $options[self::PRETTY] ?? null)) {
 			$options[self::DATA] = true;
 		}
 
@@ -198,16 +198,16 @@ class Console
 		$index  = $this->newIndex(0, $arguments[self::HOME] ?? '');
 		$result = $index->search($search, $options[self::ASSOCIATIVE] ?? false);
 		$stop   = microtime(true);
-		if ($options[self::DATA] ?? false) {
-			echo json_encode($result, ($options[self::PRETTY] ?? false) ? JSON_PRETTY_PRINT : 0);
-			if ($options[self::BENCHMARK] ?? $options[self::TOTAL] ?? false) {
+		if (!is_null($options[self::DATA] ?? null)) {
+			echo json_encode($result, is_null($options[self::PRETTY] ?? null) ? 0 : JSON_PRETTY_PRINT);
+			if (!is_null($options[self::BENCHMARK] ?? $options[self::TOTAL] ?? null)) {
 				echo "\n";
 			}
 		}
-		if (($options[self::TOTAL] ?? false) || !($options[self::DATA] ?? false)) {
+		if (!is_null($options[self::TOTAL] ?? null) || is_null($options[self::DATA] ?? null)) {
 			echo count($result) . " results\n";
 		}
-		if ($options[self::BENCHMARK] ?? false) {
+		if (!is_null($options[self::BENCHMARK] ?? null)) {
 			echo 'duration  = ' . $this->showDuration($stop - $start) . "\n";
 			for ($i = 2; $i < 8; $i ++) {
 				$start = microtime(true);
