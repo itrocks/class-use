@@ -3,5 +3,5 @@ cd "$(dirname "${BASH_SOURCE[0]}")" || return
 if test -f ../vendor/bin/phpcs; then
   ../vendor/bin/phpcs
 else
-  ../../../bin/phpcs ../src --standard=ITRocks
+  ../../../bin/phpcs .. --standard=ITRocks
 fi
