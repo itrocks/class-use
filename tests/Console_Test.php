@@ -119,7 +119,7 @@ class Console_Test extends TestCase
 			/** @param array<int|string,string> $arguments */
 			protected function search(array $arguments) : void { $this->call[__FUNCTION__] = true; }
 		};
-		foreach (Index::SAVE as $search) {
+		foreach ([T_CLASS, T_FILE, T_TYPE, T_USE] as $search) {
 			$search  = Name::OF[$search];
 			$console = clone $model;
 			$console->run([$search => __CLASS__]);
