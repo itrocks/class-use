@@ -88,13 +88,13 @@ class Console
 
 	//------------------------------------------------------------------------------------------- run
 	/**
-	 * @param array<int|string,string> $arguments
+	 * @param array<string> $arguments
 	 * @throws Exception
 	 */
 	public function run(array $arguments) : void
 	{
 		$this->nameArguments($arguments);
-		foreach (Index::SAVE as $type) {
+		foreach ([T_CLASS, T_FILE, T_TYPE, T_USE] as $type) {
 			if (isset($arguments[Name::OF[$type]])) {
 				$this->search($arguments);
 				return;

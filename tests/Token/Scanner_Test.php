@@ -169,6 +169,7 @@ class Scanner_Test extends TestCase
 				$reference[3] = intval($reference[3]);
 			}
 			/** @var array{string,string,string,int} $references */
+			/** @phpstan-ignore-next-line bleedingEdge "subtype of native type list<string>" */
 			$provide[$name . ':' . ++$counter] = [$code, $references];
 		}
 		return $provide;
