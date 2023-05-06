@@ -1,6 +1,5 @@
 <?php
 namespace ITRocks\Class_Use;
-// phpcs:ignoreFile
 
 use Exception;
 use ITRocks\Class_Use\Token\Name;
@@ -186,8 +185,8 @@ class Console_Test extends TestCase
 	//------------------------------------------------------------------------------------ testSearch
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param array<string, int|string> $arguments
-	 * @param array<int, int|string>    $expected_search
+	 * @param array<string,int|string> $arguments
+	 * @param array<int,int|string>    $expected_search
 	 */
 	#[TestWith([1, [], []])]
 	#[TestWith([2, ['class' => __CLASS__],       [T_CLASS => __CLASS__]])]
