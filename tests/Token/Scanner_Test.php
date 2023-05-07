@@ -218,6 +218,14 @@ EOT;
 		self::assertComplete($scanner, $expected_values);
 	}
 
+	//------------------------------------------------------------------------------------- testEmpty
+	public function testEmpty() : void
+	{
+		$scanner = new Scanner;
+		$scanner->scan([]);
+		$this->assertComplete($scanner);
+	}
+
 	//------------------------------------------------------------------------------ testNamespaceUse
 	/** @param array<string,string> $expected_namespace_use */
 	#[DataProvider('provideNamespaceUse')]
