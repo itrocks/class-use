@@ -143,10 +143,8 @@ class Classify_Test extends TestCase
 		self::assertEquals(10, $this->by[T_USE_TYPE]['D'][T_NEW]['C']['file.php'][100]   ?? null);
 		self::assertEquals(10, $this->by[T_TYPE_CLASS][T_NEW]['C']['D']['file.php'][100] ?? null);
 		self::assertEquals(10, $this->by[T_TYPE_USE][T_NEW]['D']['C']['file.php'][100]   ?? null);
-		/** @noinspection PhpUnitAssertCountInspection COUNT_RECURSIVE */
 		self::assertEquals(3 * 3 + 1, count($this->by[T_FILE], COUNT_RECURSIVE));
 		unset($this->by[T_FILE]);
-		/** @noinspection PhpUnitAssertCountInspection COUNT_RECURSIVE */
 		self::assertEquals(6 * 6, count($this->by, COUNT_RECURSIVE));
 	}
 
@@ -156,7 +154,6 @@ class Classify_Test extends TestCase
 		$this->references = [];
 		$this->classify();
 		self::assertEquals([], $this->call);
-		/** @noinspection PhpUnitAssertCountInspection COUNT_RECURSIVE */
 		self::assertEquals(7, count($this->by, COUNT_RECURSIVE));
 	}
 
@@ -224,7 +221,6 @@ class Classify_Test extends TestCase
 		$this->references = [];
 		$this->classify();
 		$this->originalLoadAndFilter('does-not-exist');
-		/** @noinspection PhpUnitAssertCountInspection COUNT_RECURSIVE */
 		self::assertEquals(7, count($this->by, COUNT_RECURSIVE));
 	}
 
