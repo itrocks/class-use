@@ -14,7 +14,10 @@ trait Scan
 	 * File tokens will be kept during scan only if this was initialized using keepFileTokens().
 	 *
 	 * @var array<string,array<int,array{int,string,int}|string>>
-	 * <string $file_path_relative_to_project, array $file_tokens>
+	 * <string $file_path_relative_to_project, $tokens <
+	 *   int $token_key,
+	 *   array $tokens{int $token_index, string $content, int $line} | string $character
+	 * >>
 	 */
 	public ?array $file_tokens = null;
 

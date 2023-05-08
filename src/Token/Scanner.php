@@ -80,7 +80,10 @@ class Scanner
 	}
 
 	//-------------------------------------------------------------------------------------- phpBlock
-	/** @param array<int,array{int,string,int}|string> $tokens */
+	/**
+	 * @param array<int,array{int,string,int}|string> $tokens
+	 * <int $token_key, $tokens {int $token_index, string $content, int $line} | string $character>>
+	 */
 	protected function phpBlock(array &$tokens) : void
 	{
 		while (($token = next($tokens)) !== false) switch ($token[0]) {
@@ -238,7 +241,7 @@ class Scanner
 			case T_STRING:
 				if ($this->attribute_parentheses === $this->parentheses) {
 					$this->attribute = '';
-					/** @var array{int,string,int} $token */
+					/** @var array{int,string,int} $token {int $token_index, string $content, int $line} */
 					/** @phpstan-ignore-next-line key($tokens) valid: last next($tokens) not false */
 					$this->attribute = $this->reference(T_ATTRIBUTE, $token, key($tokens));
 				}
@@ -281,7 +284,7 @@ class Scanner
 					continue 2;
 				}
 				$type  = ($token[0] === T_CLASS) ? T_CLASS : T_STATIC;
-				/** @var array{int,string,int} $token */
+				/** @var array{int,string,int} $token {int $token_index, string $content, int $line} */
 				$token = $tokens[$token_key];
 				$this->reference($type, $token, $token_key);
 				continue 2;
@@ -448,7 +451,7 @@ class Scanner
 	}
 
 	//------------------------------------------------------------------------------------- reference
-	/** @param array{int,string,int} $token */
+	/** @param array{int,string,int} $token {int $token_index, string $content, int $line} */
 	protected function reference(int $type, array $token, int $token_key) : string
 	{
 		switch ($token[0]) {
@@ -498,7 +501,7 @@ class Scanner
 	//------------------------------------------------------------------------------------------ scan
 	/**
 	 * @param array<int,array{int,string,int}|string> $tokens
-	 * <int $token_key, array $tokens{int $type, string $value, int $line} | string $value>
+	 * <int $token_key, $tokens {int $token_index, string $content, int $line} | string $character>>
 	 */
 	public function scan(array $tokens) : void
 	{
