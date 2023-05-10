@@ -4,17 +4,33 @@ namespace ITRocks\Class_Use\Index;
 trait Search
 {
 
+	//--------------------------------------------------------------------------------- RESULT TOKENS
+	public const INT_RESULTS    = [self::T_TYPE, self::T_LINE, self::T_TOKEN];
+	public const STRING_RESULTS = [self::T_CLASS, self::T_TYPE, self::T_USE, self::T_FILE];
+
+	//--------------------------------------------------------------------------------- SEARCH_TOKENS
+	public const SEARCH_TOKENS = [self::T_CLASS, self::T_FILE, self::T_TYPE, self::T_USE];
+
+	//---------------------------------------------------------------------------------------- TOKENS
+	public const T_CLASS  = T_CLASS;
+	public const T_FILE   = T_FILE;
+	public const T_LINE   = T_LINE;
+	public const T_STRING = T_STRING;
+	public const T_TOKEN  = T_TOKEN_KEY;
+	public const T_TYPE   = T_TYPE;
+	public const T_USE    = T_USE;
+
 	//---------------------------------------------------------------------------------------- search
 	/**
-	 * @param array<int,int|string> $search
-	 * @param bool|int<262,983> $associative Each returned record is an array<string $type,int|string>
+	 * @param array<value-of<self::SEARCH_TOKENS>,int|string> $search
+	 * @param bool|self::T_STRING|self::T_TYPE $associative
 	 * @return array<(
-	 *   $associative is 262
+	 *   $associative is self::T_STRING
 	 *   ? array{'class':string,'type':int|string,'use':string,'file':string,'line':int,'token':int}
 	 *   : (
-	 *     $associative is 983|true
-	 *     ? array{333:string,983:int|string,318:string,344:string,343:int,982:int}
-	 *     : array{string,int|string,string,string,int,int}))>
+	 *     $associative is self::T_TYPE|true
+	 *     ? array<value-of<self::INT_RESULTS>,int>|array<value-of<self::STRING_RESULTS>,string>
+	 *     : list{string,int|string,string,string,int,int}))>
 	 * <{string $class, int|string $type, string $use, string $file, int $line, int $token_key}>
 	 */
 	public function search(array $search, bool|int $associative = false) : array

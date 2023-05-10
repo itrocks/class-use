@@ -51,8 +51,8 @@ class Scanner
 
 	//------------------------------------------------------------------------------ $next_references
 	/**
-	 * @var array< array{ string, int|string, string, int, int } >
-	 * [[string $class, int|string $type, string $use, int $line, int $token_key]]
+	 * @var array<array{string,int|string,string,int,int}>
+	 * <{string $class, int|string $type, string $use, int $line, int $token_key}>
 	 */
 	public array $next_references = [];
 
@@ -62,7 +62,7 @@ class Scanner
 	//----------------------------------------------------------------------------------- $references
 	/**
 	 * @var array<array{string,int|string,string,int,int}>
-	 * [[string $class, int|string $type, string $use, int $line, int $token_key]]
+	 * <{string $class, int|string $type, string $use, int $line, int $token_key}>
 	 */
 	public array $references = [];
 
@@ -219,7 +219,7 @@ class Scanner
 
 			case T_INSTANCEOF:
 			case T_NEW:
-				/** @var int<283,284> $type */
+				/** @var 283|284 $type */
 				$type = $token[0];
 				do {
 					$token = next($tokens);

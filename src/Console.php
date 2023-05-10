@@ -198,6 +198,7 @@ class Console
 		if (($options[self::ASSOCIATIVE] ?? $options[self::PRETTY] ?? null) !== null) {
 			$options[self::DATA] = true;
 		}
+		/** @var array<value-of<Index::SEARCH_TOKENS>,int|string> $search Reduce expected keys */
 
 		$start  = microtime(true);
 		$index  = $this->newIndex(0, $arguments[self::HOME] ?? '');
