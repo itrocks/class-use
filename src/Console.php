@@ -183,7 +183,7 @@ class Console
 				$options[$value] = true;
 			}
 		}
-		if (!is_null($value = ($search[T_TYPE] ?? null))) {
+		if (($value = ($search[T_TYPE] ?? null)) !== null) {
 			if (in_array(strtoupper($value), static::TYPE_CONSTANTS, true)) {
 				try {
 					$search[T_TYPE] = intval(constant(strtoupper($value)));
@@ -195,7 +195,7 @@ class Console
 				$search[T_TYPE] = $of_name[str_replace('_', '-', $value)] ?? $value;
 			}
 		}
-		if (!is_null($options[self::ASSOCIATIVE] ?? $options[self::PRETTY] ?? null)) {
+		if (($options[self::ASSOCIATIVE] ?? $options[self::PRETTY] ?? null) !== null) {
 			$options[self::DATA] = true;
 		}
 
@@ -203,16 +203,19 @@ class Console
 		$index  = $this->newIndex(0, $arguments[self::HOME] ?? '');
 		$result = $index->search($search, $options[self::ASSOCIATIVE] ?? false);
 		$stop   = microtime(true);
-		if (!is_null($options[self::DATA] ?? null)) {
-			echo json_encode($result, is_null($options[self::PRETTY] ?? null) ? 0 : JSON_PRETTY_PRINT);
-			if (!is_null($options[self::BENCHMARK] ?? $options[self::TOTAL] ?? null)) {
+		if (($options[self::DATA] ?? null) !== null) {
+			echo json_encode(
+				$result,
+				(($options[self::PRETTY] ?? null) === null) ? 0 : JSON_PRETTY_PRINT
+			);
+			if (($options[self::BENCHMARK] ?? $options[self::TOTAL] ?? null) !== null) {
 				echo "\n";
 			}
 		}
-		if (!is_null($options[self::TOTAL] ?? null) || is_null($options[self::DATA] ?? null)) {
+		if ((($options[self::TOTAL] ?? null) !== null) || (($options[self::DATA] ?? null) === null)) {
 			echo count($result) . " results\n";
 		}
-		if (!is_null($options[self::BENCHMARK] ?? null)) {
+		if (($options[self::BENCHMARK] ?? null) !== null) {
 			echo 'duration  = ' . $this->showDuration($stop - $start) . "\n";
 			for ($i = 2; $i < 8; $i ++) {
 				$start = microtime(true);
