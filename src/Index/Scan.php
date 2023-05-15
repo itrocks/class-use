@@ -40,6 +40,7 @@ trait Scan
 	}
 
 	//--------------------------------------------------------------------------------- scanDirectory
+	/** @param string $directory Absolute path to the directory */
 	public function scanDirectory(string $directory = '', int $depth = 0) : void
 	{
 		if ($directory === '') {
@@ -51,8 +52,16 @@ trait Scan
 				continue;
 			}
 			$file = "$directory/$file";
-			if (is_dir($file) && (($depth > 0) || $this->vendor || !str_ends_with($file, '/vendor'))) {
-				$this->scanDirectory($file, $depth + 1);
+			if (is_dir($file)) {
+				if (
+					($depth > 0)
+					|| (
+						!str_ends_with($file, '/cache')
+						&& ($this->vendor || !str_ends_with($file, '/vendor'))
+					)
+				) {
+					$this->scanDirectory($file, $depth + 1);
+				}
 			}
 			elseif (str_ends_with($file, '.php')) {
 				$home_length   = $this->home_length;
@@ -69,6 +78,7 @@ trait Scan
 	}
 
 	//-------------------------------------------------------------------------------------- scanFile
+	/** @param string $file Absolute path of the file */
 	public function scanFile(string $file) : void
 	{
 		$this->files_count ++;
