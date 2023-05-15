@@ -99,10 +99,14 @@ trait Search
 				/** @var string $file */
 				foreach ($array2 as $file => $lines) {
 					foreach ($lines as $token => $line) {
+						$type = $names[$tree[T_TYPE]];
+						if (is_numeric($type)) {
+							$type = intval($type);
+						}
 						$references[] = match($associative) {
 							T_TYPE, true => [
 								T_CLASS     => strval($names[$tree[T_CLASS]]),
-								T_TYPE      => intval($names[$tree[T_TYPE]]),
+								T_TYPE      => $type,
 								T_USE       => strval($names[$tree[T_USE]]),
 								T_FILE      => $file,
 								T_LINE      => intval($line),
@@ -110,7 +114,7 @@ trait Search
 							],
 							T_STRING => [
 								'class' => strval($names[$tree[T_CLASS]]),
-								'type'  => intval($names[$tree[T_TYPE]]),
+								'type'  => $type,
 								'use'   => strval($names[$tree[T_USE]]),
 								'file'  => $file,
 								'line'  => intval($line),
@@ -118,7 +122,7 @@ trait Search
 							],
 							default => [
 								strval($names[$tree[T_CLASS]]),
-								intval($names[$tree[T_TYPE]]),
+								$type,
 								strval($names[$tree[T_USE]]),
 								$file,
 								intval($line),

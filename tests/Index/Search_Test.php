@@ -7,33 +7,60 @@ class Search_Test extends TestCase
 {
 	use Search;
 
+	//-------------------------------------------------------------------------------- EXPECTED_CLASS
+	protected const EXPECTED_CLASS = [
+		['C', T_ATTRIBUTE,     'A', 'C.php', 1, 1],
+		['C', 'A',             'E', 'C.php', 1, 2],
+		['C', T_DECLARE_CLASS, 'C', 'C.php', 2, 3]
+	];
+
 	//------------------------------------------------------------------------------------------- $by
 	/** @var array<int,array<int|string,array<int|string,array<int|string,array<int|string,array<int,int>|int>>>>> */
 	protected array $by = [
 		T_CLASS => [
-			'C' => ['C' => [T_DECLARE_CLASS => ['C.php' => [3 => 2]]]],
+			'C' => [
+				'A' => [T_ATTRIBUTE     => ['C.php' => [1 => 1]]],
+				'E' => ['A'             => ['C.php' => [2 => 1]]],
+				'C' => [T_DECLARE_CLASS => ['C.php' => [3 => 2]]]
+			],
 			''  => ['C' => [T_NEW => ['C.php' => [10 => 3]]]]
 		],
 		T_CLASS_TYPE => [
-			'C' => [T_DECLARE_CLASS => ['C' => ['C.php' => [3 => 2]]]],
+			'C' => [
+				T_ATTRIBUTE     => ['A' => ['C.php' => [1 => 1]]],
+				'A'             => ['E' => ['C.php' => [2 => 1]]],
+				T_DECLARE_CLASS => ['C' => ['C.php' => [3 => 2]]]
+			],
 			''  => [T_NEW => ['C' => ['C.php' => [10 => 3]]]]
 		],
 		T_TYPE_CLASS => [
+			T_ATTRIBUTE     => ['C' => ['A' => ['C.php' => [1 => 1]]]],
+			'A'             => ['C' => ['E' => ['C.php' => [2 => 1]]]],
 			T_DECLARE_CLASS => ['C' => ['C' => ['C.php' => [3 => 2]]]],
 			T_NEW           => ['' => ['C' => ['C.php' => [10 => 3]]]]
 		],
 		T_TYPE_USE => [
+			T_ATTRIBUTE     => ['A' => ['C' => ['C.php' => [1 => 1]]]],
+			'A'             => ['E' => ['C' => ['C.php' => [2 => 1]]]],
 			T_DECLARE_CLASS => ['C' => ['C' => ['C.php' => [3 => 2]]]],
 			T_NEW           => ['C' => ['' => ['C.php' => [10 => 3]]]]
 		],
-		T_USE => ['C' => [
-			'C' => [T_DECLARE_CLASS => ['C.php' => [3 => 2]]],
-			''  => [T_NEW           => ['C.php' => [10 => 3]]]
-		]],
-		T_USE_TYPE => ['C' => [
-			T_DECLARE_CLASS => ['C' => ['C.php' => [3 => 2]]],
-			T_NEW           => ['' => ['C.php' => [10 => 3]]]
-		]]
+		T_USE => [
+			'A' => ['C' => [T_ATTRIBUTE => ['C.php' => [1 => 1]]]],
+			'E' => ['C' => ['A'         => ['C.php' => [2 => 1]]]],
+			'C' => [
+				'C' => [T_DECLARE_CLASS => ['C.php' => [3 => 2]]],
+				''  => [T_NEW           => ['C.php' => [10 => 3]]]
+			]
+		],
+		T_USE_TYPE => [
+			'A' => [T_ATTRIBUTE => ['C' => ['C.php' => [1 => 1]]]],
+			'E' => ['A'         => ['C' => ['C.php' => [2 => 1]]]],
+			'C' => [
+				T_DECLARE_CLASS => ['C' => ['C.php' => [3 => 2]]],
+				T_NEW           => ['' => ['C.php' => [10 => 3]]]
+			]
+		]
 	];
 
 	//--------------------------------------------------------------------------------- cacheFileName
@@ -47,14 +74,11 @@ class Search_Test extends TestCase
 	public function testAssociativeString() : void
 	{
 		$actual   = $this->search([T_CLASS => 'C'], T_STRING);
-		$expected = [[
-			'class' => 'C',
-			'type'  => T_DECLARE_CLASS,
-			'use'   => 'C',
-			'file'  => 'C.php',
-			'line'  => 2,
-			'token' => 3
-		]];
+		$source   = self::EXPECTED_CLASS;
+		$expected = [];
+		foreach ($source as $expect) {
+			$expected[] = array_combine(['class', 'type', 'use', 'file', 'line', 'token'], $expect);
+		}
 		self::assertEquals($expected, $actual);
 	}
 
@@ -63,14 +87,11 @@ class Search_Test extends TestCase
 	{
 		foreach ([T_TYPE, true] as $associative) {
 			$actual   = $this->search([T_CLASS => 'C'], $associative);
-			$expected = [[
-				T_CLASS     => 'C',
-				T_TYPE      => T_DECLARE_CLASS,
-				T_USE       => 'C',
-				T_FILE      => 'C.php',
-				T_LINE      => 2,
-				T_TOKEN_KEY => 3
-			]];
+			$source   = self::EXPECTED_CLASS;
+			$expected = [];
+			foreach ($source as $expect) {
+				$expected[] = array_combine([T_CLASS, T_TYPE, T_USE, T_FILE, T_LINE, T_TOKEN_KEY], $expect);
+			}
 			self::assertEquals($expected, $actual);
 		}
 	}
@@ -79,7 +100,7 @@ class Search_Test extends TestCase
 	public function testClass() : void
 	{
 		$actual = $this->search([T_CLASS => 'C']);
-		self::assertEquals([['C', T_DECLARE_CLASS, 'C', 'C.php', 2, 3]], $actual, 'C');
+		self::assertEquals(self::EXPECTED_CLASS, $actual, 'C');
 
 		$actual = $this->search([T_CLASS => 'D']);
 		self::assertEquals([], $actual, 'D');
@@ -92,7 +113,7 @@ class Search_Test extends TestCase
 	public function testClassFile() : void
 	{
 		$actual = $this->search([T_CLASS => 'C', T_FILE => 'C.php']);
-		self::assertEquals([['C', T_DECLARE_CLASS, 'C', 'C.php', 2, 3]], $actual, 'T_DECLARE_CLASS');
+		self::assertEquals(self::EXPECTED_CLASS, $actual, 'T_DECLARE_CLASS');
 
 		$actual = $this->search([T_CLASS => '', T_FILE => 'C.php']);
 		self::assertEquals([['', T_NEW, 'C', 'C.php', 3, 10]], $actual, 'T_NEW');
@@ -173,6 +194,13 @@ class Search_Test extends TestCase
 
 		unlink($this->cacheFileName(''));
 		rmdir(__DIR__ . '/cache');
+	}
+
+	//-------------------------------------------------------------------------------- testStringType
+	public function testStringType() : void
+	{
+		$actual = $this->search([T_TYPE => 'A']);
+		self::assertEquals([['C', 'A', 'E', 'C.php', 1, 2]], $actual, 'T_STRING_TYPE');
 	}
 
 	//-------------------------------------------------------------------------------------- testType
