@@ -35,7 +35,7 @@ trait Save
 		foreach (static::SAVE as $type) {
 			$type_directory = Name::OF[$type];
 			if (!is_dir("$directory/$type_directory")) {
-				mkdir("$directory/$type_directory");
+				mkdir("$directory/$type_directory", 0777, true);
 			}
 			foreach ($this->by[$type] as $name => $references) {
 				if ($name === '') {

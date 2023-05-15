@@ -119,11 +119,8 @@ class Scan_Test extends TestCase
 	 */
 	public function testScanDirectory() : void
 	{
-		if (!is_dir(__DIR__ . '/directory')) {
-			mkdir(__DIR__ . '/directory');
-		}
 		if (!is_dir(__DIR__ . '/directory/sub')) {
-			mkdir(__DIR__ . '/directory/sub');
+			mkdir(__DIR__ . '/directory/sub', 0777, true);
 		}
 		touch(__DIR__ . '/directory/.ignore');
 		touch(__DIR__ . '/directory/file.php');

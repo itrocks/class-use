@@ -66,15 +66,8 @@ trait Cache_Directory
 			$this->purgeCache();
 		}
 		$cache_directory = $this->getCacheDirectory();
-		if (is_dir($cache_directory)) {
-			return;
-		}
-		$directory = '';
-		foreach (array_slice(explode('/', $cache_directory), 1) as $subdirectory) {
-			$directory .= '/' . $subdirectory;
-			if (!is_dir($directory)) {
-				mkdir($directory);
-			}
+		if (!is_dir($cache_directory)) {
+			mkdir($cache_directory, 0777, true);
 		}
 	}
 

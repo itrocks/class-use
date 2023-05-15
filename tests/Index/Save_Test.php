@@ -40,7 +40,7 @@ class Save_Test extends TestCase
 	{
 		$cache_directory = $this->getCacheDirectory();
 		if (!is_dir($cache_directory)) {
-			mkdir($cache_directory);
+			mkdir($cache_directory, 0777, true);
 		}
 		$this->by = [
 			T_FILE => ['C.php' => [
