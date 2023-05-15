@@ -98,7 +98,7 @@ trait Cache_Directory
 				throw new Exception("Directory $home does not exist");
 			}
 			$this->home        = realpath($home) ?: '';
-			$this->home_length = strlen($this->home) + 1;
+			$this->home_length = strlen($this->home) + (($this->home === DIRECTORY_SEPARATOR) ? 0 : 1);
 			return;
 		}
 		$directory = $home = str_replace('\\', '/', getcwd() ?: '.');
