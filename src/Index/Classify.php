@@ -43,7 +43,6 @@ trait Classify
 	public function classify() : void
 	{
 		foreach ($this->references as $file_name => $references) {
-			$file_name = substr($file_name, $this->home_length);
 			if (!$this->reset) {
 				$this->loadAndFilter($file_name);
 			}

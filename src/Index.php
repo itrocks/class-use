@@ -26,6 +26,7 @@ class Index
 	/**
 	 * @var array<string,array<array{string,int|string,string,int,int}>>
 	 * <string $file, <{string $class, int|string $type, string $use, int $line, int $token_key}>>
+	 * $file: Path of the file, relative to the home path
 	 */
 	protected array $references = [];
 

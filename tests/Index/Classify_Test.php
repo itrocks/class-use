@@ -131,7 +131,7 @@ class Classify_Test extends TestCase
 	{
 		$this->call        = [];
 		$this->home_length = strlen(__DIR__) + 1;
-		$this->references  = [__DIR__ . '/file.php' => [['C', T_NEW, 'D', 10, 100]]];
+		$this->references  = ['file.php' => [['C', T_NEW, 'D', 10, 100]]];
 		$this->classify();
 		self::assertEquals(['loadAndFilter' => true], $this->call);
 		self::assertEquals(10, $this->by[T_FILE]['file.php'][T_CLASS]['C'][100]          ?? null);

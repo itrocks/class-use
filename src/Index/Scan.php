@@ -81,20 +81,21 @@ trait Scan
 	/** @param string $file Absolute path of the file */
 	public function scanFile(string $file) : void
 	{
+		$file_relative = substr($file, $this->home_length);
 		$this->files_count ++;
 		if (isset($this->file_tokens)) {
-			$tokens = $this->file_tokens[substr($file, $this->home_length)] ?? null;
+			$tokens = $this->file_tokens[$file_relative] ?? null;
 			if (!isset($tokens)) {
 				$tokens = token_get_all(file_get_contents($file) ?: '');
-				$this->file_tokens[substr($file, $this->home_length)] = $tokens;
+				$this->file_tokens[$file_relative] = $tokens;
 			}
 		}
 		else {
 			$tokens = token_get_all(file_get_contents($file) ?: '');
 		}
 		$this->scanner->scan($tokens);
-		$this->references[$file] = $this->scanner->references;
-		$this->references_count += count($this->scanner->references);
+		$this->references[$file_relative] = $this->scanner->references;
+		$this->references_count          += count($this->scanner->references);
 	}
 
 }

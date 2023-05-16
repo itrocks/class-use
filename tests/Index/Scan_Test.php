@@ -170,7 +170,8 @@ class Scan_Test extends TestCase
 		$this->scanFile(__FILE__);
 		$this->mock['scanFile'] = true;
 		$expected = [["A", 318, "B", 1, 2]];
-		self::assertEquals($expected, $this->references[__FILE__] ?? []);
+		$file_relative = substr(__FILE__, $this->home_length);
+		self::assertEquals($expected, $this->references[$file_relative] ?? []);
 	}
 
 	//----------------------------------------------------------------------------- testScanFileCache
