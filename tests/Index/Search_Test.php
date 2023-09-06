@@ -15,7 +15,7 @@ class Search_Test extends TestCase
 	];
 
 	//------------------------------------------------------------------------------------------- $by
-	/** @var array<int,array<int|string,array<int|string,array<int|string,array<int|string,array<int,int>|int>>>>> */
+	/** @var array<int,array<int|string,array<array<array<array<int,int>|int>>>>> */
 	protected array $by = [
 		T_CLASS => [
 			'C' => [
@@ -23,7 +23,7 @@ class Search_Test extends TestCase
 				'E' => ['A'             => ['C.php' => [2 => 1]]],
 				'C' => [T_DECLARE_CLASS => ['C.php' => [3 => 2]]]
 			],
-			''  => ['C' => [T_NEW => ['C.php' => [10 => 3]]]]
+			'' => ['C' => [T_NEW => ['C.php' => [10 => 3]]]]
 		],
 		T_CLASS_TYPE => [
 			'C' => [
@@ -31,7 +31,7 @@ class Search_Test extends TestCase
 				'A'             => ['E' => ['C.php' => [2 => 1]]],
 				T_DECLARE_CLASS => ['C' => ['C.php' => [3 => 2]]]
 			],
-			''  => [T_NEW => ['C' => ['C.php' => [10 => 3]]]]
+			'' => [T_NEW => ['C' => ['C.php' => [10 => 3]]]]
 		],
 		T_TYPE_CLASS => [
 			T_ATTRIBUTE     => ['C' => ['A' => ['C.php' => [1 => 1]]]],

@@ -82,10 +82,10 @@ trait Search
 		$names      = [$name];
 		$references = [];
 
-		/** @var array<int|string,array<int|string,array<string,array<int,int>>>> $array0 */
+		/** @var array<array<array<string,array<int,int>>>> $array0 */
 		$array0 = $this->by[$cache][$name];
 		if (isset($search1)) {
-			/** @var array<int|string,array<int|string,array<string,array<int,int>>>> $array0 */
+			/** @var array<array<array<string,array<int,int>>>> $array0 */
 			$array0 = [$search1 => $array0[$search1] ?? []];
 		}
 		foreach ($array0 as $names[1] => $array1) {

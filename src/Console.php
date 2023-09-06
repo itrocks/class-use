@@ -1,9 +1,9 @@
 <?php
 namespace ITRocks\Class_Use;
 
-use Error;
 use Exception;
 use ITRocks\Class_Use\Token\Name;
+use TypeError;
 
 class Console
 {
@@ -37,11 +37,12 @@ class Console
 
 	//--------------------------------------------------------------------------------- nameArguments
 	/**
-	 * @param     array<int,string>        $arguments
-	 * @param-out array<int|string,string> $arguments
+	 * @param     array<int,string> $arguments
+	 * @param-out array<string>     $arguments
 	 */
 	protected function nameArguments(array &$arguments) : void
 	{
+		/** @var array<string> $arguments added during foreach will get string keys */
 		foreach ($arguments as $key => &$argument) {
 			if (!is_numeric($key)) {
 				continue;
@@ -110,7 +111,7 @@ class Console
 
 	//------------------------------------------------------------------------------------------ scan
 	/**
-	 * @param array<int|string,string> $arguments
+	 * @param array<string> $arguments
 	 * @throws Exception
 	 */
 	protected function scan(array $arguments) : void
@@ -164,7 +165,7 @@ class Console
 
 	//---------------------------------------------------------------------------------------- search
 	/**
-	 * @param array<int|string,string> $arguments <int $type, string $name>
+	 * @param array<string> $arguments <int $type, string $name>
 	 * @throws Exception
 	 */
 	protected function search(array $arguments) : void
@@ -186,9 +187,10 @@ class Console
 		if (($value = ($search[T_TYPE] ?? null)) !== null) {
 			if (in_array(strtoupper($value), static::TYPE_CONSTANTS, true)) {
 				try {
+					// @phpstan-ignore-next-line bad type from constant value Error is caught
 					$search[T_TYPE] = intval(constant(strtoupper($value)));
 				}
-				catch (Error) {
+				catch (TypeError) {
 				}
 			}
 			else {

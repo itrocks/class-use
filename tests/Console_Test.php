@@ -14,8 +14,8 @@ class Console_Test extends TestCase
 	//----------------------------------------------------------------------------- testNameArguments
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param string[]                 $arguments
-	 * @param array<int|string,string> $expected
+	 * @param string[]      $arguments
+	 * @param array<string> $expected
 	 */
 	#[TestWith(['A', ['pretty'], ['pretty']])]
 	#[TestWith(['B', ['RESET'], ['reset']])]
@@ -96,9 +96,9 @@ class Console_Test extends TestCase
 		$model = new class extends Console {
 			/** @var array<string,bool> */
 			public array $call = ['scan' => false, 'search' => false];
-			/** @param array<int|string,string> $arguments */
+			/** @param array<string> $arguments */
 			protected function scan  (array $arguments) : void { $this->call[__FUNCTION__] = true; }
-			/** @param array<int|string,string> $arguments */
+			/** @param array<string> $arguments */
 			protected function search(array $arguments) : void { $this->call[__FUNCTION__] = true; }
 		};
 		$console = clone $model;
@@ -113,9 +113,9 @@ class Console_Test extends TestCase
 		$model = new class extends Console {
 			/** @var array<string,bool> */
 			public array $call = ['scan' => false, 'search' => false];
-			/** @param array<int|string,string> $arguments */
+			/** @param array<string> $arguments */
 			protected function scan  (array $arguments) : void { $this->call[__FUNCTION__] = true; }
-			/** @param array<int|string,string> $arguments */
+			/** @param array<string> $arguments */
 			protected function search(array $arguments) : void { $this->call[__FUNCTION__] = true; }
 		};
 		foreach ([T_CLASS, T_FILE, T_TYPE, T_USE] as $search) {

@@ -82,7 +82,7 @@ trait Classify
 		else {
 			return;
 		}
-		/** @var array<int,array<int|string,array<int,int>>> $file_references */
+		/** @var array<int,array<array<int,int>>> $file_references */
 		// load and filter all referencing files
 		foreach ($file_references as $main_type => $values) {
 			foreach (static::EXTENDS[$main_type] as $type) {
@@ -97,7 +97,7 @@ trait Classify
 						);
 					}
 					// filter
-					/** @var array<int|string,array<int|string,array<string,array<int,int>>>> $references
+					/** @var array<array<array<string,array<int,int>>>> $references
 					 * May have been decoded from the json file content written using a valid structure */
 					$references =& $this->by[$type][$value];
 					foreach ($references as $key => &$references1) {
