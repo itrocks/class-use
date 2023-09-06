@@ -19,12 +19,6 @@ Pre-requisites
 - This works with PHP 8.2 only. I wanted to make full use of the current PHP version features. \
   To install php 8.2 on a Debian/Ubuntu/Mint system:
   https://php.watch/articles/install-php82-ubuntu-debian.
-- You will need the enable PHP json extension.
-  On Linux Debian/Ubuntu/Mint systems:
-```bash
-sudo apt install php8.2-json
-```
-- OR, on Windows systems, just uncomment the `extension=json.so` line into your php.ini file.
 
 Command line usage
 ------------------
