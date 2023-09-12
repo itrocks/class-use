@@ -77,7 +77,8 @@ trait Classify
 			unset($this->by[T_FILE][$file_name]);
 		}
 		elseif (file_exists($cache_file_name = $this->cacheFileName($file_name, T_FILE))) {
-			$file_references = json_decode(file_get_contents($cache_file_name) ?: '', true);
+			$file_content    = file_get_contents($cache_file_name);
+			$file_references = json_decode(($file_content === false) ? '' : $file_content, true);
 		}
 		else {
 			return;
@@ -91,9 +92,10 @@ trait Classify
 					if (!isset($this->by[$type][$value])) {
 						// The case of a reference into T_FILE to a non-existing cache file should never happen.
 						// It would throw an error you may solve with a reset of the index.
+						$file_content = file_get_contents($this->cacheFileName($value, $type));
 						/** @phpstan-ignore-next-line The cache file has been written using a valid structure */
 						$this->by[$type][$value] = json_decode(
-							file_get_contents($this->cacheFileName($value, $type)) ?: '', true
+							($file_content === false) ? '' : $file_content, true
 						);
 					}
 					// filter

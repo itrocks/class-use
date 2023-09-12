@@ -97,7 +97,7 @@ class Classify_Test extends TestCase
 				}
 			}
 		}
-		self::assertCount($expected_count, $found_in, $message ?: $file_name);
+		self::assertCount($expected_count, $found_in, ($message === '') ? $file_name : $message);
 	}
 
 	//---------------------------------------------------------------------------- hasNoFileReference

@@ -71,10 +71,11 @@ trait Search
 
 		$name = $search[$type];
 		if (!isset($this->by[$cache][$name])) {
-			$cache_file_name         = $this->cacheFileName($name, $cache);
+			$cache_file_name = $this->cacheFileName($name, $cache);
+			$file_content    = file_get_contents($cache_file_name);
 			/** @phpstan-ignore-next-line The cache file has been written from the same structure */
 			$this->by[$cache][$name] = file_exists($cache_file_name)
-				? json_decode(file_get_contents($cache_file_name) ?: '', true)
+				? json_decode(($file_content === false) ? '' : $file_content, true)
 				: [];
 		}
 
@@ -96,7 +97,6 @@ trait Search
 				if (isset($search3)) {
 					$array2 = [$search3 => $array2[$search3] ?? []];
 				}
-				/** @var string $file */
 				foreach ($array2 as $file => $lines) {
 					foreach ($lines as $token => $line) {
 						$type = $names[$tree[T_TYPE]];

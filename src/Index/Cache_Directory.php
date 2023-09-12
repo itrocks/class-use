@@ -90,11 +90,13 @@ trait Cache_Directory
 			if (!is_dir($home)) {
 				throw new Exception("Directory $home does not exist");
 			}
-			$this->home        = realpath($home) ?: '';
+			$home              = realpath($home);
+			$this->home        = ($home === false) ? '' : $home;
 			$this->home_length = strlen($this->home) + (($this->home === DIRECTORY_SEPARATOR) ? 0 : 1);
 			return;
 		}
-		$directory = $home = str_replace('\\', '/', getcwd() ?: '.');
+		$home      = getcwd();
+		$directory = $home = str_replace('\\', '/', ($home === false) ? '.' : $home);
 		while (
 			(($slash = strrpos($home, '/')) !== false)
 			&& !file_exists("$home/composer.json")

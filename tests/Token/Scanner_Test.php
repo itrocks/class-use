@@ -142,7 +142,8 @@ class Scanner_Test extends TestCase
 	public static function provideReferences() : array
 	{
 		$counter = 0;
-		$data    = explode("\n\n", file_get_contents(__DIR__ . '/scanner.references.provider') ?: '');
+		$content = file_get_contents(__DIR__ . '/scanner.references.provider');
+		$data    = explode("\n\n", ($content === false) ? '' : $content);
 		$name    = '';
 		$provide = [];
 		foreach ($data as $data_key => $buffer) {

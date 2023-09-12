@@ -178,11 +178,15 @@ class Cache_Directory_Test extends TestCase
 	public function testSetHomeAuto() : void
 	{
 		$back_home = $this->home;
-		$cwd = getcwd() ?: '.';
+		$cwd       = getcwd();
+		if ($cwd === false) {
+			$cwd = '.';
+		}
 		chdir(__DIR__);
 		/** @noinspection PhpUnhandledExceptionInspection Must not throw exception */
 		$this->setHome();
-		$expected = realpath(__DIR__ . '/../..') ?: '-';
+		$expected = realpath(__DIR__ . '/../..');
+		$expected = ($expected === false) ? '-' : $expected;
 		self::assertEquals($expected, $this->home);
 		self::assertEquals(strlen($expected) + 1, $this->home_length);
 		chdir($cwd);

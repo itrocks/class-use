@@ -4,7 +4,6 @@ includes:
 parameters:
 	ignoreErrors:
 		- '#^Cannot access offset int on array<int, int>\|int.$#'
-		- '#^Short ternary operator is not allowed\. Use null coalesce operator if applicable or consider using long ternary.#'
 		- '#^Property ITRocks\\Class_Use\\Index\\Classify_Test::\$by \(array<int, array<int\|string, array<int\|string, array<int\|string, array<int\|string, array<int, int>\|int>>>>>\) does not accept array<int, array<int\|string, array<int\|string, array<int\|string, array<int\|string, mixed>>>>>.$#'
 		- '#^Property ITRocks\\Class_Use\\Index::\$by \(array<int, array<int\|string, array<int\|string, array<int\|string, array<int\|string, array<int, int>\|int>>>>>\) does not accept array<int, array<int\|string, array<int\|string, array<int\|string, array<int\|string, mixed>>>>>.$#'
 	level: 9

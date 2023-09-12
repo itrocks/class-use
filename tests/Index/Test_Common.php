@@ -5,11 +5,12 @@ trait Test_Common
 {
 
 	//-------------------------------------------------------------------------------- recurseScanDir
-	/** @return string[] */
+	/** @return list<string> */
 	private function recurseScanDir(string $directory, string $parent = '') : array
 	{
-		$files = [];
-		foreach (scandir($directory) ?: [] as $file) {
+		$files     = [];
+		$dir_files = scandir($directory);
+		foreach ((($dir_files === false) ? [] : $dir_files) as $file) {
 			if (str_starts_with($file, '.')) {
 				continue;
 			}

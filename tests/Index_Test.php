@@ -177,7 +177,8 @@ class Index_Test extends TestCase
 	//---------------------------------------------------------------------- testConstructorNoProject
 	public function testConstructorNoProject() : void
 	{
-		$cwd = getcwd() ?: '.';
+		$cwd = getcwd();
+		$cwd = ($cwd === false) ? '.' : $cwd;
 		chdir('/home');
 		$this->expectException(Exception::class);
 		$this->expectExceptionMessage('Directory /home does not contain a php project');
@@ -209,7 +210,8 @@ class Index_Test extends TestCase
 		$actual = [];
 		$cache_directory = $index->getCacheDirectory();
 		foreach ($this->recurseScanDir($index->getCacheDirectory()) as $file) {
-			$actual[$file] = json_decode(file_get_contents($cache_directory . $file) ?: '', true);
+			$file_content  = file_get_contents($cache_directory . $file);
+			$actual[$file] = json_decode(($file_content === false) ? '' : $file_content, true);
 		}
 		$expected = self::COMPLETE_EXPECTATION;
 		self::assertEquals($expected, $actual);
