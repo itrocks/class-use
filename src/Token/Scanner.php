@@ -10,9 +10,10 @@ class Scanner
 	];
 
 	//------------------------------------------------------------------------------------ TOKEN SETS
-	protected const CLASS_TOKENS    = [T_NAME_FULLY_QUALIFIED, T_NAME_QUALIFIED, T_NAME_RELATIVE, T_STRING];
-	protected const IGNORE_TOKENS   = [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT];
-	protected const VARIABLE_TOKENS = [T_CONST, T_FUNCTION, ...self::CLASS_TOKENS, T_VARIABLE];
+	protected const CLASS_TOKENS     = [T_NAME_FULLY_QUALIFIED, T_NAME_RELATIVE, ...self::NAMESPACE_TOKENS];
+	protected const IGNORE_TOKENS    = [T_WHITESPACE, T_COMMENT, T_DOC_COMMENT];
+	protected const NAMESPACE_TOKENS = [T_NAME_QUALIFIED, T_STRING];
+	protected const VARIABLE_TOKENS  = [T_CONST, T_FUNCTION, ...self::CLASS_TOKENS, T_VARIABLE];
 
 	//-------------------------------------------------------------------------------- IGNORE_CLASSES
 	protected const IGNORE_CLASSES = ['__CLASS__', '__TRAIT__', 'parent', 'self', 'static'];
@@ -251,7 +252,7 @@ class Scanner
 				do {
 					$token = next($tokens);
 					if ($token === false) return;
-				} while (in_array($token[0], self::IGNORE_TOKENS, true));
+				} while (!in_array($token[0], self::NAMESPACE_TOKENS, true));
 				$this->namespace = $token[1];
 				do {
 					$token = next($tokens);
@@ -459,7 +460,7 @@ class Scanner
 				$name = ltrim($token[1], '\\');
 				break;
 			case T_NAME_QUALIFIED:
-				$slash = strpos($token[1], '\\') ?: 0;
+				$slash = intval(strpos($token[1], '\\'));
 				$use   = $this->namespace_use[substr($token[1], 0, $slash)] ?? null;
 				$name  = isset($use)
 					? ($use . substr($token[1], $slash))
@@ -469,8 +470,10 @@ class Scanner
 				$name = ltrim($this->namespace . substr($token[1], 9), '\\');
 				break;
 			case T_STRING:
-				$name = ($this->namespace_use[$token[1]] ?? false)
-					?: ltrim($this->namespace . '\\' . $token[1], '\\');
+				$name = $this->namespace_use[$token[1]] ?? false;
+				if ($name === false) {
+					$name = ltrim($this->namespace . '\\' . $token[1], '\\');
+				}
 				break;
 			default:
 				return '';
