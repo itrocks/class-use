@@ -72,11 +72,9 @@ trait Search
 		$name = $search[$type];
 		if (!isset($this->by[$cache][$name])) {
 			$cache_file_name = $this->cacheFileName($name, $cache);
-			$file_content    = file_get_contents($cache_file_name);
+			$file_content = file_exists($cache_file_name) ? file_get_contents($cache_file_name) : false;
 			/** @phpstan-ignore-next-line The cache file has been written from the same structure */
-			$this->by[$cache][$name] = file_exists($cache_file_name)
-				? json_decode(($file_content === false) ? '' : $file_content, true)
-				: [];
+			$this->by[$cache][$name] = ($file_content === false) ? [] : json_decode($file_content, true);
 		}
 
 		/** @var array<int|string> $names */
