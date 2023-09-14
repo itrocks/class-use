@@ -286,12 +286,14 @@ class C { function() {
 	namespace\T::class;
 } }
 new D;
+new namespace\N;
 ?>
 A\B\C, declare-class, A\B\C,   4
 A\B\C, class,         V\P\N,   5
 A\B\C, class,         V\P\N\O, 6
 A\B\C, class,         A\B\T,   7
 ,      new,           A\B\D,   9
+,      new,           A\B\N,   10
 
 <?php
 namespace A\B {
