@@ -160,15 +160,6 @@ class Scanner
 				} while ($token[0] !== '=');
 				continue 2;
 
-			case T_EXTENDS:
-				do {
-					$token = next($tokens);
-					if ($token === false) return;
-				} while (!in_array($token[0], self::CLASS_TOKENS, true));
-				/** @phpstan-ignore-next-line key($tokens) valid: last next($tokens) not false */
-				$this->reference(T_EXTENDS, $token, key($tokens));
-				continue 2;
-
 			case T_FUNCTION:
 				if ($this->next_references !== []) $this->appendNextReferences();
 				do $token = next($tokens); while ($token !== '(');
@@ -206,13 +197,18 @@ class Scanner
 				}
 				continue 2;
 
+			case T_EXTENDS:
 			case T_IMPLEMENTS:
+				$type = $token[0];
 				do {
 					$token = next($tokens);
 					if ($token === false) return;
+					if (in_array($token[0], [T_EXTENDS, T_IMPLEMENTS], true)) {
+						$type = $token[0];
+					}
 					if (in_array($token[0], self::CLASS_TOKENS, true)) {
 						/** @phpstan-ignore-next-line key($tokens) valid: last next($tokens) not false */
-						$this->reference(T_IMPLEMENTS, $token, key($tokens));
+						$this->reference($type, $token, key($tokens));
 					}
 				} while ($token[0] !== '{');
 				$this->braces ++;

@@ -124,6 +124,19 @@ class C extends S\E { }
 N\C, declare-class, N\C,   3
 N\C, extends,       N\S\E, 3
 
+<?php
+interface I extends J { }
+?>
+I, declare-interface, I, 2
+I, extends,           J, 2
+
+<?php
+interface I extends J, K { }
+?>
+I, declare-interface, I, 2
+I, extends,           J, 2
+I, extends,           K, 2
+
 # -------------------------------------------------------------------------------------- T_FUNCTION
 
 <?php
