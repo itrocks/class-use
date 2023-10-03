@@ -34,7 +34,7 @@ trait Scan
 	/** Keep file tokens in memory : this allows other libraries to avoid re-scanning file tokens */
 	public function keepFileTokens() : void
 	{
-		if (!isset($this->file_tokens)) {
+		if (is_null($this->file_tokens)) {
 			$this->file_tokens = [];
 		}
 	}
@@ -86,7 +86,7 @@ trait Scan
 		$this->files_count ++;
 		if (isset($this->file_tokens)) {
 			$tokens = $this->file_tokens[$file_relative] ?? null;
-			if (!isset($tokens)) {
+			if (is_null($tokens)) {
 				$file_content = file_get_contents($file);
 				$tokens       = token_get_all(($file_content === false) ? '' : $file_content);
 				$this->file_tokens[$file_relative] = $tokens;
