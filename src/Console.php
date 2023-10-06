@@ -188,7 +188,7 @@ class Console
 			if (in_array(strtoupper($value), static::TYPE_CONSTANTS, true)) {
 				try {
 					// @phpstan-ignore-next-line bad type from constant value Error is caught
-					$search[T_TYPE] = intval(constant(strtoupper($value)));
+					$search[T_TYPE] = (int)constant(strtoupper($value));
 				}
 				catch (TypeError) {
 				}

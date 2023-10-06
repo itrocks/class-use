@@ -99,32 +99,32 @@ trait Search
 					foreach ($lines as $token => $line) {
 						$type = $names[$tree[T_TYPE]];
 						if (is_numeric($type)) {
-							$type = intval($type);
+							$type = (int)$type;
 						}
 						$references[] = match($associative) {
 							T_TYPE, true => [
-								T_CLASS     => strval($names[$tree[T_CLASS]]),
+								T_CLASS     => (string)$names[$tree[T_CLASS]],
 								T_TYPE      => $type,
-								T_USE       => strval($names[$tree[T_USE]]),
+								T_USE       => (string)$names[$tree[T_USE]],
 								T_FILE      => $file,
-								T_LINE      => intval($line),
-								T_TOKEN_KEY => intval($token)
+								T_LINE      => (int)$line,
+								T_TOKEN_KEY => (int)$token
 							],
 							T_STRING => [
-								'class' => strval($names[$tree[T_CLASS]]),
+								'class' => (string)$names[$tree[T_CLASS]],
 								'type'  => $type,
-								'use'   => strval($names[$tree[T_USE]]),
+								'use'   => (string)$names[$tree[T_USE]],
 								'file'  => $file,
-								'line'  => intval($line),
-								'token' => intval($token)
+								'line'  => (int)$line,
+								'token' => (int)$token
 							],
 							default => [
-								strval($names[$tree[T_CLASS]]),
+								(string)$names[$tree[T_CLASS]],
 								$type,
-								strval($names[$tree[T_USE]]),
+								(string)$names[$tree[T_USE]],
 								$file,
-								intval($line),
-								intval($token)
+								(int)$line,
+								(int)$token
 							]
 						};
 					}

@@ -168,7 +168,7 @@ class Scanner_Test extends TestCase
 				if (count($reference) !== 4) {
 					trigger_error('scanner.references.provider bad reference ' . join(', ', $reference));
 				}
-				$reference[3] = intval($reference[3]);
+				$reference[3] = (int)$reference[3];
 			}
 			/** @var array{string,string,string,int} $references */
 			/** @phpstan-ignore-next-line bleedingEdge "subtype of native type list<string>" */
@@ -263,7 +263,7 @@ EOT;
 		$reference->invokeArgs($scanner, $arguments);
 		/** @var array<array{string,int|string,string,int,int}> $references Scanner::$reference */
 		$references = (new ReflectionProperty(Scanner::class, 'references'))->getValue($scanner);
-		self::assertEquals($expected, $references[0], strval($index));
+		self::assertEquals($expected, $references[0], (string)$index);
 	}
 
 	//----------------------------------------------------------------- testReferenceInvalidTokenType

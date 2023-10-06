@@ -40,11 +40,11 @@ class Index
 	/** @throws Exception */
 	public function __construct(int $flags = 0, string $home = '')
 	{
-		$this->pretty     = boolval($flags & self::PRETTY);
-		$this->reset      = boolval($flags & self::RESET);
+		$this->pretty     = (bool)($flags & self::PRETTY);
+		$this->reset      = (bool)($flags & self::RESET);
 		$this->start_time = time();
 		$this->scanner    = new Scanner;
-		$this->vendor     = boolval($flags & self::VENDOR);
+		$this->vendor     = (bool)($flags & self::VENDOR);
 		$this->setHome($home);
 		$this->prepareHome();
 	}

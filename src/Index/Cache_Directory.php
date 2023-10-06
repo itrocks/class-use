@@ -29,7 +29,7 @@ trait Cache_Directory
 	protected function cacheFileName(int|string $name, int $type = null) : string
 	{
 		$directory = $this->getCacheDirectory();
-		$file_name = str_replace(['/', '\\'], '-', strval($name));
+		$file_name = str_replace(['/', '\\'], '-', (string)$name);
 		$file_name = (str_ends_with($file_name, '.php') ? substr($file_name, 0, -4) : $file_name)
 			. '.json';
 		return isset($type)
